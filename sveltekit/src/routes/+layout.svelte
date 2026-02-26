@@ -1,5 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import Header from '$lib/Header.svelte';
+	import { resolve } from '$app/paths';
 
 	let { children } = $props();
   import './fonts.css';
@@ -10,6 +12,16 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
+<Header
+	navItems={[
+		{ name: 'Home', href: resolve('/') },
+		{ name: 'CollabChat', href: resolve('/chat') },
+		{ name: 'Admin', href: resolve('/admin') },
+		// { name: 'Admin', href: '/admin' },
+		// { name: 'Login', href: '/login' },
+		// { name: 'Logout', href: '/logout' }
+	]}
+/>
 <main>
 {@render children()}
 </main>
@@ -32,25 +44,18 @@
 		background-color: #263B48;
 		height: 70px;
 	}
-	nav a, footer a {
+	footer a {
 		color: white;
 	}
 	main {
 		padding: 20px;
-		min-height: calc(100dvh - 70px);
-	}
-	nav, footer {
-		display: flex;
-		position: sticky;
-		width: 100%;
-		justify-content: space-between;
-		background-color: #F70146;
-		color: white;
-		padding: 20px;
-		height: 70px;
-
+		min-height: calc(100dvh - 120px);
 	}
 	footer {
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
+		padding: 20px;
 		background-color: #263B48;
 		height: 70px;
 	}

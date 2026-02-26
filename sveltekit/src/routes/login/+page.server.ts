@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { createSessionJWT, checkJwt } from '$lib/server/jwt';
+import { checkJwt } from '$lib/server/jwt';
 import { login } from '$lib/server/pw';
 
 import { resolve } from '$app/paths';

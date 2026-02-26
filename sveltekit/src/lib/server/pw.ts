@@ -1,8 +1,7 @@
 import { SERVER_PW_PEPPER } from '$env/static/private';
 import bcrypt from 'bcrypt';
-import { createSessionJWT, checkJwt } from '$lib/server/jwt';
+import { setJwtCookie } from '$lib/server/jwt';
 import prisma from '$lib/server/db';
-import { resolve } from '$app/paths';
 
 
 export async function hashPasswordV2(password: string, userId: string) {
@@ -55,16 +54,8 @@ export async function login(email: string, password: string, cookies: any): Prom
     return { success: false, error: "Ungültige Anmeldedaten. Bitte versuchen Sie es erneut." };
   }
 
-  const maxAgeSec = 60 * 60 * 24;
-
-  const token = await createSessionJWT({ userId: user.id }, maxAgeSec);
-  cookies.set('jwt', token, {
-    path: resolve('/'),
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    maxAge: maxAgeSec
-  });
+  // const maxAgeSec = 60 * 60 * 24;
+  await setJwtCookie(cookies, 'jwt', { userId: user.id });
 
   return { success: true };
 

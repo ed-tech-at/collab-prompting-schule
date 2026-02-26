@@ -1,9 +1,21 @@
-import { redirect } from '@sveltejs/kit';
+import { redirect, type Cookies } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 import { resolve } from '$app/paths';
 
+const clearAllCookies = (cookies: Cookies) => {
+	const path = resolve('/');
+	for (const { name } of cookies.getAll()) {
+		cookies.delete(name, { path });
+	}
+};
+
 export const GET: RequestHandler = async ({ cookies }) => {
-	cookies.delete('jwt', { path: resolve('/') });
+	clearAllCookies(cookies);
+	throw redirect(302, resolve('/'));
+};
+
+export const POST: RequestHandler = async ({ cookies }) => {
+	clearAllCookies(cookies);
 	throw redirect(302, resolve('/'));
 };
