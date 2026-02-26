@@ -66,6 +66,11 @@
 			let buffer = '';
 			let footerSeen = false;
 
+			setTimeout(() => {
+				const el = document.querySelector('.messages') as HTMLElement | null;
+				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+			}, 10);
+
 			while (!done) {
 				const { value, done: streamDone } = await reader.read();
 				if (value) {
@@ -127,7 +132,7 @@
 	<div class="card chat-card">
 		<div class="messages">
 			{#if messages.length === 0}
-				<p class="muted empty">Ask a question to start the chat.</p>
+				<p class="muted empty">Nachricht eingeben um zu starten.</p>
 			{/if}
 			{#each messages as message}
 				<div class="bubble {message.role}">
