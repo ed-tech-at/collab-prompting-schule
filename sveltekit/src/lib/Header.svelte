@@ -26,7 +26,7 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 0.75rem 1rem;
-		background: #fff;
+		background: #eefefe;
 		border-bottom: 1px solid #e3e3e3;
     /* height: 50px; */
 	}

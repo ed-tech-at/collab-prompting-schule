@@ -34,10 +34,10 @@
 						<span class="meta">
 							{new Date(conversation.createdAt).toLocaleString()}
 							{#if conversation.student_rating}
-								· Student: {conversation.student_rating}/5
+								· Student:in {conversation.student_rating}/5
 							{/if}
 							{#if conversation.teacher_rating}
-								· Lehrer: {conversation.teacher_rating}/5
+								· Lehrerender: {conversation.teacher_rating}/5
 							{/if}
 						</span>
 					</li>
