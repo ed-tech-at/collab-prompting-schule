@@ -118,7 +118,7 @@
 </script>
 
 <section class="page">
-	<p><a href={resolve(`/chat/${data.collabSpaceId}`)}>Back</a></p>
+	<p><a href={resolve(`/chat/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
 	<h1>CollabChat #{data.collabChatId}</h1>
 	{#if data.question}
 		<p class="question"><b>Question:</b> {data.question}</p>
@@ -164,7 +164,7 @@
 			</div>
 		{:else}
 			<div class="composer">
-				<p class="muted">Chat-Eingabe ist nur mit gültigem CollabChatId-Cookie verfügbar.</p>
+				<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
 			</div>
 		{/if}
 	</div>

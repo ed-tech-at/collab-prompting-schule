@@ -19,16 +19,16 @@
 			<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 		<label>
-			Student Password
+			Student:innen Passwort
 			<input name="student_pw" type="password" required />
 		</label>
-		<button type="submit">Login</button>
+		<button type="submit">Teilnehmen</button>
 	</form>
 
 	<section class="list">
-		<h2>Eingeloggte Chats</h2>
+		<h2>Eingeloggte CollabChats</h2>
 		{#if data.loggedInChats.length === 0}
-			<p class="muted">Keine eingeloggt gespeicherten Chats gefunden.</p>
+			<p class="muted">Keine eingeloggt CollabChats gefunden.</p>
 		{:else}
 			<ul>
 				{#each data.loggedInChats as chat}

@@ -4,6 +4,8 @@
 
 	export let data: PageData;
 	export let form: ActionData;
+
+	const isOwnChat = (conversationId: number) => data.ownChatIds.includes(conversationId);
 </script>
 
 <section class="page">
@@ -17,17 +19,17 @@
 	{/if}
 
 	<form method="POST">
-		<button type="submit">Create New Chat</button>
+		<button type="submit">Neuen Chat starten</button>
 	</form>
 
 	<section class="list">
-		<h2>Bestehende Konversationen</h2>
+		<h2>Bestehende Chats</h2>
 		{#if data.conversations.length === 0}
-			<p class="muted">Noch keine Konversation vorhanden.</p>
+			<p class="muted">Noch keine Chats vorhanden.</p>
 		{:else}
 			<ul>
 				{#each data.conversations as conversation}
-					<li>
+					<li class:own-chat={isOwnChat(conversation.id)}>
 						<a href={resolve(`/chat/${data.collabSpaceId}/${conversation.id}`)}>
 							#{conversation.id}
 						</a>
@@ -106,6 +108,11 @@
 		border: 1px solid #e3e3e3;
 		border-radius: 6px;
 		background: #fff;
+	}
+
+	li.own-chat {
+		background: #e8f3ff;
+		font-weight: 700;
 	}
 
 	.meta {

@@ -7,9 +7,9 @@
 </script>
 
 <section class="page">
-	<h1>Admin for CollabSpace</h1>
+	<h1>Admin für CollabSpace</h1>
 
-	Login in existing
+	Anmelden
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
@@ -20,20 +20,20 @@
 			<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 		<label>
-			Password
+			Passwort
 			<input name="password" type="password" required />
 		</label>
-		<button type="submit">Login</button>
+		<button type="submit">Anmelden</button>
 
-		or
-	<a class="new-button" href={resolve("/admin/new")}>Create new+</a>
+		oder
+	<a class="new-button" href={resolve("/admin/new")}>Neuen erstellen +</a>
 
 	</form>
 
 	<section class="list">
 		<h2>Eingeloggte Admin Spaces</h2>
 		{#if data.loggedInAdminSpaces.length === 0}
-			<p class="muted">Keine eingeloggt gespeicherten Admin-Spaces gefunden.</p>
+			<p class="muted">Keine Anmeldungen für CollabSpaces gefunden.</p>
 		{:else}
 			<ul>
 				{#each data.loggedInAdminSpaces as space}

@@ -46,8 +46,14 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		}
 	} satisfies Parameters<typeof prisma.collabChat.findMany>[0];
 	const conversations = await prisma.collabChat.findMany(findManyArgs);
+	const ownChatIds = cookies
+		.getAll()
+		.map(({ name }) => /^CollabChatId(\d+)$/.exec(name)?.[1])
+		.filter((id): id is string => Boolean(id))
+		.map(Number)
+		.filter((id) => Number.isInteger(id) && id > 0);
 
-	return { collabSpaceId, conversations, isAdmin };
+	return { collabSpaceId, conversations, isAdmin, ownChatIds };
 };
 
 export const actions: Actions = {
