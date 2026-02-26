@@ -33,7 +33,7 @@
 
 	const send = async () => {
 		if (!prompt.trim()) {
-			errorMessage = 'Please enter a message.';
+			errorMessage = 'Bitte geben Sie eine Nachricht ein.';
 			return;
 		}
 
@@ -119,9 +119,9 @@
 
 <section class="page">
 	<p><a href={resolve(`/chat/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
-	<h1>CollabChat #{data.collabChatId}</h1>
+	<h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 	{#if data.question}
-		<p class="question"><b>Question:</b> {data.question}</p>
+		<p class="question"><b>Aufgabe:</b> {data.question}</p>
 	{/if}
 
 	<div class="card chat-card">
@@ -142,11 +142,11 @@
 		{#if data.canChat}
 			<div class="composer">
 				<label>
-					Message
+					Nachricht
 					<textarea
 						bind:value={prompt}
 						rows="3"
-						placeholder="Type your message..."
+						placeholder="Geben Sie Ihre Nachricht ein..."
 						on:keydown={(e) => {
 							if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
 								e.preventDefault();
@@ -156,7 +156,7 @@
 					></textarea>
 				</label>
 				<div class="actions">
-					<button on:click={send} disabled={loading}>{loading ? 'Sending…' : 'Send'}</button>
+					<button on:click={send} disabled={loading}>{loading ? 'Absenden…' : 'Absenden'}</button>
 					{#if errorMessage}
 						<span class="error">{errorMessage}</span>
 					{/if}

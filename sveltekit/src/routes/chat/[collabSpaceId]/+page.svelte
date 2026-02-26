@@ -12,7 +12,7 @@
 	{#if data.isAdmin}
 		<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
 	{/if}
-	<h1>CollabChat Space ID {data.collabSpaceId}</h1>
+	<h1>Space ID {data.collabSpaceId} / CollabChat</h1>
 
 	{#if form?.message}
 		<p class="notice error">{form.message}</p>

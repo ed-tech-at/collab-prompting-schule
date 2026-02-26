@@ -32,7 +32,7 @@
 		{:else}
 			<ul>
 				{#each data.loggedInChats as chat}
-					<li><a href={resolve(`/chat/${chat.id}`)}>Space ID {chat.id}</a></li>
+					<li><a href={resolve(`/chat/${chat.id}`)}>CollabSpace ID {chat.id}</a></li>
 				{/each}
 			</ul>
 		{/if}
