@@ -51,11 +51,10 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Repository: 'Repository',
-  DataFile: 'DataFile',
-  ChatLog: 'ChatLog',
-  User: 'User',
-  GitlabApiLog: 'GitlabApiLog'
+  Teacher: 'Teacher',
+  CollabSpace: 'CollabSpace',
+  CollabChat: 'CollabChat',
+  ChatEntry: 'ChatEntry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -64,78 +63,64 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  * Enums
  */
 
-export const TransactionIsolationLevel = {
+export const TransactionIsolationLevel = runtime.makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
   RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
-} as const
+} as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const RepositoryScalarFieldEnum = {
-  url: 'url',
-  name: 'name',
-  updateConfig: 'updateConfig',
-  LLM_API: 'LLM_API',
-  ragConfig: 'ragConfig'
-} as const
-
-export type RepositoryScalarFieldEnum = (typeof RepositoryScalarFieldEnum)[keyof typeof RepositoryScalarFieldEnum]
-
-
-export const DataFileScalarFieldEnum = {
-  id: 'id',
-  repositoryUrl: 'repositoryUrl',
-  remoteUrl: 'remoteUrl',
-  meta: 'meta',
-  createdAt: 'createdAt',
-  chunkedAt: 'chunkedAt',
-  invalidatedAt: 'invalidatedAt'
-} as const
-
-export type DataFileScalarFieldEnum = (typeof DataFileScalarFieldEnum)[keyof typeof DataFileScalarFieldEnum]
-
-
-export const ChatLogScalarFieldEnum = {
-  id: 'id',
-  repositoryUrl: 'repositoryUrl',
-  endpoint: 'endpoint',
-  question: 'question',
-  context: 'context',
-  answer: 'answer',
-  createdAt: 'createdAt'
-} as const
-
-export type ChatLogScalarFieldEnum = (typeof ChatLogScalarFieldEnum)[keyof typeof ChatLogScalarFieldEnum]
-
-
-export const UserScalarFieldEnum = {
+export const TeacherScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  repositoryJson: 'repositoryJson',
   password: 'password',
   cryptVersion: 'cryptVersion',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt'
 } as const
 
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+export type TeacherScalarFieldEnum = (typeof TeacherScalarFieldEnum)[keyof typeof TeacherScalarFieldEnum]
 
 
-export const GitlabApiLogScalarFieldEnum = {
+export const CollabSpaceScalarFieldEnum = {
   id: 'id',
-  endpoint: 'endpoint',
-  method: 'method',
-  status: 'status',
-  ip: 'ip',
-  userAgent: 'userAgent',
-  payload: 'payload',
+  base_url: 'base_url',
+  api_key: 'api_key',
+  model: 'model',
+  password: 'password',
+  student_pw: 'student_pw',
+  cryptVersion: 'cryptVersion',
+  question: 'question',
+  system_prompt: 'system_prompt',
   createdAt: 'createdAt'
 } as const
 
-export type GitlabApiLogScalarFieldEnum = (typeof GitlabApiLogScalarFieldEnum)[keyof typeof GitlabApiLogScalarFieldEnum]
+export type CollabSpaceScalarFieldEnum = (typeof CollabSpaceScalarFieldEnum)[keyof typeof CollabSpaceScalarFieldEnum]
+
+
+export const CollabChatScalarFieldEnum = {
+  id: 'id',
+  collabSpaceId: 'collabSpaceId',
+  teacher_rating: 'teacher_rating',
+  student_rating: 'student_rating',
+  createdAt: 'createdAt'
+} as const
+
+export type CollabChatScalarFieldEnum = (typeof CollabChatScalarFieldEnum)[keyof typeof CollabChatScalarFieldEnum]
+
+
+export const ChatEntryScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  message: 'message',
+  collabChatId: 'collabChatId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatEntryScalarFieldEnum = (typeof ChatEntryScalarFieldEnum)[keyof typeof ChatEntryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -146,29 +131,12 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const NullableJsonNullValueInput = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull'
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-export const JsonNullValueFilter = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull',
-  AnyNull: 'AnyNull'
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {

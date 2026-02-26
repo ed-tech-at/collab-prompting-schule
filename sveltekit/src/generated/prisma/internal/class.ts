@@ -17,18 +17,26 @@ import type * as Prisma from "./prismaNamespace.ts"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.2.0",
-  "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
+  "clientVersion": "7.4.1",
+  "engineVersion": "55ae170b1ced7fc6ed07a15f110549408c501bb3",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Repository {\n  url  String @unique\n  name String\n\n  updateConfig Json?\n  LLM_API      Json?\n  ragConfig    Json?\n\n  dataFiles DataFile[]\n}\n\nmodel DataFile {\n  id Int @id @default(autoincrement())\n\n  repositoryUrl String\n  repository    Repository @relation(fields: [repositoryUrl], references: [url], onDelete: Cascade)\n\n  remoteUrl String?\n  meta      Json?\n\n  createdAt     DateTime? @default(now())\n  chunkedAt     DateTime?\n  invalidatedAt DateTime?\n}\n\nmodel ChatLog {\n  id            Int     @id @default(autoincrement())\n  repositoryUrl String?\n  endpoint      String?\n\n  question String?\n  context  String?\n  answer   String?\n\n  createdAt DateTime @default(now())\n}\n\nmodel User {\n  id    String @id @default(uuid())\n  email String @unique\n\n  repositoryJson Json?\n\n  password     String\n  cryptVersion Int    @default(0)\n\n  isDeleted Int       @default(0)\n  createdAt DateTime? @default(now())\n}\n\nmodel GitlabApiLog {\n  id        Int      @id @default(autoincrement())\n  endpoint  String\n  method    String\n  status    Int\n  ip        String?\n  userAgent String?\n  payload   Json?\n  createdAt DateTime @default(now())\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Teacher {\n  id    String @id @default(uuid())\n  email String @unique\n\n  password     String\n  cryptVersion Int    @default(0)\n\n  isDeleted Int       @default(0)\n  createdAt DateTime? @default(now())\n}\n\nmodel CollabSpace {\n  id       Int     @id @default(autoincrement())\n  base_url String?\n  api_key  String?\n  model    String?\n\n  password     String\n  student_pw   String?\n  cryptVersion Int     @default(0)\n\n  question      String?\n  system_prompt String?\n\n  createdAt DateTime @default(now())\n\n  collabChats CollabChat[]\n}\n\nmodel CollabChat {\n  id Int @id @default(autoincrement())\n\n  collabSpaceId Int\n  collabSpace   CollabSpace @relation(fields: [collabSpaceId], references: [id], onDelete: Cascade)\n\n  teacher_rating String?\n  student_rating String?\n\n  ChatEntries ChatEntry[]\n\n  createdAt DateTime @default(now())\n}\n\nmodel ChatEntry {\n  id Int @id @default(autoincrement())\n\n  role    String?\n  message String?\n\n  collabChatId Int\n  collabChat   CollabChat @relation(fields: [collabChatId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
     "types": {}
+  },
+  "parameterizationSchema": {
+    "strings": [],
+    "graph": ""
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Repository\":{\"fields\":[{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"updateConfig\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"LLM_API\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"ragConfig\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"dataFiles\",\"kind\":\"object\",\"type\":\"DataFile\",\"relationName\":\"DataFileToRepository\"}],\"dbName\":null},\"DataFile\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"repositoryUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"repository\",\"kind\":\"object\",\"type\":\"Repository\",\"relationName\":\"DataFileToRepository\"},{\"name\":\"remoteUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"meta\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"chunkedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"invalidatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ChatLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"repositoryUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"endpoint\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"question\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"context\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"answer\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"repositoryJson\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cryptVersion\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"isDeleted\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"GitlabApiLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"endpoint\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ip\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payload\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Teacher\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cryptVersion\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"isDeleted\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"CollabSpace\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"base_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"api_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"model\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"student_pw\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cryptVersion\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"question\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"system_prompt\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"collabChats\",\"kind\":\"object\",\"type\":\"CollabChat\",\"relationName\":\"CollabChatToCollabSpace\"}],\"dbName\":null},\"CollabChat\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"collabSpaceId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"collabSpace\",\"kind\":\"object\",\"type\":\"CollabSpace\",\"relationName\":\"CollabChatToCollabSpace\"},{\"name\":\"teacher_rating\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"student_rating\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ChatEntries\",\"kind\":\"object\",\"type\":\"ChatEntry\",\"relationName\":\"ChatEntryToCollabChat\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ChatEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"collabChatId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"collabChat\",\"kind\":\"object\",\"type\":\"CollabChat\",\"relationName\":\"ChatEntryToCollabChat\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.parameterizationSchema = {
+  strings: JSON.parse("[\"where\",\"Teacher.findUnique\",\"Teacher.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"Teacher.findFirst\",\"Teacher.findFirstOrThrow\",\"Teacher.findMany\",\"data\",\"Teacher.createOne\",\"Teacher.createMany\",\"Teacher.createManyAndReturn\",\"Teacher.updateOne\",\"Teacher.updateMany\",\"Teacher.updateManyAndReturn\",\"create\",\"update\",\"Teacher.upsertOne\",\"Teacher.deleteOne\",\"Teacher.deleteMany\",\"having\",\"_count\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"Teacher.groupBy\",\"Teacher.aggregate\",\"collabSpace\",\"collabChat\",\"ChatEntries\",\"collabChats\",\"CollabSpace.findUnique\",\"CollabSpace.findUniqueOrThrow\",\"CollabSpace.findFirst\",\"CollabSpace.findFirstOrThrow\",\"CollabSpace.findMany\",\"CollabSpace.createOne\",\"CollabSpace.createMany\",\"CollabSpace.createManyAndReturn\",\"CollabSpace.updateOne\",\"CollabSpace.updateMany\",\"CollabSpace.updateManyAndReturn\",\"CollabSpace.upsertOne\",\"CollabSpace.deleteOne\",\"CollabSpace.deleteMany\",\"CollabSpace.groupBy\",\"CollabSpace.aggregate\",\"CollabChat.findUnique\",\"CollabChat.findUniqueOrThrow\",\"CollabChat.findFirst\",\"CollabChat.findFirstOrThrow\",\"CollabChat.findMany\",\"CollabChat.createOne\",\"CollabChat.createMany\",\"CollabChat.createManyAndReturn\",\"CollabChat.updateOne\",\"CollabChat.updateMany\",\"CollabChat.updateManyAndReturn\",\"CollabChat.upsertOne\",\"CollabChat.deleteOne\",\"CollabChat.deleteMany\",\"CollabChat.groupBy\",\"CollabChat.aggregate\",\"ChatEntry.findUnique\",\"ChatEntry.findUniqueOrThrow\",\"ChatEntry.findFirst\",\"ChatEntry.findFirstOrThrow\",\"ChatEntry.findMany\",\"ChatEntry.createOne\",\"ChatEntry.createMany\",\"ChatEntry.createManyAndReturn\",\"ChatEntry.updateOne\",\"ChatEntry.updateMany\",\"ChatEntry.updateManyAndReturn\",\"ChatEntry.upsertOne\",\"ChatEntry.deleteOne\",\"ChatEntry.deleteMany\",\"ChatEntry.groupBy\",\"ChatEntry.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"role\",\"message\",\"collabChatId\",\"createdAt\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"not\",\"contains\",\"startsWith\",\"endsWith\",\"collabSpaceId\",\"teacher_rating\",\"student_rating\",\"base_url\",\"api_key\",\"model\",\"password\",\"student_pw\",\"cryptVersion\",\"question\",\"system_prompt\",\"every\",\"some\",\"none\",\"email\",\"isDeleted\",\"is\",\"isNot\",\"connectOrCreate\",\"upsert\",\"createMany\",\"set\",\"disconnect\",\"delete\",\"connect\",\"updateMany\",\"deleteMany\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
+  graph: "1AErQAlQAACJAQAwUQAABAAQUgAAiQEAMFMBAAAAAVdAAIoBACFpAQB9ACFrAgB7ACFxAQAAAAFyAgB7ACEBAAAAAQAgAQAAAAEAIAlQAACJAQAwUQAABAAQUgAAiQEAMFMBAH0AIVdAAIoBACFpAQB9ACFrAgB7ACFxAQB9ACFyAgB7ACEBVwAAiwEAIAMAAAAEACADAAAFADAEAAABACADAAAABAAgAwAABQAwBAAAAQAgAwAAAAQAIAMAAAUAMAQAAAEAIAZTAQAAAAFXQAAAAAFpAQAAAAFrAgAAAAFxAQAAAAFyAgAAAAEBCAAACQAgBlMBAAAAAVdAAAAAAWkBAAAAAWsCAAAAAXEBAAAAAXICAAAAAQEIAAALADABCAAACwAwBlMBALABACFXQADIAQAhaQEAsAEAIWsCAJMBACFxAQCwAQAhcgIAkwEAIQIAAAABACAIAAAOACAGUwEAsAEAIVdAAMgBACFpAQCwAQAhawIAkwEAIXEBALABACFyAgCTAQAhAgAAAAQAIAgAABAAIAIAAAAEACAIAAAQACADAAAAAQAgDwAACQAgEAAADgAgAQAAAAEAIAEAAAAEACAGFQAAwwEAIBYAAMQBACAXAADHAQAgGAAAxgEAIBkAAMUBACBXAACLAQAgCVAAAIUBADBRAAAXABBSAACFAQAwUwEAdwAhV0AAhgEAIWkBAHcAIWsCAGoAIXEBAHcAIXICAGoAIQMAAAAEACADAAAWADAUAAAXACADAAAABAAgAwAABQAwBAAAAQAgDh8AAH8AIFAAAHoAMFEAACcAEFIAAHoAMFMCAAAAAVdAAH4AIWYBAHwAIWcBAHwAIWgBAHwAIWkBAH0AIWoBAHwAIWsCAHsAIWwBAHwAIW0BAHwAIQEAAAAaACAKHAAAgwEAIB4AAIQBACBQAACCAQAwUQAAHAAQUgAAggEAMFMCAHsAIVdAAH4AIWMCAHsAIWQBAHwAIWUBAHwAIQQcAADBAQAgHgAAwgEAIGQAAIsBACBlAACLAQAgChwAAIMBACAeAACEAQAgUAAAggEAMFEAABwAEFIAAIIBADBTAgAAAAFXQAB-ACFjAgB7ACFkAQB8ACFlAQB8ACEDAAAAHAAgAwAAHQAwBAAAHgAgCR0AAIEBACBQAACAAQAwUQAAIAAQUgAAgAEAMFMCAHsAIVQBAHwAIVUBAHwAIVYCAHsAIVdAAH4AIQMdAADAAQAgVAAAiwEAIFUAAIsBACAJHQAAgQEAIFAAAIABADBRAAAgABBSAACAAQAwUwIAAAABVAEAfAAhVQEAfAAhVgIAewAhV0AAfgAhAwAAACAAIAMAACEAMAQAACIAIAEAAAAgACABAAAAHAAgAQAAABoAIA4fAAB_ACBQAAB6ADBRAAAnABBSAAB6ADBTAgB7ACFXQAB-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_ACBQAAB6ADBRAAAnABBSAAB6ADBTAgB7ACFXQAB-ACFmAQB8ACFnAQB8ACFoAQB8ACFpAQB9ACFqAQB8ACFrAgB7ACFsAQB8ACFtAQB8ACFzAAAnACB0AAAnACADbgAAIAAgbwAAIAAgcAAAIAAgCVAAAIUBADBRAAAXABBSAACFAQAwUwEAdwAhV0AAhgEAIWkBAHcAIWsCAGoAIXEBAHcAIXICAGoAIQsVAABxACAYAACIAQAgGQAAiAEAIFhAAAAAAVlAAAAABVpAAAAABVtAAAAAAVxAAAAAAV1AAAAAAV5AAAAAAV9AAIcBACELFQAAcQAgGAAAiAEAIBkAAIgBACBYQAAAAAFZQAAAAAVaQAAAAAVbQAAAAAFcQAAAAAFdQAAAAAFeQAAAAAFfQACHAQAhCFhAAAAAAVlAAAAABVpAAAAABVtAAAAAAVxAAAAAAV1AAAAAAV5AAAAAAV9AAIgBACEJUAAAiQEAMFEAAAQAEFIAAIkBADBTAQB9ACFXQACKAQAhaQEAfQAhawIAewAhcQEAfQAhcgIAewAhCFhAAAAAAVlAAAAABVpAAAAABVtAAAAAAVxAAAAAAV1AAAAAAV5AAAAAAV9AAIgBACEAAAAAAAABeAEAAAABAXhAAAAAAQV4AgAAAAF-AgAAAAF_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"
+}
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -37,12 +45,14 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_bg.postgresql.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_bg.postgresql.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs")
     return await decodeBase64AsWasm(wasm)
-  }
+  },
+
+  importName: "./query_compiler_fast_bg.js"
 }
 
 
@@ -58,8 +68,8 @@ export interface PrismaClientConstructor {
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Repositories
-   * const repositories = await prisma.repository.findMany()
+   * // Fetch zero or more Teachers
+   * const teachers = await prisma.teacher.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -80,8 +90,8 @@ export interface PrismaClientConstructor {
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Repositories
- * const repositories = await prisma.repository.findMany()
+ * // Fetch zero or more Teachers
+ * const teachers = await prisma.teacher.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -164,7 +174,7 @@ export interface PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
@@ -175,54 +185,44 @@ export interface PrismaClient<
   }>>
 
       /**
-   * `prisma.repository`: Exposes CRUD operations for the **Repository** model.
+   * `prisma.teacher`: Exposes CRUD operations for the **Teacher** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Repositories
-    * const repositories = await prisma.repository.findMany()
+    * // Fetch zero or more Teachers
+    * const teachers = await prisma.teacher.findMany()
     * ```
     */
-  get repository(): Prisma.RepositoryDelegate<ExtArgs, { omit: OmitOpts }>;
+  get teacher(): Prisma.TeacherDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.dataFile`: Exposes CRUD operations for the **DataFile** model.
+   * `prisma.collabSpace`: Exposes CRUD operations for the **CollabSpace** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more DataFiles
-    * const dataFiles = await prisma.dataFile.findMany()
+    * // Fetch zero or more CollabSpaces
+    * const collabSpaces = await prisma.collabSpace.findMany()
     * ```
     */
-  get dataFile(): Prisma.DataFileDelegate<ExtArgs, { omit: OmitOpts }>;
+  get collabSpace(): Prisma.CollabSpaceDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.chatLog`: Exposes CRUD operations for the **ChatLog** model.
+   * `prisma.collabChat`: Exposes CRUD operations for the **CollabChat** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more ChatLogs
-    * const chatLogs = await prisma.chatLog.findMany()
+    * // Fetch zero or more CollabChats
+    * const collabChats = await prisma.collabChat.findMany()
     * ```
     */
-  get chatLog(): Prisma.ChatLogDelegate<ExtArgs, { omit: OmitOpts }>;
+  get collabChat(): Prisma.CollabChatDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.user`: Exposes CRUD operations for the **User** model.
+   * `prisma.chatEntry`: Exposes CRUD operations for the **ChatEntry** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Users
-    * const users = await prisma.user.findMany()
+    * // Fetch zero or more ChatEntries
+    * const chatEntries = await prisma.chatEntry.findMany()
     * ```
     */
-  get user(): Prisma.UserDelegate<ExtArgs, { omit: OmitOpts }>;
-
-  /**
-   * `prisma.gitlabApiLog`: Exposes CRUD operations for the **GitlabApiLog** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more GitlabApiLogs
-    * const gitlabApiLogs = await prisma.gitlabApiLog.findMany()
-    * ```
-    */
-  get gitlabApiLog(): Prisma.GitlabApiLogDelegate<ExtArgs, { omit: OmitOpts }>;
+  get chatEntry(): Prisma.ChatEntryDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

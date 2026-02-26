@@ -7,52 +7,10 @@ datasource db {
   provider = "postgresql"
 }
 
-model Repository {
-  url          String     @unique
-  name         String
 
-  updateConfig Json?
-  LLM_API      Json?
-  ragConfig    Json?
-
-  dataFiles    DataFile[]
-}
-
-model DataFile {
-  id            Int         @id @default(autoincrement())
-
-  repositoryUrl String
-  repository    Repository  @relation(fields: [repositoryUrl], references: [url], onDelete: Cascade)
-
-  remoteUrl     String?
-  meta          Json?
-  
-  createdAt     DateTime?   @default(now())
-  chunkedAt     DateTime?
-  invalidatedAt DateTime?
-  
-}
-
-
-model ChatLog {
-  id            Int      @id @default(autoincrement())
-  repositoryUrl String?
-  endpoint      String?
-  
-  question      String?
-  context       String?
-  answer        String?
-  
-  createdAt     DateTime @default(now())
-}
-
-
-
-model User {
+model Teacher {
   id       String  @id @default(uuid())
   email    String  @unique
-
-  repositoryJson  Json?
 
   password String
   cryptVersion Int @default(0)
@@ -60,19 +18,60 @@ model User {
   isDeleted Int @default(0)
   createdAt       DateTime? @default(now())
 
+}
 
+
+model CollabSpace {
+  id            Int      @id @default(autoincrement())
+  base_url      String?
+  api_key      String?
+  model      String?
+
+  password String
+  student_pw String?
+  cryptVersion Int @default(0)
+
+
+  question      String?
+  system_prompt       String?
+    
+  createdAt     DateTime @default(now())
+
+  collabChats    CollabChat[]
+
+}
+
+model CollabChat {
+  id            Int      @id @default(autoincrement())
+  
+
+  collabSpaceId Int
+  collabSpace    CollabSpace  @relation(fields: [collabSpaceId], references: [id], onDelete: Cascade)
+
+  teacher_rating String?
+  student_rating String?
+
+  ChatEntries    ChatEntry[]
+    
+  createdAt     DateTime @default(now())
 
 }
 
 
+model ChatEntry {
+  id            Int      @id @default(autoincrement())
 
-model GitlabApiLog {
-  id         Int      @id @default(autoincrement())
-  endpoint   String
-  method     String
-  status     Int
-  ip         String?
-  userAgent  String?
-  payload    Json?
-  createdAt  DateTime @default(now())
+
+  role String?
+  message String?
+
+
+  collabChatId Int
+  collabChat    CollabChat  @relation(fields: [collabChatId], references: [id], onDelete: Cascade)
+
+  
+  createdAt     DateTime @default(now())
 }
+
+
+

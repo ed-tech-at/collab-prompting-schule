@@ -5,7 +5,7 @@
 
 </script>
 <nav>
-  <b>EdTechRAG</b> <a href={resolve('/admin/')}>Admin</a> 
+  <b>collab.prompting.schule</b> <a href={resolve('/admin/')}>Admin</a> 
   <a href={resolve('/logout/')}>Logout</a> 
 </nav>
 <div class="page-content">{@render children()}</div>

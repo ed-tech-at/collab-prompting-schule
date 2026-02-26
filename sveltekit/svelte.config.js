@@ -1,5 +1,10 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import 'dotenv/config';
+
+const subfolder = process.env.SUBFOLDER?.trim();
+const normalizedSubfolder = subfolder?.replace(/^\/+|\/+$/g, '');
+const base = normalizedSubfolder ? `/${normalizedSubfolder}` : '';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,7 +13,7 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: { 
 		adapter: adapter(),
-		paths: {base: '/edtechrag'},
+		paths: { base }
 	 }
 };
 

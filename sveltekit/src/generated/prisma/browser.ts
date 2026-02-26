@@ -18,27 +18,22 @@ export { Prisma }
 export * as $Enums from './enums.ts'
 export * from './enums.ts';
 /**
- * Model Repository
+ * Model Teacher
  * 
  */
-export type Repository = Prisma.RepositoryModel
+export type Teacher = Prisma.TeacherModel
 /**
- * Model DataFile
+ * Model CollabSpace
  * 
  */
-export type DataFile = Prisma.DataFileModel
+export type CollabSpace = Prisma.CollabSpaceModel
 /**
- * Model ChatLog
+ * Model CollabChat
  * 
  */
-export type ChatLog = Prisma.ChatLogModel
+export type CollabChat = Prisma.CollabChatModel
 /**
- * Model User
+ * Model ChatEntry
  * 
  */
-export type User = Prisma.UserModel
-/**
- * Model GitlabApiLog
- * 
- */
-export type GitlabApiLog = Prisma.GitlabApiLogModel
+export type ChatEntry = Prisma.ChatEntryModel

@@ -8,9 +8,8 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Repository.ts'
-export type * from './models/DataFile.ts'
-export type * from './models/ChatLog.ts'
-export type * from './models/User.ts'
-export type * from './models/GitlabApiLog.ts'
+export type * from './models/Teacher.ts'
+export type * from './models/CollabSpace.ts'
+export type * from './models/CollabChat.ts'
+export type * from './models/ChatEntry.ts'
 export type * from './commonInputTypes.ts'

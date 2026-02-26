@@ -7,7 +7,7 @@
 </script>
 
 <section class="page">
-	<h1>Login to EdTechRAG</h1>
+	<h1>Login to collab.prompting.schule</h1>
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}

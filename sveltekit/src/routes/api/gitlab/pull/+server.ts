@@ -110,7 +110,7 @@ const parseRawChanges = (value: unknown) => {
 const getSignatureSecret = (value: unknown) => {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
 	const config = value as Record<string, unknown>;
-	return normalizeString(config.GitLab2EdTechRAG_SHARED_SECRET);
+	return normalizeString(config.GitLab2collab.prompting.schule_SHARED_SECRET);
 };
 
 const isSignatureValid = (provided: string | null, secret: string, rawBody: string) => {

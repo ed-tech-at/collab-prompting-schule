@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.2.0
- * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+ * Prisma Client JS version: 7.4.1
+ * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.2.0",
-  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
+  client: "7.4.1",
+  engine: "55ae170b1ced7fc6ed07a15f110549408c501bb3"
 }
 
 /**
@@ -384,11 +384,10 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  Repository: 'Repository',
-  DataFile: 'DataFile',
-  ChatLog: 'ChatLog',
-  User: 'User',
-  GitlabApiLog: 'GitlabApiLog'
+  Teacher: 'Teacher',
+  CollabSpace: 'CollabSpace',
+  CollabChat: 'CollabChat',
+  ChatEntry: 'ChatEntry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,377 +403,303 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "repository" | "dataFile" | "chatLog" | "user" | "gitlabApiLog"
+    modelProps: "teacher" | "collabSpace" | "collabChat" | "chatEntry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
-    Repository: {
-      payload: Prisma.$RepositoryPayload<ExtArgs>
-      fields: Prisma.RepositoryFieldRefs
+    Teacher: {
+      payload: Prisma.$TeacherPayload<ExtArgs>
+      fields: Prisma.TeacherFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.RepositoryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload> | null
+          args: Prisma.TeacherFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.RepositoryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>
+          args: Prisma.TeacherFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>
         }
         findFirst: {
-          args: Prisma.RepositoryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload> | null
+          args: Prisma.TeacherFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.RepositoryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>
+          args: Prisma.TeacherFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>
         }
         findMany: {
-          args: Prisma.RepositoryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>[]
+          args: Prisma.TeacherFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>[]
         }
         create: {
-          args: Prisma.RepositoryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>
+          args: Prisma.TeacherCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>
         }
         createMany: {
-          args: Prisma.RepositoryCreateManyArgs<ExtArgs>
+          args: Prisma.TeacherCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.RepositoryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>[]
+          args: Prisma.TeacherCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>[]
         }
         delete: {
-          args: Prisma.RepositoryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>
+          args: Prisma.TeacherDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>
         }
         update: {
-          args: Prisma.RepositoryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>
+          args: Prisma.TeacherUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>
         }
         deleteMany: {
-          args: Prisma.RepositoryDeleteManyArgs<ExtArgs>
+          args: Prisma.TeacherDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.RepositoryUpdateManyArgs<ExtArgs>
+          args: Prisma.TeacherUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.RepositoryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>[]
+          args: Prisma.TeacherUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>[]
         }
         upsert: {
-          args: Prisma.RepositoryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepositoryPayload>
+          args: Prisma.TeacherUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeacherPayload>
         }
         aggregate: {
-          args: Prisma.RepositoryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateRepository>
+          args: Prisma.TeacherAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeacher>
         }
         groupBy: {
-          args: Prisma.RepositoryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RepositoryGroupByOutputType>[]
+          args: Prisma.TeacherGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeacherGroupByOutputType>[]
         }
         count: {
-          args: Prisma.RepositoryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RepositoryCountAggregateOutputType> | number
+          args: Prisma.TeacherCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeacherCountAggregateOutputType> | number
         }
       }
     }
-    DataFile: {
-      payload: Prisma.$DataFilePayload<ExtArgs>
-      fields: Prisma.DataFileFieldRefs
+    CollabSpace: {
+      payload: Prisma.$CollabSpacePayload<ExtArgs>
+      fields: Prisma.CollabSpaceFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.DataFileFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload> | null
+          args: Prisma.CollabSpaceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.DataFileFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>
+          args: Prisma.CollabSpaceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>
         }
         findFirst: {
-          args: Prisma.DataFileFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload> | null
+          args: Prisma.CollabSpaceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.DataFileFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>
+          args: Prisma.CollabSpaceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>
         }
         findMany: {
-          args: Prisma.DataFileFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>[]
+          args: Prisma.CollabSpaceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>[]
         }
         create: {
-          args: Prisma.DataFileCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>
+          args: Prisma.CollabSpaceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>
         }
         createMany: {
-          args: Prisma.DataFileCreateManyArgs<ExtArgs>
+          args: Prisma.CollabSpaceCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.DataFileCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>[]
+          args: Prisma.CollabSpaceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>[]
         }
         delete: {
-          args: Prisma.DataFileDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>
+          args: Prisma.CollabSpaceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>
         }
         update: {
-          args: Prisma.DataFileUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>
+          args: Prisma.CollabSpaceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>
         }
         deleteMany: {
-          args: Prisma.DataFileDeleteManyArgs<ExtArgs>
+          args: Prisma.CollabSpaceDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.DataFileUpdateManyArgs<ExtArgs>
+          args: Prisma.CollabSpaceUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.DataFileUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>[]
+          args: Prisma.CollabSpaceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>[]
         }
         upsert: {
-          args: Prisma.DataFileUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DataFilePayload>
+          args: Prisma.CollabSpaceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabSpacePayload>
         }
         aggregate: {
-          args: Prisma.DataFileAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateDataFile>
+          args: Prisma.CollabSpaceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCollabSpace>
         }
         groupBy: {
-          args: Prisma.DataFileGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DataFileGroupByOutputType>[]
+          args: Prisma.CollabSpaceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CollabSpaceGroupByOutputType>[]
         }
         count: {
-          args: Prisma.DataFileCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DataFileCountAggregateOutputType> | number
+          args: Prisma.CollabSpaceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CollabSpaceCountAggregateOutputType> | number
         }
       }
     }
-    ChatLog: {
-      payload: Prisma.$ChatLogPayload<ExtArgs>
-      fields: Prisma.ChatLogFieldRefs
+    CollabChat: {
+      payload: Prisma.$CollabChatPayload<ExtArgs>
+      fields: Prisma.CollabChatFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.ChatLogFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload> | null
+          args: Prisma.CollabChatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.ChatLogFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>
+          args: Prisma.CollabChatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>
         }
         findFirst: {
-          args: Prisma.ChatLogFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload> | null
+          args: Prisma.CollabChatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.ChatLogFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>
+          args: Prisma.CollabChatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>
         }
         findMany: {
-          args: Prisma.ChatLogFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>[]
+          args: Prisma.CollabChatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>[]
         }
         create: {
-          args: Prisma.ChatLogCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>
+          args: Prisma.CollabChatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>
         }
         createMany: {
-          args: Prisma.ChatLogCreateManyArgs<ExtArgs>
+          args: Prisma.CollabChatCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.ChatLogCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>[]
+          args: Prisma.CollabChatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>[]
         }
         delete: {
-          args: Prisma.ChatLogDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>
+          args: Prisma.CollabChatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>
         }
         update: {
-          args: Prisma.ChatLogUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>
+          args: Prisma.CollabChatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>
         }
         deleteMany: {
-          args: Prisma.ChatLogDeleteManyArgs<ExtArgs>
+          args: Prisma.CollabChatDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.ChatLogUpdateManyArgs<ExtArgs>
+          args: Prisma.CollabChatUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.ChatLogUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>[]
+          args: Prisma.CollabChatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>[]
         }
         upsert: {
-          args: Prisma.ChatLogUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatLogPayload>
+          args: Prisma.CollabChatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollabChatPayload>
         }
         aggregate: {
-          args: Prisma.ChatLogAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateChatLog>
+          args: Prisma.CollabChatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCollabChat>
         }
         groupBy: {
-          args: Prisma.ChatLogGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ChatLogGroupByOutputType>[]
+          args: Prisma.CollabChatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CollabChatGroupByOutputType>[]
         }
         count: {
-          args: Prisma.ChatLogCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ChatLogCountAggregateOutputType> | number
+          args: Prisma.CollabChatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CollabChatCountAggregateOutputType> | number
         }
       }
     }
-    User: {
-      payload: Prisma.$UserPayload<ExtArgs>
-      fields: Prisma.UserFieldRefs
+    ChatEntry: {
+      payload: Prisma.$ChatEntryPayload<ExtArgs>
+      fields: Prisma.ChatEntryFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.UserFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
+          args: Prisma.ChatEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+          args: Prisma.ChatEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>
         }
         findFirst: {
-          args: Prisma.UserFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload> | null
+          args: Prisma.ChatEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+          args: Prisma.ChatEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>
         }
         findMany: {
-          args: Prisma.UserFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
+          args: Prisma.ChatEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>[]
         }
         create: {
-          args: Prisma.UserCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+          args: Prisma.ChatEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>
         }
         createMany: {
-          args: Prisma.UserCreateManyArgs<ExtArgs>
+          args: Prisma.ChatEntryCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
+          args: Prisma.ChatEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>[]
         }
         delete: {
-          args: Prisma.UserDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+          args: Prisma.ChatEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>
         }
         update: {
-          args: Prisma.UserUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+          args: Prisma.ChatEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>
         }
         deleteMany: {
-          args: Prisma.UserDeleteManyArgs<ExtArgs>
+          args: Prisma.ChatEntryDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.UserUpdateManyArgs<ExtArgs>
+          args: Prisma.ChatEntryUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>[]
+          args: Prisma.ChatEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>[]
         }
         upsert: {
-          args: Prisma.UserUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserPayload>
+          args: Prisma.ChatEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryPayload>
         }
         aggregate: {
-          args: Prisma.UserAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUser>
+          args: Prisma.ChatEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatEntry>
         }
         groupBy: {
-          args: Prisma.UserGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserGroupByOutputType>[]
+          args: Prisma.ChatEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatEntryGroupByOutputType>[]
         }
         count: {
-          args: Prisma.UserCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
-        }
-      }
-    }
-    GitlabApiLog: {
-      payload: Prisma.$GitlabApiLogPayload<ExtArgs>
-      fields: Prisma.GitlabApiLogFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.GitlabApiLogFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.GitlabApiLogFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>
-        }
-        findFirst: {
-          args: Prisma.GitlabApiLogFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.GitlabApiLogFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>
-        }
-        findMany: {
-          args: Prisma.GitlabApiLogFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>[]
-        }
-        create: {
-          args: Prisma.GitlabApiLogCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>
-        }
-        createMany: {
-          args: Prisma.GitlabApiLogCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.GitlabApiLogCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>[]
-        }
-        delete: {
-          args: Prisma.GitlabApiLogDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>
-        }
-        update: {
-          args: Prisma.GitlabApiLogUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>
-        }
-        deleteMany: {
-          args: Prisma.GitlabApiLogDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.GitlabApiLogUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.GitlabApiLogUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>[]
-        }
-        upsert: {
-          args: Prisma.GitlabApiLogUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$GitlabApiLogPayload>
-        }
-        aggregate: {
-          args: Prisma.GitlabApiLogAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateGitlabApiLog>
-        }
-        groupBy: {
-          args: Prisma.GitlabApiLogGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.GitlabApiLogGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.GitlabApiLogCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.GitlabApiLogCountAggregateOutputType> | number
+          args: Prisma.ChatEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatEntryCountAggregateOutputType> | number
         }
       }
     }
@@ -817,68 +742,54 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const RepositoryScalarFieldEnum = {
-  url: 'url',
-  name: 'name',
-  updateConfig: 'updateConfig',
-  LLM_API: 'LLM_API',
-  ragConfig: 'ragConfig'
-} as const
-
-export type RepositoryScalarFieldEnum = (typeof RepositoryScalarFieldEnum)[keyof typeof RepositoryScalarFieldEnum]
-
-
-export const DataFileScalarFieldEnum = {
-  id: 'id',
-  repositoryUrl: 'repositoryUrl',
-  remoteUrl: 'remoteUrl',
-  meta: 'meta',
-  createdAt: 'createdAt',
-  chunkedAt: 'chunkedAt',
-  invalidatedAt: 'invalidatedAt'
-} as const
-
-export type DataFileScalarFieldEnum = (typeof DataFileScalarFieldEnum)[keyof typeof DataFileScalarFieldEnum]
-
-
-export const ChatLogScalarFieldEnum = {
-  id: 'id',
-  repositoryUrl: 'repositoryUrl',
-  endpoint: 'endpoint',
-  question: 'question',
-  context: 'context',
-  answer: 'answer',
-  createdAt: 'createdAt'
-} as const
-
-export type ChatLogScalarFieldEnum = (typeof ChatLogScalarFieldEnum)[keyof typeof ChatLogScalarFieldEnum]
-
-
-export const UserScalarFieldEnum = {
+export const TeacherScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  repositoryJson: 'repositoryJson',
   password: 'password',
   cryptVersion: 'cryptVersion',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt'
 } as const
 
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+export type TeacherScalarFieldEnum = (typeof TeacherScalarFieldEnum)[keyof typeof TeacherScalarFieldEnum]
 
 
-export const GitlabApiLogScalarFieldEnum = {
+export const CollabSpaceScalarFieldEnum = {
   id: 'id',
-  endpoint: 'endpoint',
-  method: 'method',
-  status: 'status',
-  ip: 'ip',
-  userAgent: 'userAgent',
-  payload: 'payload',
+  base_url: 'base_url',
+  api_key: 'api_key',
+  model: 'model',
+  password: 'password',
+  student_pw: 'student_pw',
+  cryptVersion: 'cryptVersion',
+  question: 'question',
+  system_prompt: 'system_prompt',
   createdAt: 'createdAt'
 } as const
 
-export type GitlabApiLogScalarFieldEnum = (typeof GitlabApiLogScalarFieldEnum)[keyof typeof GitlabApiLogScalarFieldEnum]
+export type CollabSpaceScalarFieldEnum = (typeof CollabSpaceScalarFieldEnum)[keyof typeof CollabSpaceScalarFieldEnum]
+
+
+export const CollabChatScalarFieldEnum = {
+  id: 'id',
+  collabSpaceId: 'collabSpaceId',
+  teacher_rating: 'teacher_rating',
+  student_rating: 'student_rating',
+  createdAt: 'createdAt'
+} as const
+
+export type CollabChatScalarFieldEnum = (typeof CollabChatScalarFieldEnum)[keyof typeof CollabChatScalarFieldEnum]
+
+
+export const ChatEntryScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  message: 'message',
+  collabChatId: 'collabChatId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatEntryScalarFieldEnum = (typeof ChatEntryScalarFieldEnum)[keyof typeof ChatEntryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -889,29 +800,12 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const NullableJsonNullValueInput = {
-  DbNull: DbNull,
-  JsonNull: JsonNull
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-export const JsonNullValueFilter = {
-  DbNull: DbNull,
-  JsonNull: JsonNull,
-  AnyNull: AnyNull
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {
@@ -939,20 +833,6 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1092,11 +972,10 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
-  repository?: Prisma.RepositoryOmit
-  dataFile?: Prisma.DataFileOmit
-  chatLog?: Prisma.ChatLogOmit
-  user?: Prisma.UserOmit
-  gitlabApiLog?: Prisma.GitlabApiLogOmit
+  teacher?: Prisma.TeacherOmit
+  collabSpace?: Prisma.CollabSpaceOmit
+  collabChat?: Prisma.CollabChatOmit
+  chatEntry?: Prisma.ChatEntryOmit
 }
 
 /* Types for Logging */

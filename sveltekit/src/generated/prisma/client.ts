@@ -29,8 +29,8 @@ export * from "./enums.ts"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Repositories
- * const repositories = await prisma.repository.findMany()
+ * // Fetch zero or more Teachers
+ * const teachers = await prisma.teacher.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -40,27 +40,22 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model Repository
+ * Model Teacher
  * 
  */
-export type Repository = Prisma.RepositoryModel
+export type Teacher = Prisma.TeacherModel
 /**
- * Model DataFile
+ * Model CollabSpace
  * 
  */
-export type DataFile = Prisma.DataFileModel
+export type CollabSpace = Prisma.CollabSpaceModel
 /**
- * Model ChatLog
+ * Model CollabChat
  * 
  */
-export type ChatLog = Prisma.ChatLogModel
+export type CollabChat = Prisma.CollabChatModel
 /**
- * Model User
+ * Model ChatEntry
  * 
  */
-export type User = Prisma.UserModel
-/**
- * Model GitlabApiLog
- * 
- */
-export type GitlabApiLog = Prisma.GitlabApiLogModel
+export type ChatEntry = Prisma.ChatEntryModel
