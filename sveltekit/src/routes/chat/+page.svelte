@@ -6,24 +6,46 @@
 	export let form: ActionData;
 </script>
 
-<section class="page">
-	<h1>CollabChat</h1>
+<h1>CollabChat</h1>
+
+<section>
 
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
 
 	<form method="POST" action="?/login" class="login-form">
+
 		<label>
-			CollabSpace ID
-			<input name="collabSpaceId" type="number" min="1" required />
+				CollabSpace ID
+				<input name="collabSpaceId" type="number" min="1" required />
 		</label>
+
 		<label>
-			Student:innen Passwort
-			<input name="student_pw" type="password" required />
+			Dein Username
+			<input name="username" type="text" required />
 		</label>
-		<button type="submit">Teilnehmen</button>
+
+		<label>
+			Teilnahmecode
+			<input name="student_pw" type="password" />
+		</label>
+
+		<label>
+			Benutzerrichtlinie
+			<div class="checkbox_wrapper">
+				<input name="student_pw" type="checkbox" />
+				<span>
+					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href="/datenschutz/" target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen.
+				</span>
+			</div>
+
+		</label>
+
+		<button type="submit" class="btn btn-primary">Teilnehmen</button>
+
 	</form>
+</section>
 
 	<section class="list">
 		<h2>Eingeloggte CollabChats</h2>
@@ -37,8 +59,7 @@
 			</ul>
 		{/if}
 	</section>
-</section>
-
+<!-- 
 <style>
 	.page {
 		max-width: 420px;
@@ -126,4 +147,4 @@
 		margin: 0;
 		color: #666;
 	}
-</style>
+</style> -->

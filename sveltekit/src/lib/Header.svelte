@@ -5,15 +5,15 @@
 </script>
 
 <header class="site-header">
-	<div class="container">
-		<a class="brand" href="/"><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /> collab.prompting.schule</a>
+	<div class="main-width">
+		<a class="brand" href="/"><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.schule</span></a>
 		<nav class="main-nav" aria-label="Main navigation">
 			{#each navItems as item}
 				<a href={item.href}>{item.name}</a>
 			{/each}
 		</nav>
 		<a class="tugraz" href="https://www.tugraz.at/" target="_blank" rel="noreferrer">
-			<img src={asset('/logo-tugraz.svg')} alt="TU Graz Logo" />
+			<img src={asset('/powered-by-tu.svg')} alt="TU Graz Logo" />
 		</a>
 		</div>
 </header>
@@ -31,7 +31,7 @@
 		border-bottom: 2px solid rgb(138, 172, 176);
     /* height: 50px; */
 	}
-	.site-header .container {
+	.site-header .main-width {
 		display: grid;
 		grid-template-columns: 1fr auto 1fr;
 		align-items: center;

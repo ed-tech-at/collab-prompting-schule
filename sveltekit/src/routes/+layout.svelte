@@ -29,25 +29,25 @@
 		// { name: 'Logout', href: '/logout' }
 	]}
 />
-<main class="container">
+<main class="main-width">
 {@render children()}
 </main>
 <footer>
-	<div class="container">
+	<div class="main-width">
 		<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
 		<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
 	</div>
 </footer>
 
 <style>
-	:global(html, body) {
+	/* :global(html, body) {
 		margin: 0;
 		padding: 0;
 		font-family: 'Jost', sans-serif;
 	}
 	:global(*) {
 		box-sizing: border-box;
-	}
+	} */
 
 	footer {
 		background-color: #263B48;
@@ -60,7 +60,7 @@
 		padding: 20px;
 		min-height: calc(100dvh - 120px);
 	}
-	footer .container {
+	footer .main-width {
 		display: flex;
 		width: 100%;
 		justify-content: space-between;
