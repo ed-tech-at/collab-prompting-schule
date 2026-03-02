@@ -34,7 +34,7 @@
 		<label>
 			Benutzerrichtlinie
 			<div class="checkbox_wrapper">
-				<input name="student_pw" type="checkbox" />
+				<input name="student_pw" type="checkbox" required />
 				<span>
 					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href="/datenschutz/" target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen.
 				</span>

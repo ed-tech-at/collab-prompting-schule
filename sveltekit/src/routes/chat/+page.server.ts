@@ -61,7 +61,6 @@ export const actions: Actions = {
 		}
 
 		await setJwtCookie(cookies, `studentPw${collabSpaceId}`, { studentPw });
-
 		throw redirect(302, resolve(`/chat/${collabSpaceId}`));
 	}
 };

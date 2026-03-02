@@ -4,17 +4,31 @@
 
 <h1>Willkommen bei collab.prompting.schule</h1>
 <!-- <p>Please use the direct link we provided to the chatbot.</p> -->
+<section>
+	<h2>Teilnahme</h2>
+	<p></p>
+	<p><a class="btn btn-primary" href={resolve('/chat')}>An einem CollabChat teilnehmen</a></p>
+</section>
 
-<p><a href={resolve('/chat')}>An einem CollabChat teilnehmen</a></p>
-<!-- <p><a href={resolve('/admin')}>Admin</a></p> -->
-<form method="POST" action={resolve('/logout')}>
-	<button type="submit">Von allen CollabSpaces abmelden</button>
-</form>
+<section>
+	<h2>Eigenen Space erstellen</h2>
+	<p></p>
+	<p><a class="btn btn-badge" href={resolve('/chat')}>An einem CollabChat teilnehmen</a></p>
+</section>
+
+<section>
+	<h2>Abmelden</h2>
+	<p>Sie sind</p>
+	<!-- <p><a href={resolve('/admin')}>Admin</a></p> -->
+	<form method="POST" action={resolve('/logout')}>
+		<button type="submit" class="btn btn-accent">Cookies löschen und von allen CollabSpaces abmelden</button>
+	</form>
+</section>
 
 <style>
-	form {
-		margin-top: 8rem;
-	}
+	/* form { */
+		/* margin-top: 8rem; */
+	/* } */
 	/* button {
 		padding: 0.55rem 0.95rem;
 		border-radius: 6px;

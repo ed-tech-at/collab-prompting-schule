@@ -8,22 +8,30 @@
 	const isOwnChat = (conversationId: number) => data.ownChatIds.includes(conversationId);
 </script>
 
+<h1>Space ID {data.collabSpaceId} / CollabChat</h1>
 <section class="page">
 	{#if data.isAdmin}
 		<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
 	{/if}
-	<h1>Space ID {data.collabSpaceId} / CollabChat</h1>
 
 	{#if form?.message}
 		<p class="notice error">{form.message}</p>
 	{/if}
 
+
+	{#if data.question}
+		<p class="question"><b>Aufgabe:</b> {data.question}</p>
+	{/if}
+	<!-- <h2>Aufgabe</h2> -->
+	<!-- <p>{data.question}</p> -->
+	<!-- <hr> -->
+
 	<form method="POST">
-		<button type="submit">Neuen Chat starten</button>
+		<button class="btn btn-primary" type="submit">Neuen Chat starten</button>
 	</form>
 
 	<section class="list">
-		<h2>Bestehende Chats</h2>
+		<h3>Bestehende Chats</h3>
 		{#if data.conversations.length === 0}
 			<p class="muted">Noch keine Chats vorhanden.</p>
 		{:else}
@@ -34,7 +42,7 @@
 							#{conversation.id}
 						</a>
 						<span class="meta">
-							{new Date(conversation.createdAt).toLocaleString()}
+							<!-- {new Date(conversation.createdAt).toLocaleString()} -->
 							{#if conversation.student_rating}
 								· Student:in {conversation.student_rating}/5
 							{/if}
@@ -50,7 +58,7 @@
 </section>
 
 <style>
-	.page {
+	/* .page {
 		max-width: 540px;
 		margin: 2rem auto;
 		display: grid;
@@ -123,5 +131,5 @@
 	.muted {
 		color: #666;
 		margin: 0;
-	}
+	} */
 </style>

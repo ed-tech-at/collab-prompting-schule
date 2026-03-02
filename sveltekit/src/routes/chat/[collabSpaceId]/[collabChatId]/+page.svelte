@@ -122,57 +122,70 @@
 	};
 </script>
 
-<section class="page">
+<h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
+<section>
 	<p><a href={resolve(`/chat/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
-	<h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 	{#if data.question}
 		<p class="question"><b>Aufgabe:</b> {data.question}</p>
 	{/if}
 
-	<div class="card chat-card">
-		<div class="messages">
-			{#if messages.length === 0}
-				<p class="muted empty">Nachricht eingeben um zu starten.</p>
-			{/if}
-			{#each messages as message}
-				<div class="bubble {message.role}">
-					{#if message.role === 'assistant'}
-						<div class="bubble-content">{@html message.html}</div>
-					{:else}
-						<div class="bubble-content">{message.content}</div>
-					{/if}
-				</div>
-			{/each}
+	<!-- <section> -->
+		<h3>Chat</h3>
+
+		<div class="chat-window">
+			<!-- <div class="messages"> -->
+				{#if messages.length === 0}
+					<p class="muted empty">Nachricht eingeben um zu starten.</p>
+				{/if}
+				{#each messages as message}
+					<div class="bubble {message.role}">
+						{#if message.role === 'assistant'}
+							<div class="bubble-content">{@html message.html}</div>
+							<div class="meta">Chatbot</div>
+							{:else}
+							<div class="bubble-content">{message.content}</div>
+							<div class="meta">Nutzer:in</div>
+						{/if}
+					</div>
+				{/each}
+			<!-- </div> -->
+			
 		</div>
+
+
+
 		{#if data.canChat}
-			<div class="composer">
-				<label>
-					Nachricht
-					<textarea
-						bind:value={prompt}
-						rows="3"
-						placeholder="Geben Sie Ihre Nachricht ein..."
-						on:keydown={(e) => {
-							if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-								e.preventDefault();
-								send();
-							}
-						}}
-					></textarea>
-				</label>
-				<div class="actions">
-					<button on:click={send} disabled={loading}>{loading ? 'Absenden…' : 'Absenden'}</button>
-					{#if errorMessage}
-						<span class="error">{errorMessage}</span>
-					{/if}
+				<div class="chat-input">
+					<!-- <label style="width: 100%;"> -->
+						<!-- Nachricht -->
+						<textarea
+							bind:value={prompt}
+							class=""
+							rows="3"
+							placeholder="Geben Sie Ihre Nachricht ein..."
+							on:keydown={(e) => {
+								if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+									e.preventDefault();
+									send();
+								}
+							}}
+						></textarea>
+					<!-- </label> -->
+					<div class="actions">
+						<button class="btn btn-primary" on:click={send} disabled={loading}>{loading ? 'Absenden…' : 'Absenden'}</button>
+					</div>
+
 				</div>
-			</div>
-		{:else}
-			<div class="composer">
-				<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
-			</div>
-		{/if}
-	</div>
+				{#if errorMessage}
+					<span class="error">{errorMessage}</span>
+				{/if}
+			{:else}
+				<div class="composer">
+					<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
+				</div>
+			{/if}
+
+	<!-- </section> -->
 
 	{#if data.canChat}
 		<div class="card rating-card">
@@ -216,7 +229,7 @@
 </section>
 
 <style>
-	.page {
+	/* .page {
 		display: grid;
 		gap: 1rem;
 		max-width: 800px;
@@ -386,5 +399,5 @@
 		color: #1b6b3a;
 		font-size: 0.95rem;
 		margin: 0;
-	}
+	} */
 </style>
