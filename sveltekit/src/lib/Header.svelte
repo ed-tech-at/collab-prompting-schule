@@ -5,15 +5,17 @@
 </script>
 
 <header class="site-header">
-	<a class="brand" href="/">collab.prompting.schule</a>
-	<nav class="main-nav" aria-label="Main navigation">
-		{#each navItems as item}
-			<a href={item.href}>{item.name}</a>
-		{/each}
-	</nav>
-	<a class="tugraz" href="https://www.tugraz.at/" target="_blank" rel="noreferrer">
-		<img src={asset('/logo-tugraz.svg')} alt="TU Graz Logo" />
-	</a>
+	<div class="container">
+		<a class="brand" href="/"><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /> collab.prompting.schule</a>
+		<nav class="main-nav" aria-label="Main navigation">
+			{#each navItems as item}
+				<a href={item.href}>{item.name}</a>
+			{/each}
+		</nav>
+		<a class="tugraz" href="https://www.tugraz.at/" target="_blank" rel="noreferrer">
+			<img src={asset('/logo-tugraz.svg')} alt="TU Graz Logo" />
+		</a>
+		</div>
 </header>
 
 <style>
@@ -21,20 +23,26 @@
 		/* position: sticky; */
 		top: 0;
 		z-index: 20;
+		
+		/* background: #eefefe; */
+		background: rgba(255,255,255,0.78);
+		backdrop-filter: blur(10px);
+
+		border-bottom: 2px solid rgb(138, 172, 176);
+    /* height: 50px; */
+	}
+	.site-header .container {
 		display: grid;
 		grid-template-columns: 1fr auto 1fr;
 		align-items: center;
 		gap: 1rem;
 		padding: 0.75rem 1rem;
-		background: #eefefe;
-		border-bottom: 1px solid #e3e3e3;
-    /* height: 50px; */
 	}
 
 	.brand {
 		justify-self: start;
 		font-weight: 700;
-		color: #111;
+		color: var(--primary);
 		text-decoration: none;
 	}
 

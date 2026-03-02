@@ -15,7 +15,7 @@
 	form {
 		margin-top: 8rem;
 	}
-	button {
+	/* button {
 		padding: 0.55rem 0.95rem;
 		border-radius: 6px;
 		border: 1px solid #ed0a0a;
@@ -23,5 +23,5 @@
 		color: white;
 		font-weight: 400;
 		cursor: pointer;
-	}
+	} */
 </style>

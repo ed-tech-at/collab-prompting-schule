@@ -1,16 +1,23 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
+	
 	import Header from '$lib/Header.svelte';
-	import { resolve } from '$app/paths';
+	import { resolve, asset } from '$app/paths';
 
 	let { children } = $props();
   import './fonts.css';
+	import './style.css';
 
 
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<title>collab.prompting.schule</title>
+	<link rel="icon" type="image/png" href={asset("/favicon/favicon-96x96.png")} sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href={asset("/favicon/favicon.svg")} />
+	<link rel="shortcut icon" href={asset("/favicon/favicon.ico")} />
+	<link rel="apple-touch-icon" sizes="180x180" href={asset("/favicon/apple-touch-icon.png")} />
+	<link rel="manifest" href={asset("/favicon/site.webmanifest")} />
+
 </svelte:head>
 <Header
 	navItems={[
@@ -22,12 +29,14 @@
 		// { name: 'Logout', href: '/logout' }
 	]}
 />
-<main>
+<main class="container">
 {@render children()}
 </main>
 <footer>
-	<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
-	<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
+	<div class="container">
+		<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
+		<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
+	</div>
 </footer>
 
 <style>
@@ -51,7 +60,7 @@
 		padding: 20px;
 		min-height: calc(100dvh - 120px);
 	}
-	footer {
+	footer .container {
 		display: flex;
 		width: 100%;
 		justify-content: space-between;
