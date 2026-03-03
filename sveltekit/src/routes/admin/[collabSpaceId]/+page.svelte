@@ -103,7 +103,7 @@
 			<ul>
 				{#each data.conversations as conversation}
 					<li>
-						<a href={resolve(`/chat/${data.collabSpace.id}/${conversation.id}`)}>
+						<a href={resolve(`/space/${data.collabSpace.id}/chat/${conversation.id}`)}>
 							Chat #{conversation.id}
 						</a>
 						<span class="meta">

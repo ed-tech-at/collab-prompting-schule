@@ -6,10 +6,13 @@
 
 <header class="site-header">
 	<div class="main-width">
-		<a class="brand" href="/"><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.schule</span></a>
+		<a class="brand" href="/"><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.<wbr />schule</span></a>
 		<nav class="main-nav" aria-label="Main navigation">
-			{#each navItems as item}
-				<a href={item.href}>{item.name}</a>
+			{#each navItems as item, i}
+				<a href={item.href}>{@html item.name}</a>
+				{#if i < navItems.length - 1}
+					<span aria-hidden="true">/</span>
+				{/if}
 			{/each}
 		</nav>
 		<a class="tugraz" href="https://www.tugraz.at/" target="_blank" rel="noreferrer">
@@ -51,11 +54,13 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: 0.8rem;
+		gap: 0.4rem;
+		font-size: 0.9em;
+
 	}
 
 	.main-nav a {
-		color: #1f7ae0;
+		color: var(--primary);
 		text-decoration: none;
 		font-weight: 600;
 	}
@@ -81,6 +86,10 @@
 		.brand,
 		.tugraz {
 			justify-self: center;
+			flex-wrap: wrap;
+			font-size: 0.9em;
+      gap: 0.4em;
+
 		}
 	}
 </style>

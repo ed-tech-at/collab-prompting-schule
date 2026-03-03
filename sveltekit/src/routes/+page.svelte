@@ -7,13 +7,13 @@
 <section>
 	<h2>Teilnahme</h2>
 	<p></p>
-	<p><a class="btn btn-primary" href={resolve('/chat')}>An einem CollabChat teilnehmen</a></p>
+	<p><a class="btn btn-primary" href={resolve('/space')}>An einem CollabChat teilnehmen</a></p>
 </section>
 
 <section>
-	<h2>Eigenen Space erstellen</h2>
+	<h2>Eigenen CollabSpace erstellen</h2>
 	<p></p>
-	<p><a class="btn btn-badge" href={resolve('/chat')}>An einem CollabChat teilnehmen</a></p>
+	<p><a class="btn btn-badge" href={resolve('/admin')}>Neuen CollabSpace erstellen</a></p>
 </section>
 
 <section>

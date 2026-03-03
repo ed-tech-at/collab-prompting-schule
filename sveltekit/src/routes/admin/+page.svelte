@@ -9,7 +9,7 @@
 <section class="page">
 	<h1>Admin für CollabSpace</h1>
 
-	Anmelden
+	<h2>Bei bestehendem Space Anmelden</h2>
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
@@ -20,15 +20,16 @@
 			<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 		<label>
-			Passwort
+			Manage Passwort
 			<input name="password" type="password" required />
 		</label>
-		<button type="submit">Anmelden</button>
-
-		oder
-	<a class="new-button" href={resolve("/admin/new")}>Neuen erstellen +</a>
+		<button type="submit" class="btn btn-accent">Anmelden</button>
 
 	</form>
+	oder
+	<a class="btn btn-badge" href={resolve("/admin/new")}>Neuen erstellen +</a>
+	
+</section>
 
 	<section class="list">
 		<h2>Eingeloggte Admin Spaces</h2>
@@ -42,10 +43,9 @@
 			</ul>
 		{/if}
 	</section>
-</section>
 
 <style>
-	.page {
+	/* .page {
 		max-width: 420px;
 		margin: 2rem auto;
 		display: grid;
@@ -141,5 +141,5 @@
 	.muted {
 		margin: 0;
 		color: #666;
-	}
+	} */
 </style>

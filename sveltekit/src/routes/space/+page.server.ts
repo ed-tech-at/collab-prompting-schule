@@ -31,6 +31,7 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const collabSpaceIdRaw = data.get('collabSpaceId');
 		const studentPw = data.get('student_pw');
+		const username = data.get('username');
 
 		if (
 			typeof collabSpaceIdRaw !== 'string' ||
@@ -60,7 +61,7 @@ export const actions: Actions = {
 			return fail(401, { success: false, message: 'Invalid student password.' });
 		}
 
-		await setJwtCookie(cookies, `studentPw${collabSpaceId}`, { studentPw });
-		throw redirect(302, resolve(`/chat/${collabSpaceId}`));
+		await setJwtCookie(cookies, `studentPw${collabSpaceId}`, { studentPw, username });
+		throw redirect(302, resolve(`/space/${collabSpaceId}`));
 	}
 };

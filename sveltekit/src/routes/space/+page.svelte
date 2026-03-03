@@ -6,7 +6,7 @@
 	export let form: ActionData;
 </script>
 
-<h1>CollabChat</h1>
+<h1>Einem CollabSpace beitreten</h1>
 
 <section>
 
@@ -48,13 +48,13 @@
 </section>
 
 	<section class="list">
-		<h2>Eingeloggte CollabChats</h2>
+		<h2>Angemeldete CollabSpaces</h2>
 		{#if data.loggedInChats.length === 0}
 			<p class="muted">Keine eingeloggt CollabChats gefunden.</p>
 		{:else}
 			<ul>
 				{#each data.loggedInChats as chat}
-					<li><a href={resolve(`/chat/${chat.id}`)}>CollabSpace ID {chat.id}</a></li>
+					<li><a href={resolve(`/space/${chat.id}`)}>CollabSpace ID {chat.id}</a></li>
 				{/each}
 			</ul>
 		{/if}

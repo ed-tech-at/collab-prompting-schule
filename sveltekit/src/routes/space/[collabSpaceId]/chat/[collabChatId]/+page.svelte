@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
 
+
 	export let data: PageData;
 	export let form: ActionData;
 
@@ -11,6 +12,8 @@
 	let errorMessage = '';
 	let rating = Number(data.studentRating ?? 0);
 	let teacherRating = Number(data.teacherRating ?? 0);
+	let studentComment = data.studentComment ?? '';
+	let teacherComment = data.teacherComment ?? '';
 	const FOOTER_MARKER = '[__FOOTER__]';
 	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string }> = (
 		data.messages ?? []
@@ -48,7 +51,7 @@
 
 		try {
 			const res = await fetch(
-				resolve(`/api/chat/${data.collabSpaceId}/${data.collabChatId}`),
+				resolve(`/api/space/${data.collabSpaceId}/${data.collabChatId}`),
 				{
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
@@ -122,9 +125,10 @@
 	};
 </script>
 
+
 <h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 <section>
-	<p><a href={resolve(`/chat/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
+	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
 	{#if data.question}
 		<p class="question"><b>Aufgabe:</b> {data.question}</p>
 	{/if}
@@ -193,14 +197,26 @@
 			<form method="POST" action="?/rate" class="rating-form">
 				<div class="stars" role="radiogroup" aria-label="Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
-						<label class="star">
+						<label class="star" class:active={value <= rating}>
 							<input type="radio" name="rating" value={value} bind:group={rating} />
-							<span aria-hidden="true">{value <= rating ? '★' : '☆'}</span>
+							<i aria-hidden="true" class={`fa-star ${value <= rating ? 'fas' : 'far'}`}></i>
 						</label>
 					{/each}
 				</div>
-				<button type="submit">Bewertung speichern</button>
+				<label class="rating-comment-label" for="student-comment">Kommentar</label>
+				<textarea
+					id="student-comment"
+					name="studentComment"
+					class="rating-comment-input"
+					rows="3"
+					bind:value={studentComment}
+					placeholder="Optionaler Kommentar zur Bewertung"
+				></textarea>
+				<button type="submit" class="btn">Bewertung speichern</button>
 			</form>
+			<!-- {#if data.studentComment} -->
+				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.studentComment}</p> -->
+			<!-- {/if} -->
 			{#if form?.message && form?.ratingType === 'student'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
@@ -213,14 +229,29 @@
 			<form method="POST" action="?/rateTeacher" class="rating-form">
 				<div class="stars teacher-stars" role="radiogroup" aria-label="Lehrerenden-Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
-						<label class="star">
+						<label class="star" class:active={value <= teacherRating}>
 							<input type="radio" name="teacherRating" value={value} bind:group={teacherRating} />
-							<span aria-hidden="true">{value <= teacherRating ? '★' : '☆'}</span>
+							<i
+								aria-hidden="true"
+								class={`fa-star ${value <= teacherRating ? 'fas' : 'far'}`}
+							></i>
 						</label>
 					{/each}
 				</div>
-				<button type="submit">Lehrerenden-Bewertung speichern</button>
+				<label class="rating-comment-label" for="teacher-comment">Kommentar</label>
+				<textarea
+					id="teacher-comment"
+					name="teacherComment"
+					class="rating-comment-input"
+					rows="3"
+					bind:value={teacherComment}
+					placeholder="Optionaler Kommentar zur Lehrenden-Bewertung"
+				></textarea>
+				<button type="submit" class="btn">Lehrerenden-Bewertung speichern</button>
 			</form>
+			<!-- {#if data.teacherComment} -->
+				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.teacherComment}</p> -->
+			<!-- {/if} -->
 			{#if form?.message && form?.ratingType === 'teacher'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}

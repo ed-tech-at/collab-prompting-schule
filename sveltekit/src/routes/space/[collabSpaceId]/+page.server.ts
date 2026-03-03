@@ -30,19 +30,25 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		throw error(400, 'Invalid CollabSpace ID.');
 	}
 
-	const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
+	const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
 	const collabSpace = await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
 	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 	const isAdmin = Boolean(adminCookie?.password && adminCookie.password === collabSpace.password);
 
 	const findManyArgs = {
-		where: { collabSpaceId },
+		where: {
+			collabSpaceId,
+			OR: [{ student_rating: { gt: '0' } }, { teacher_rating: { gt: '0' } }]
+		},
 		orderBy: { createdAt: 'desc' },
 		select: {
 			id: true,
 			createdAt: true,
+			username: true,
 			student_rating: true,
-			teacher_rating: true
+			teacher_rating: true,
+			student_comment: true,
+			teacher_comment: true
 		}
 	} satisfies Parameters<typeof prisma.collabChat.findMany>[0];
 	const conversations = await prisma.collabChat.findMany(findManyArgs);
@@ -67,16 +73,18 @@ export const actions: Actions = {
 			return fail(400, { success: false, message: 'Invalid CollabSpace ID.' });
 		}
 
-		const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
+		// const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
+		const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
+
 		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
 
 		const createArgs = {
-			data: { collabSpaceId },
+			data: { collabSpaceId, username: studentCookie?.username },
 			select: { id: true }
 		} satisfies Parameters<typeof prisma.collabChat.create>[0];
 		const created = await prisma.collabChat.create(createArgs);
 		await setJwtCookie(cookies, `CollabChatId${created.id}`, { collabChatId: String(created.id) });
 
-		throw redirect(303, resolve(`/chat/${collabSpaceId}/${created.id}`));
+		throw redirect(303, resolve(`/space/${collabSpaceId}/chat/${created.id}`));
 	}
 };

@@ -1,12 +1,15 @@
 <script lang="ts">
-	
 	import Header from '$lib/Header.svelte';
-	import { resolve, asset } from '$app/paths';
+	import { page } from '$app/state';
+	import { asset } from '$app/paths';
 
 	let { children } = $props();
-  import './fonts.css';
+	import './fonts.css';
 	import './style.css';
 
+	const navItems = $derived(
+		(page.data.navItems as { name: string; href: string }[] | undefined) ?? []
+	);
 
 </script>
 
@@ -17,17 +20,11 @@
 	<link rel="shortcut icon" href={asset("/favicon/favicon.ico")} />
 	<link rel="apple-touch-icon" sizes="180x180" href={asset("/favicon/apple-touch-icon.png")} />
 	<link rel="manifest" href={asset("/favicon/site.webmanifest")} />
+	<link rel="stylesheet" href={asset("/fonts/fontawesome-free-5.15.3-web/css/all.min.css")} />
 
 </svelte:head>
 <Header
-	navItems={[
-		{ name: 'Home', href: resolve('/') },
-		{ name: 'CollabChat', href: resolve('/chat') },
-		{ name: 'Admin', href: resolve('/admin') },
-		// { name: 'Admin', href: '/admin' },
-		// { name: 'Login', href: '/login' },
-		// { name: 'Logout', href: '/logout' }
-	]}
+	navItems={navItems}
 />
 <main class="main-width">
 {@render children()}
