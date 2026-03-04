@@ -90,7 +90,7 @@ export async function setJwtCookie<T extends JWTPayload>(
 	cookieName: string,
 	payload: T
 ) {
-	const maxAgeSec = 60 * 60 * 24 * 7;
+	const maxAgeSec = 60 * 60 * 24 * 8;
 	
 	const token = await createJwt(payload, maxAgeSec);
 	cookies.set(cookieName, token, {

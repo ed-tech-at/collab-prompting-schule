@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.4.1
- * Query Engine version: 55ae170b1ced7fc6ed07a15f110549408c501bb3
+ * Prisma Client JS version: 7.4.2
+ * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.4.1",
-  engine: "55ae170b1ced7fc6ed07a15f110549408c501bb3"
+  client: "7.4.2",
+  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
 }
 
 /**
@@ -773,8 +773,12 @@ export type CollabSpaceScalarFieldEnum = (typeof CollabSpaceScalarFieldEnum)[key
 export const CollabChatScalarFieldEnum = {
   id: 'id',
   collabSpaceId: 'collabSpaceId',
+  username: 'username',
   teacher_rating: 'teacher_rating',
   student_rating: 'student_rating',
+  teacher_comment: 'teacher_comment',
+  student_comment: 'student_comment',
+  hidden: 'hidden',
   createdAt: 'createdAt'
 } as const
 
@@ -861,6 +865,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

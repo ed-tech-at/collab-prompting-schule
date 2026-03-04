@@ -48,8 +48,15 @@ model CollabChat {
   collabSpaceId Int
   collabSpace    CollabSpace  @relation(fields: [collabSpaceId], references: [id], onDelete: Cascade)
 
+  username String?
+
   teacher_rating String?
   student_rating String?
+
+  teacher_comment String?
+  student_comment String?
+
+  hidden Boolean @default(false)
 
   ChatEntries    ChatEntry[]
     

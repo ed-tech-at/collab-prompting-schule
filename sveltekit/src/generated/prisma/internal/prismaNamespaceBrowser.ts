@@ -104,8 +104,12 @@ export type CollabSpaceScalarFieldEnum = (typeof CollabSpaceScalarFieldEnum)[key
 export const CollabChatScalarFieldEnum = {
   id: 'id',
   collabSpaceId: 'collabSpaceId',
+  username: 'username',
   teacher_rating: 'teacher_rating',
   student_rating: 'student_rating',
+  teacher_comment: 'teacher_comment',
+  student_comment: 'student_comment',
+  hidden: 'hidden',
   createdAt: 'createdAt'
 } as const
 

@@ -37,7 +37,16 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const conversationsArgs = {
 		where: { collabSpaceId },
 		orderBy: { createdAt: 'desc' },
-		select: { id: true, createdAt: true, student_rating: true, teacher_rating: true }
+		select: {
+			id: true,
+			username: true,
+			createdAt: true,
+			student_rating: true,
+			teacher_rating: true,
+			student_comment: true,
+			teacher_comment: true,
+			hidden: true
+		}
 	} satisfies Parameters<typeof prisma.collabChat.findMany>[0];
 	const conversations = await prisma.collabChat.findMany(conversationsArgs);
 	const maskedApiKey =

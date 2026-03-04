@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
 
+
 	export let data: PageData;
 	export let form: ActionData;
 
@@ -11,6 +12,8 @@
 	let errorMessage = '';
 	let rating = Number(data.studentRating ?? 0);
 	let teacherRating = Number(data.teacherRating ?? 0);
+	let studentComment = data.studentComment ?? '';
+	let teacherComment = data.teacherComment ?? '';
 	const FOOTER_MARKER = '[__FOOTER__]';
 	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string }> = (
 		data.messages ?? []
@@ -31,9 +34,19 @@
 		messages = [...messages];
 	};
 
+	const scrollToBottom = () => {
+		setTimeout(() => {
+				const el = document.querySelector('.chat-window') as HTMLElement | null;
+				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+			}, 10);
+	}
+
 	const send = async () => {
 		if (!prompt.trim()) {
 			errorMessage = 'Bitte geben Sie eine Nachricht ein.';
+
+			scrollToBottom();
+
 			return;
 		}
 
@@ -48,7 +61,7 @@
 
 		try {
 			const res = await fetch(
-				resolve(`/api/chat/${data.collabSpaceId}/${data.collabChatId}`),
+				resolve(`/api/space/${data.collabSpaceId}/${data.collabChatId}`),
 				{
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
@@ -66,10 +79,7 @@
 			let buffer = '';
 			let footerSeen = false;
 
-			setTimeout(() => {
-				const el = document.querySelector('.messages') as HTMLElement | null;
-				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-			}, 10);
+			scrollToBottom();
 
 			while (!done) {
 				const { value, done: streamDone } = await reader.read();
@@ -110,104 +120,197 @@
 				appendAssistantChunk(assistantIndex, buffer);
 			}
 
-			setTimeout(() => {
-				const el = document.querySelector('.messages') as HTMLElement | null;
-				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-			}, 0);
+
 		} catch (err) {
 			errorMessage = err instanceof Error ? err.message : 'Request failed';
 		} finally {
 			loading = false;
+
+			scrollToBottom();
+
 		}
 	};
 </script>
 
-<section class="page">
-	<p><a href={resolve(`/chat/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
-	<h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
+
+<h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
+<section>
+	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
+	{#if data.isAdmin}
+	<section>
+		<div class="card">
+			<h3>Admin</h3>
+			<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
+
+			<form method="POST" action="?/toggleHidden">
+				{#if data.hidden}
+					<button type="submit" name="hiddenAction" value="unhide" class="btn btn-success">
+						Für Teilnehmende entsperren
+					</button>
+				{:else}
+					<button type="submit" name="hiddenAction" value="hide" class="btn btn-danger">
+						Für Teilnehmende verstecken
+					</button>
+				{/if}
+			</form>
+			{#if form?.message && form?.actionType === 'hidden'}
+				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
+			{/if}
+		</div>
+	</section>
+	{/if}
 	{#if data.question}
 		<p class="question"><b>Aufgabe:</b> {data.question}</p>
 	{/if}
 
-	<div class="card chat-card">
-		<div class="messages">
-			{#if messages.length === 0}
-				<p class="muted empty">Nachricht eingeben um zu starten.</p>
-			{/if}
-			{#each messages as message}
-				<div class="bubble {message.role}">
-					{#if message.role === 'assistant'}
-						<div class="bubble-content">{@html message.html}</div>
-					{:else}
-						<div class="bubble-content">{message.content}</div>
-					{/if}
-				</div>
-			{/each}
-		</div>
+	<!-- <section> -->
+		<h3>Chat</h3>
+
+		<div class="chat-window">
+			<!-- <div class="messages"> -->
+				{#if messages.length === 0}
+					<p class="muted empty">Nachricht eingeben um zu starten.</p>
+				{/if}
+				{#each messages as message}
+					<div class="bubble {message.role}">
+						{#if message.role === 'assistant'}
+							<div class="bubble-content">{@html message.html}</div>
+							<div class="meta">Chatbot</div>
+							{:else}
+							<div class="bubble-content">{message.content}</div>
+							<div class="meta">Nutzer:in</div>
+						{/if}
+					</div>
+				{/each}
+			<!-- </div> -->
+			
+
+
+
 		{#if data.canChat}
-			<div class="composer">
-				<label>
-					Nachricht
-					<textarea
-						bind:value={prompt}
-						rows="3"
-						placeholder="Geben Sie Ihre Nachricht ein..."
-						on:keydown={(e) => {
-							if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-								e.preventDefault();
-								send();
-							}
-						}}
-					></textarea>
-				</label>
-				<div class="actions">
-					<button on:click={send} disabled={loading}>{loading ? 'Absenden…' : 'Absenden'}</button>
-					{#if errorMessage}
-						<span class="error">{errorMessage}</span>
-					{/if}
+				<div class="chat-input">
+					<!-- <label style="width: 100%;"> -->
+						<!-- Nachricht -->
+						<textarea
+							bind:value={prompt}
+							class=""
+							rows="3"
+							placeholder="Geben Sie Ihre Nachricht ein..."
+							on:keydown={(e) => {
+								if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+									e.preventDefault();
+									send();
+								}
+							}}
+						></textarea>
+					<!-- </label> -->
+						<div class="actions">
+							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading}>
+								<i class={loading ? 'fas fa-spinner fa-spin' : 'far fa-paper-plane'} aria-hidden="true"></i>
+							</button>
+							<button type="button" class="btn btn-badge send-button" on:click={scrollToBottom}>
+							<i class="fa fa-arrow-down"></i>
+							</button>
+						</div>
+
 				</div>
-			</div>
-		{:else}
-			<div class="composer">
-				<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
-			</div>
-		{/if}
-	</div>
+				{#if errorMessage}
+				<p class="error-window">
+					<span class="error">{errorMessage}</span>
+				</p>
+				{/if}
+			{:else}
+				<!-- <div class="chat-input">
+					<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
+				</div> -->
+			{/if}
+		</div>
+
+	<!-- </section> -->
 
 	{#if data.canChat}
 		<div class="card rating-card">
-			<h2>Bewertung</h2>
+			<h3>Ihre Bewertung</h3>
 			<form method="POST" action="?/rate" class="rating-form">
 				<div class="stars" role="radiogroup" aria-label="Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
-						<label class="star">
+						<label class="star" class:active={value <= rating}>
 							<input type="radio" name="rating" value={value} bind:group={rating} />
-							<span aria-hidden="true">{value <= rating ? '★' : '☆'}</span>
+							<i aria-hidden="true" class={`fa-star ${value <= rating ? 'fas' : 'far'}`}></i>
 						</label>
 					{/each}
 				</div>
-				<button type="submit">Bewertung speichern</button>
+				<label class="rating-comment-label" for="student-comment">Kommentar</label>
+				<textarea
+					id="student-comment"
+					name="studentComment"
+					class="rating-comment-input"
+					rows="3"
+					bind:value={studentComment}
+					placeholder="Optionaler Kommentar zur Bewertung"
+				></textarea>
+				<p>Nach Ihrer Bewertung können andere Teilnehmenden diesen CollabChat sehen.</p>
+				<button type="submit" class="btn">Bewertung speichern</button>
 			</form>
+			<!-- {#if data.studentComment} -->
+				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.studentComment}</p> -->
+			<!-- {/if} -->
 			{#if form?.message && form?.ratingType === 'student'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
 		</div>
+	{:else}
+		{#if data.studentRating || data.studentComment}
+			<div class="card rating-card">
+				<h3>Bewertung der:des Ersteller:in</h3>
+				{#if data.studentRating}
+					<div class="stars" aria-label="Bewertung">
+						{#each [1, 2, 3, 4, 5] as value}
+							<span class="star active">
+								<i
+									aria-hidden="true"
+									class={`fa-star ${value <= Number(data.studentRating) ? 'fas' : 'far'}`}
+								></i>
+							</span>
+						{/each}
+					</div>
+				{/if}
+				{#if data.studentComment}
+					<p class="saved-comment"><b>Kommentar:</b> {data.studentComment}</p>
+				{/if}
+			</div>
+		{/if}
 	{/if}
 
 	{#if data.isAdmin}
-		<div class="card rating-card teacher-rating-card">
-			<h2>Lehrenden-Bewertung</h2>
+		<div class="card rating-card teacher-rating-card" style="margin-top: 3em;">
+			<h3>Lehrenden-Bewertung</h3>
 			<form method="POST" action="?/rateTeacher" class="rating-form">
 				<div class="stars teacher-stars" role="radiogroup" aria-label="Lehrerenden-Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
-						<label class="star">
+						<label class="star" class:active={value <= teacherRating}>
 							<input type="radio" name="teacherRating" value={value} bind:group={teacherRating} />
-							<span aria-hidden="true">{value <= teacherRating ? '★' : '☆'}</span>
+							<i
+								aria-hidden="true"
+								class={`fa-star ${value <= teacherRating ? 'fas' : 'far'}`}
+							></i>
 						</label>
 					{/each}
 				</div>
-				<button type="submit">Lehrerenden-Bewertung speichern</button>
+				<label class="rating-comment-label" for="teacher-comment">Kommentar</label>
+				<textarea
+					id="teacher-comment"
+					name="teacherComment"
+					class="rating-comment-input"
+					rows="3"
+					bind:value={teacherComment}
+					placeholder="Optionaler Kommentar zur Lehrenden-Bewertung"
+				></textarea>
+				<button type="submit" class="btn">Lehrerenden-Bewertung speichern</button>
 			</form>
+			<!-- {#if data.teacherComment} -->
+				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.teacherComment}</p> -->
+			<!-- {/if} -->
 			{#if form?.message && form?.ratingType === 'teacher'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
@@ -216,7 +319,7 @@
 </section>
 
 <style>
-	.page {
+	/* .page {
 		display: grid;
 		gap: 1rem;
 		max-width: 800px;
@@ -386,5 +489,5 @@
 		color: #1b6b3a;
 		font-size: 0.95rem;
 		margin: 0;
-	}
+	} */
 </style>

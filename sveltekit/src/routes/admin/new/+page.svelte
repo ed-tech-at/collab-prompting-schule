@@ -22,15 +22,15 @@
 		</label>
 		<label>
 			base_url
-			<input name="base_url" />
+			<input name="base_url" type="text"  />
 		</label>
 		<label>
 			api_key
-			<input name="api_key" />
+			<input name="api_key" type="text"  />
 		</label>
 		<label>
 			model
-			<input name="model" />
+			<input name="model"  type="text" />
 		</label>
 		<label>
 			question
@@ -40,12 +40,12 @@
 			system_prompt
 			<textarea name="system_prompt" rows="5"></textarea>
 		</label>
-		<button type="submit">Create</button>
+		<button type="submit" class="btn btn-ghost">Erstellen</button>
 	</form>
 </section>
 
 <style>
-	.page {
+	/* .page {
 		max-width: 640px;
 		margin: 2rem auto;
 		display: grid;
@@ -103,5 +103,5 @@
 		background: #fff0f0;
 		color: #8a1c1c;
 		border: 1px solid #f2c7c7;
-	}
+	} */
 </style>

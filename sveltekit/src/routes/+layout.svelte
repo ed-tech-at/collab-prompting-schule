@@ -1,44 +1,51 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
 	import Header from '$lib/Header.svelte';
-	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+	import { asset, resolve } from '$app/paths';
 
 	let { children } = $props();
-  import './fonts.css';
+	import './fonts.css';
+	import './style.css';
 
+	const navItems = $derived(
+		(page.data.navItems as { name: string; href: string }[] | undefined) ?? []
+	);
 
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<title>collab.prompting.schule</title>
+	<link rel="icon" type="image/png" href={asset("/favicon/favicon-96x96.png")} sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href={asset("/favicon/favicon.svg")} />
+	<link rel="shortcut icon" href={asset("/favicon/favicon.ico")} />
+	<link rel="apple-touch-icon" sizes="180x180" href={asset("/favicon/apple-touch-icon.png")} />
+	<link rel="manifest" href={asset("/favicon/site.webmanifest")} />
+	<link rel="stylesheet" href={asset("/fonts/fontawesome-free-5.15.3-web/css/all.min.css")} />
+
 </svelte:head>
 <Header
-	navItems={[
-		{ name: 'Home', href: resolve('/') },
-		{ name: 'CollabChat', href: resolve('/chat') },
-		{ name: 'Admin', href: resolve('/admin') },
-		// { name: 'Admin', href: '/admin' },
-		// { name: 'Login', href: '/login' },
-		// { name: 'Logout', href: '/logout' }
-	]}
+	navItems={navItems}
 />
-<main>
+<main class="main-width">
 {@render children()}
 </main>
 <footer>
-	<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
-	<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
+	<div class="main-width">
+		<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
+		<a href={resolve('/datenschutz')}>Datenschutz und Teilnahmebedingungen</a>
+		<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
+	</div>
 </footer>
 
 <style>
-	:global(html, body) {
+	/* :global(html, body) {
 		margin: 0;
 		padding: 0;
 		font-family: 'Jost', sans-serif;
 	}
 	:global(*) {
 		box-sizing: border-box;
-	}
+	} */
 
 	footer {
 		background-color: #263B48;
@@ -51,7 +58,7 @@
 		padding: 20px;
 		min-height: calc(100dvh - 120px);
 	}
-	footer {
+	footer .main-width {
 		display: flex;
 		width: 100%;
 		justify-content: space-between;
