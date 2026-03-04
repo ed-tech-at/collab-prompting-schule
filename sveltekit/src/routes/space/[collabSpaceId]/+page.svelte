@@ -18,29 +18,61 @@
 </svelte:head>
 
 <h1>CollabSpace ID {data.collabSpaceId} / CollabChat</h1>
-<section class="page">
-	{#if data.isAdmin}
-		<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
-	{/if}
+{#if data.requiresLogin}
+	<section class="page">
+		{#if form?.message}
+			<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
+		{/if}
 
-	{#if form?.message}
-		<p class="notice error">{form.message}</p>
-	{/if}
+		<form method="POST" action="?/login" class="login-form">
+			<label>
+				CollabSpace ID
+				<input name="collabSpaceId" type="number" min="1" value={data.collabSpaceId} readonly required />
+			</label>
 
+			<label>
+				Dein Username
+				<input name="username" type="text" required />
+			</label>
 
-	{#if data.question}
-		<p class="question"><b>Aufgabe:</b> {data.question}</p>
-	{/if}
-	<!-- <h2>Aufgabe</h2> -->
-	<!-- <p>{data.question}</p> -->
-	<!-- <hr> -->
+			<label>
+				Teilnahmecode
+				<input name="student_pw" type="password" required />
+			</label>
 
-	<form method="POST">
-		<button class="btn btn-primary" type="submit">Neuen Chat starten</button>
-	</form>
-</section>
+			<label>
+				Benutzerrichtlinie
+				<div class="checkbox_wrapper">
+					<input name="accepted_guidelines" type="checkbox" required />
+					<span>
+						Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')}  target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen.
+					</span>
+				</div>
+			</label>
 
-<section>
+			<button type="submit" class="btn btn-primary">Teilnehmen</button>
+		</form>
+	</section>
+{:else}
+	<section class="page">
+		{#if data.isAdmin}
+			<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
+		{/if}
+
+		{#if form?.message}
+			<p class="notice error">{form.message}</p>
+		{/if}
+
+		{#if data.question}
+			<p class="question"><b>Aufgabe:</b> {data.question}</p>
+		{/if}
+
+		<form method="POST" action="?/createChat">
+			<button class="btn btn-primary" type="submit">Neuen Chat starten</button>
+		</form>
+	</section>
+
+	<section>
 		<h3>Bestehende Chats</h3>
 		{#if data.conversations.length === 0}
 			<p class="muted">Noch keine Chats vorhanden.</p>
@@ -59,7 +91,7 @@
 
 								{#if conversation.student_rating}
 									<div class="chat-rating-line">
-										<span class="rating-label">Student:in</span>
+										<span class="rating-label">Ersteller:in</span>
 										<span class="rating-stars-list" aria-label={`Bewertung ${conversation.student_rating} von 5`}>
 											{#each [1, 2, 3, 4, 5] as star}
 												<i class={`fa-star ${star <= normalizeRating(conversation.student_rating) ? 'fas active' : 'far'}`}></i>
@@ -95,6 +127,7 @@
 			 </div>
 		{/if}
 	</section>
+{/if}
 
 <style>
 	/* .page {

@@ -119,7 +119,7 @@
 						<p class="meta">{new Date(conversation.createdAt).toLocaleString()}</p>
 						{#if conversation.student_rating || conversation.student_comment}
 							<div class="chat-rating-line">
-								<span class="rating-label">Student:in</span>
+								<span class="rating-label">Ersteller:in</span>
 								{#if conversation.student_rating}
 									<span class="rating-stars-list" aria-label={`Bewertung ${conversation.student_rating} von 5`}>
 										{#each [1, 2, 3, 4, 5] as star}

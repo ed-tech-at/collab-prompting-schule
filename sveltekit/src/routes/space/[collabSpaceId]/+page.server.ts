@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import prisma from '$lib/server/db';
 import { getJwtCookie, setJwtCookie } from '$lib/server/jwt';
+import { loginStudentForSpace } from '$lib/server/space-login';
 
 const validateStudentCookie = async (collabSpaceId: number, cookieValue: string | undefined) => {
 	const findSpaceArgs = {
@@ -31,13 +32,47 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
-	const collabSpace = await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
+	const collabSpace = await prisma.collabSpace.findUnique({
+		where: { id: collabSpaceId },
+		select: { id: true, student_pw: true, password: true, question: true }
+	});
+	if (!collabSpace) {
+		throw error(404, 'CollabSpace not found.');
+	}
+	const isStudentLoggedIn = Boolean(
+		studentCookie?.studentPw &&
+		collabSpace.student_pw &&
+		studentCookie.studentPw === collabSpace.student_pw
+	);
+	if (!isStudentLoggedIn) {
+		return {
+			collabSpaceId,
+			question: collabSpace.question,
+			requiresLogin: true,
+			isAdmin: false,
+			conversations: [],
+			ownChatIds: []
+		};
+	}
 	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 	const isAdmin = Boolean(adminCookie?.password && adminCookie.password === collabSpace.password);
 
+	const ownChatIds = cookies
+		.getAll()
+		.map(({ name }) => /^CollabChatId(\d+)$/.exec(name)?.[1])
+		.filter((id): id is string => Boolean(id))
+		.map(Number)
+		.filter((id) => Number.isInteger(id) && id > 0);
+
+	const ratingWhere = {
+		OR: [{ student_rating: { gt: '0' } }, { teacher_rating: { gt: '0' } }]
+	};
 	const conversationWhere = {
 		collabSpaceId,
-		OR: [{ student_rating: { gt: '0' } }, { teacher_rating: { gt: '0' } }],
+		OR: [
+			...(ownChatIds.length > 0 ? [{ id: { in: ownChatIds } }] : []),
+			ratingWhere
+		],
 		// ...(isAdmin ? {} : { hidden: false })
 		hidden: false
 	};
@@ -58,19 +93,20 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
 	const collabSpaceDb = await prisma.collabSpace.findFirst({where: {id: collabSpaceId }, select: {question: true}});
 
-	
-	const ownChatIds = cookies
-		.getAll()
-		.map(({ name }) => /^CollabChatId(\d+)$/.exec(name)?.[1])
-		.filter((id): id is string => Boolean(id))
-		.map(Number)
-		.filter((id) => Number.isInteger(id) && id > 0);
-
-	return { collabSpaceId, question: collabSpaceDb?.question, conversations, isAdmin, ownChatIds };
+	return { collabSpaceId, question: collabSpaceDb?.question, conversations, isAdmin, ownChatIds, requiresLogin: false };
 };
 
 export const actions: Actions = {
-	default: async ({ params, cookies }) => {
+	login: async ({ request, params, cookies }) => {
+		const collabSpaceId = Number(params.collabSpaceId);
+		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
+			return fail(400, { success: false, message: 'Invalid CollabSpace ID.' });
+		}
+		const result = await loginStudentForSpace({ request, cookies, forcedCollabSpaceId: collabSpaceId });
+		if (!result.ok) return result.failure;
+		throw redirect(302, resolve(`/space/${collabSpaceId}`));
+	},
+	createChat: async ({ params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
 			return fail(400, { success: false, message: 'Invalid CollabSpace ID.' });

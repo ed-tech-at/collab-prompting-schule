@@ -137,8 +137,11 @@
 <section>
 	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
 	{#if data.isAdmin}
+	<section>
 		<div class="card">
-			<h2>Admin</h2>
+			<h3>Admin</h3>
+			<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
+
 			<form method="POST" action="?/toggleHidden">
 				{#if data.hidden}
 					<button type="submit" name="hiddenAction" value="unhide" class="btn btn-success">
@@ -154,6 +157,7 @@
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
 		</div>
+	</section>
 	{/if}
 	{#if data.question}
 		<p class="question"><b>Aufgabe:</b> {data.question}</p>
@@ -204,6 +208,9 @@
 							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading}>
 								<i class={loading ? 'fas fa-spinner fa-spin' : 'far fa-paper-plane'} aria-hidden="true"></i>
 							</button>
+							<button type="button" class="btn btn-badge send-button" on:click={scrollToBottom}>
+							<i class="fa fa-arrow-down"></i>
+							</button>
 						</div>
 
 				</div>
@@ -213,9 +220,9 @@
 				</p>
 				{/if}
 			{:else}
-				<div class="chat-input">
+				<!-- <div class="chat-input">
 					<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
-				</div>
+				</div> -->
 			{/if}
 		</div>
 
@@ -223,7 +230,7 @@
 
 	{#if data.canChat}
 		<div class="card rating-card">
-			<h2>Ihre Bewertung</h2>
+			<h3>Ihre Bewertung</h3>
 			<form method="POST" action="?/rate" class="rating-form">
 				<div class="stars" role="radiogroup" aria-label="Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
@@ -242,6 +249,7 @@
 					bind:value={studentComment}
 					placeholder="Optionaler Kommentar zur Bewertung"
 				></textarea>
+				<p>Nach Ihrer Bewertung können andere Teilnehmenden diesen CollabChat sehen.</p>
 				<button type="submit" class="btn">Bewertung speichern</button>
 			</form>
 			<!-- {#if data.studentComment} -->
@@ -254,7 +262,7 @@
 	{:else}
 		{#if data.studentRating || data.studentComment}
 			<div class="card rating-card">
-				<h2>Bewertung der:des Ersteller:in</h2>
+				<h3>Bewertung der:des Ersteller:in</h3>
 				{#if data.studentRating}
 					<div class="stars" aria-label="Bewertung">
 						{#each [1, 2, 3, 4, 5] as value}
@@ -275,8 +283,8 @@
 	{/if}
 
 	{#if data.isAdmin}
-		<div class="card rating-card teacher-rating-card">
-			<h2>Lehrenden-Bewertung</h2>
+		<div class="card rating-card teacher-rating-card" style="margin-top: 3em;">
+			<h3>Lehrenden-Bewertung</h3>
 			<form method="POST" action="?/rateTeacher" class="rating-form">
 				<div class="stars teacher-stars" role="radiogroup" aria-label="Lehrerenden-Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}

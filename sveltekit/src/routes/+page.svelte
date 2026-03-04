@@ -22,7 +22,7 @@
 	<!-- <p><a href={resolve('/admin')}>Admin</a></p> -->
 	<!-- <form method="POST" action={resolve('/logout')}> -->
 		<p>
-			<a class="btn btn-accent" href={resolve('/logout')}  data-sveltekit-preload-data='off' >Cookies löschen und von allen CollabSpaces abmelden</a>
+			<a class="btn btn-danger" href={resolve('/logout')}  data-sveltekit-preload-data='off' >Cookies löschen und von allen CollabSpaces abmelden</a>
 		</p>
 	<!-- </form> -->
 </section>
