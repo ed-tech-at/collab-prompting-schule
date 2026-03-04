@@ -34,9 +34,19 @@
 		messages = [...messages];
 	};
 
+	const scrollToBottom = () => {
+		setTimeout(() => {
+				const el = document.querySelector('.chat-window') as HTMLElement | null;
+				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+			}, 10);
+	}
+
 	const send = async () => {
 		if (!prompt.trim()) {
 			errorMessage = 'Bitte geben Sie eine Nachricht ein.';
+
+			scrollToBottom();
+
 			return;
 		}
 
@@ -69,10 +79,7 @@
 			let buffer = '';
 			let footerSeen = false;
 
-			setTimeout(() => {
-				const el = document.querySelector('.messages') as HTMLElement | null;
-				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-			}, 10);
+			scrollToBottom();
 
 			while (!done) {
 				const { value, done: streamDone } = await reader.read();
@@ -113,14 +120,14 @@
 				appendAssistantChunk(assistantIndex, buffer);
 			}
 
-			setTimeout(() => {
-				const el = document.querySelector('.messages') as HTMLElement | null;
-				if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-			}, 0);
+
 		} catch (err) {
 			errorMessage = err instanceof Error ? err.message : 'Request failed';
 		} finally {
 			loading = false;
+
+			scrollToBottom();
+
 		}
 	};
 </script>
@@ -129,6 +136,25 @@
 <h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 <section>
 	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
+	{#if data.isAdmin}
+		<div class="card">
+			<h2>Admin</h2>
+			<form method="POST" action="?/toggleHidden">
+				{#if data.hidden}
+					<button type="submit" name="hiddenAction" value="unhide" class="btn btn-success">
+						Für Teilnehmende entsperren
+					</button>
+				{:else}
+					<button type="submit" name="hiddenAction" value="hide" class="btn btn-danger">
+						Für Teilnehmende verstecken
+					</button>
+				{/if}
+			</form>
+			{#if form?.message && form?.actionType === 'hidden'}
+				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
+			{/if}
+		</div>
+	{/if}
 	{#if data.question}
 		<p class="question"><b>Aufgabe:</b> {data.question}</p>
 	{/if}
@@ -154,7 +180,6 @@
 				{/each}
 			<!-- </div> -->
 			
-		</div>
 
 
 
@@ -175,25 +200,30 @@
 							}}
 						></textarea>
 					<!-- </label> -->
-					<div class="actions">
-						<button class="btn btn-primary" on:click={send} disabled={loading}>{loading ? 'Absenden…' : 'Absenden'}</button>
-					</div>
+						<div class="actions">
+							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading}>
+								<i class={loading ? 'fas fa-spinner fa-spin' : 'far fa-paper-plane'} aria-hidden="true"></i>
+							</button>
+						</div>
 
 				</div>
 				{#if errorMessage}
+				<p class="error-window">
 					<span class="error">{errorMessage}</span>
+				</p>
 				{/if}
 			{:else}
-				<div class="composer">
+				<div class="chat-input">
 					<p class="muted">Nur der/die Ersteller:in dieses Chats kann Nachrichten senden.</p>
 				</div>
 			{/if}
+		</div>
 
 	<!-- </section> -->
 
 	{#if data.canChat}
 		<div class="card rating-card">
-			<h2>Bewertung</h2>
+			<h2>Ihre Bewertung</h2>
 			<form method="POST" action="?/rate" class="rating-form">
 				<div class="stars" role="radiogroup" aria-label="Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
@@ -221,6 +251,27 @@
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
 		</div>
+	{:else}
+		{#if data.studentRating || data.studentComment}
+			<div class="card rating-card">
+				<h2>Bewertung der:des Ersteller:in</h2>
+				{#if data.studentRating}
+					<div class="stars" aria-label="Bewertung">
+						{#each [1, 2, 3, 4, 5] as value}
+							<span class="star active">
+								<i
+									aria-hidden="true"
+									class={`fa-star ${value <= Number(data.studentRating) ? 'fas' : 'far'}`}
+								></i>
+							</span>
+						{/each}
+					</div>
+				{/if}
+				{#if data.studentComment}
+					<p class="saved-comment"><b>Kommentar:</b> {data.studentComment}</p>
+				{/if}
+			</div>
+		{/if}
 	{/if}
 
 	{#if data.isAdmin}

@@ -67,6 +67,9 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	if (!collabChat) {
 		throw error(404, 'CollabChat not found.');
 	}
+	if (collabChat.hidden && !isAdmin) {
+		throw error(404, 'CollabChat not found.');
+	}
 
 	return {
 		collabSpaceId,
@@ -74,6 +77,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		question: collabSpace.question,
 		isAdmin,
 		canChat,
+		hidden: collabChat.hidden,
 		studentRating: collabChat.student_rating,
 		teacherRating: collabChat.teacher_rating,
 		studentComment: collabChat.student_comment,
@@ -88,6 +92,44 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
+	toggleHidden: async ({ request, params, cookies }) => {
+		const collabSpaceId = Number(params.collabSpaceId);
+		const collabChatId = Number(params.collabChatId);
+		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
+			return fail(400, { success: false, message: 'Invalid CollabSpace ID.', actionType: 'hidden' });
+		}
+		if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
+			return fail(400, { success: false, message: 'Invalid CollabChat ID.', actionType: 'hidden' });
+		}
+
+		const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
+		const isAdmin = await validateAdminCookie(collabSpaceId, adminCookie?.password);
+		if (!isAdmin) {
+			return fail(403, { success: false, message: 'Admin cookie required.', actionType: 'hidden' });
+		}
+
+		const data = await request.formData();
+		const hiddenAction = data.get('hiddenAction');
+		if (hiddenAction !== 'hide' && hiddenAction !== 'unhide') {
+			return fail(400, { success: false, message: 'Invalid hidden action.', actionType: 'hidden' });
+		}
+		const hidden = hiddenAction === 'hide';
+
+		const updateArgs = {
+			where: { id: collabChatId, collabSpaceId },
+			data: { hidden }
+		} satisfies Parameters<typeof prisma.collabChat.updateMany>[0];
+		const result = await prisma.collabChat.updateMany(updateArgs);
+		if (result.count === 0) {
+			return fail(404, { success: false, message: 'CollabChat not found.', actionType: 'hidden' });
+		}
+
+		return {
+			success: true,
+			message: hidden ? 'Chat ist nun für Teilnehmende verborgen.' : 'Chat ist wieder sichtbar.',
+			actionType: 'hidden'
+		};
+	},
 	rate: async ({ request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		const collabChatId = Number(params.collabChatId);

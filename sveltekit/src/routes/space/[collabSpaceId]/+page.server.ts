@@ -35,11 +35,14 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 	const isAdmin = Boolean(adminCookie?.password && adminCookie.password === collabSpace.password);
 
+	const conversationWhere = {
+		collabSpaceId,
+		OR: [{ student_rating: { gt: '0' } }, { teacher_rating: { gt: '0' } }],
+		// ...(isAdmin ? {} : { hidden: false })
+		hidden: false
+	};
 	const findManyArgs = {
-		where: {
-			collabSpaceId,
-			OR: [{ student_rating: { gt: '0' } }, { teacher_rating: { gt: '0' } }]
-		},
+		where: conversationWhere,
 		orderBy: { createdAt: 'desc' },
 		select: {
 			id: true,

@@ -45,7 +45,7 @@
 	.brand {
 		justify-self: start;
 		font-weight: 700;
-		color: var(--primary);
+		/* color: var(--primary); */
 		text-decoration: none;
 	}
 
@@ -60,7 +60,7 @@
 	}
 
 	.main-nav a {
-		color: var(--primary);
+		/* color: var(--primary); */
 		text-decoration: none;
 		font-weight: 600;
 	}

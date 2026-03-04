@@ -56,6 +56,8 @@ model CollabChat {
   teacher_comment String?
   student_comment String?
 
+  hidden Boolean @default(false)
+
   ChatEntries    ChatEntry[]
     
   createdAt     DateTime @default(now())

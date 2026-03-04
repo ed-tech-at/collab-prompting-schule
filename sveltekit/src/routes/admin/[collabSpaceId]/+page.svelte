@@ -5,6 +5,11 @@
 	export let data: PageData;
 	let showSettings = false;
 	let overwriteApiKey = false;
+	const normalizeRating = (rating: string | null | undefined) => {
+		const value = Number(rating);
+		if (!Number.isInteger(value) || value < 1 || value > 5) return 0;
+		return value;
+	};
 
 	let collabSpace = {
 		id: data.collabSpace.id,
@@ -21,31 +26,33 @@
 	};
 </script>
 
+
 <section class="page">
-	<h1>CollabSpace ID {data.collabSpace.id}</h1>
-	<button type="button" on:click={() => (showSettings = !showSettings)}>
+	<h1>CollabSpace ID {data.collabSpace.id} / Admin</h1>
+	<button type="button" class="btn btn-badge" on:click={() => (showSettings = !showSettings)}>
 		{showSettings ? 'Einstellungen ausblenden' : 'Einstellungen anzeigen'}
 	</button>
 	<form method="POST" class="settings-form" hidden={!showSettings}>
 		<table>
 			<tbody>
 				<tr>
-					<th>id</th>
-					<td><input name="id" type="number" bind:value={collabSpace.id} /></td>
+					<th>CollabSapce ID</th>
+					<td><input name="id" type="number" bind:value={collabSpace.id} readonly /></td>
 				</tr>
 				<tr>
-					<th>base_url</th>
-					<td><input name="base_url" bind:value={collabSpace.base_url} /></td>
+					<th>LLM Base URL</th>
+					<td><input name="base_url" type="text" bind:value={collabSpace.base_url} placeholder="https://flaait.tugraz.at/llmduckt/llmapi/v1/" /></td>
 				</tr>
 				<tr>
-					<th>api_key</th>
+					<th>LLM API Key</th>
 					<td>
 						<label class="api-key-toggle">
 							<input type="checkbox" name="overwrite_api_key" bind:checked={overwriteApiKey} />
-							api_key überschreiben
+							LLM API Key überschreiben
 						</label>
 						<input
 							name="api_key"
+							 type="text"
 							bind:value={collabSpace.api_key}
 							disabled={!overwriteApiKey}
 							readonly={!overwriteApiKey}
@@ -53,93 +60,118 @@
 					</td>
 				</tr>
 				<tr>
-					<th>model</th>
-					<td><input name="model" bind:value={collabSpace.model} /></td>
+					<th>LLM Model</th>
+					<td><input name="model" type="text" bind:value={collabSpace.model} /></td>
 				</tr>
 				<tr>
-					<th>password</th>
-					<td><input name="password" bind:value={collabSpace.password} /></td>
+					<th>Admin Passwort</th>
+					<td><input name="password" type="text" bind:value={collabSpace.password} /></td>
 				</tr>
 				<tr>
-					<th>student_pw</th>
-					<td><input name="student_pw" bind:value={collabSpace.student_pw} /></td>
+					<th>Student Teilnahmecode</th>
+					<td><input name="student_pw" type="text" bind:value={collabSpace.student_pw} /></td>
 				</tr>
+				
 				<tr>
-					<th>cryptVersion</th>
-					<td>
-						<input name="cryptVersion" type="number" bind:value={collabSpace.cryptVersion} readonly />
-					</td>
-				</tr>
-				<tr>
-					<th>question</th>
+					<th>Aufgabe</th>
 					<td><textarea name="question" rows="3" bind:value={collabSpace.question}></textarea></td>
 				</tr>
 				<tr>
-					<th>system_prompt</th>
+					<th>LLM Systemprompt</th>
 					<td><textarea name="system_prompt" rows="5" bind:value={collabSpace.system_prompt}></textarea></td>
 				</tr>
 				<tr>
-					<th>createdAt</th>
+					<th>Erstellt am</th>
 					<td>
 						<input name="createdAt" type="datetime-local" bind:value={collabSpace.createdAt} readonly />
 					</td>
 				</tr>
 				<tr>
-					<th>collabChats</th>
+					<th>Anzahl an collabChats</th>
 					<td>
 						<input name="collabChatsCount" type="number" bind:value={collabSpace.collabChatsCount} readonly />
 					</td>
 				</tr>
 			</tbody>
 		</table>
-		<button type="submit">Save</button>
+		<button type="submit" class="btn btn-primary">Speichern</button>
 	</form>
+</section>
 
-	<section class="list">
-		<h2>Bestehende Konversationen</h2>
-		{#if data.conversations.length === 0}
-			<p class="muted">Noch keine Konversation vorhanden.</p>
-		{:else}
-			<ul>
-				{#each data.conversations as conversation}
-					<li>
-						<a href={resolve(`/space/${data.collabSpace.id}/chat/${conversation.id}`)}>
-							Chat #{conversation.id}
-						</a>
-						<span class="meta">
-							{new Date(conversation.createdAt).toLocaleString()}
-							{#if conversation.student_rating}
-								· Student:in {conversation.student_rating}/5
-							{/if}
-							{#if conversation.teacher_rating}
-								· Lehrender: {conversation.teacher_rating}/5
-							{/if}
-						</span>
-					</li>
-				{/each}
-			</ul>
-		{/if}
-	</section>
+<section>
+	<h3>Bestehende Konversationen</h3>
+	{#if data.conversations.length === 0}
+		<p class="muted">Noch keine Konversation vorhanden.</p>
+	{:else}
+		<div class="chat-list">
+			{#each data.conversations as conversation}
+				<a href={resolve(`/space/${data.collabSpace.id}/chat/${conversation.id}`)} class:hidden-chat={conversation.hidden}>
+					<div class="chat-card-head">
+						<span class="number">#{conversation.id}</span>
+						{#if conversation.username}
+							<span class="chat-username">von {conversation.username}</span>
+						{/if}
+						{#if conversation.hidden}
+							<span class="hidden-tag">[versteckt]</span>
+						{/if}
+					</div>
+					<div class="chat-rating-block">
+						<p class="meta">{new Date(conversation.createdAt).toLocaleString()}</p>
+						{#if conversation.student_rating || conversation.student_comment}
+							<div class="chat-rating-line">
+								<span class="rating-label">Student:in</span>
+								{#if conversation.student_rating}
+									<span class="rating-stars-list" aria-label={`Bewertung ${conversation.student_rating} von 5`}>
+										{#each [1, 2, 3, 4, 5] as star}
+											<i class={`fa-star ${star <= normalizeRating(conversation.student_rating) ? 'fas active' : 'far'}`}></i>
+										{/each}
+									</span>
+									<span>{conversation.student_rating}/5</span>
+								{/if}
+								{#if conversation.student_comment}
+									<p class="chat-comment"><i>Kommentar:</i> {conversation.student_comment}</p>
+								{/if}
+							</div>
+						{/if}
+						{#if conversation.teacher_rating || conversation.teacher_comment}
+							<div class="chat-rating-line">
+								<span class="rating-label">Lehrender</span>
+								{#if conversation.teacher_rating}
+									<span class="rating-stars-list" aria-label={`Bewertung ${conversation.teacher_rating} von 5`}>
+										{#each [1, 2, 3, 4, 5] as star}
+											<i class={`fa-star ${star <= normalizeRating(conversation.teacher_rating) ? 'fas active' : 'far'}`}></i>
+										{/each}
+									</span>
+									<span>{conversation.teacher_rating}/5</span>
+								{/if}
+								{#if conversation.teacher_comment}
+									<p class="chat-comment"><i>Kommentar:</i> {conversation.teacher_comment}</p>
+								{/if}
+							</div>
+						{/if}
+					</div>
+				</a>
+			{/each}
+		</div>
+	{/if}
 </section>
 
 <style>
 	.page {
-		max-width: 820px;
-		margin: 2rem auto;
 		display: grid;
 		gap: 1rem;
-		padding: 1rem;
-		border: 1px solid #e3e3e3;
-		border-radius: 8px;
-		background: #fafafa;
 	}
 
 	table {
 		width: 100%;
 		border-collapse: collapse;
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		overflow: hidden;
+		background: #fff;
 	}
 
-	form {
+	.settings-form {
 		display: grid;
 		gap: 0.75rem;
 	}
@@ -150,7 +182,7 @@
 
 	th,
 	td {
-		border-bottom: 1px solid #e3e3e3;
+		border-bottom: 1px solid var(--border);
 		padding: 0.6rem 0.5rem;
 		text-align: left;
 		vertical-align: top;
@@ -159,7 +191,8 @@
 	th {
 		width: 180px;
 		font-weight: 600;
-		color: #333;
+		color: var(--text);
+		background: rgba(31, 111, 120, 0.04);
 	}
 
 	td {
@@ -168,18 +201,13 @@
 
 	input,
 	textarea {
-		width: 100%;
-		padding: 0.45rem 0.5rem;
-		border-radius: 6px;
-		border: 1px solid #cfd6e0;
-		font-size: 0.95rem;
-		font-family: inherit;
+		font-size: 14px;
 	}
 
 	input[readonly],
 	textarea[readonly] {
-		background: #eceff3;
-		color: #555;
+		background: #f3f6f8;
+		color: var(--muted);
 	}
 
 	.api-key-toggle {
@@ -195,57 +223,36 @@
 	}
 
 	input:disabled {
-		background: #eceff3;
-		color: #555;
+		background: #f3f6f8;
+		color: var(--muted);
 		cursor: not-allowed;
 	}
 
-	button {
-		padding: 0.55rem 0.95rem;
-		border-radius: 6px;
-		border: 1px solid #1f7ae0;
-		background: #1f7ae0;
-		color: white;
-		font-weight: 600;
-		cursor: pointer;
-		width: fit-content;
+	.number {
+		font-weight: 700;
 	}
 
-	.list {
-		display: grid;
-		gap: 0.6rem;
+	.hidden-tag {
+		font-size: 13px;
+		font-weight: 700;
+		color: var(--danger);
+		background: rgba(178, 58, 58, 0.1);
+		border: 1px solid rgba(178, 58, 58, 0.25);
+		border-radius: 999px;
+		padding: 2px 8px;
 	}
 
-	.list h2 {
-		margin: 0;
-		font-size: 1rem;
-	}
-
-	ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		gap: 0.5rem;
-	}
-
-	li {
-		display: flex;
-		gap: 0.5rem;
-		align-items: baseline;
-		padding: 0.5rem 0.6rem;
-		border: 1px solid #e3e3e3;
-		border-radius: 6px;
-		background: #fff;
+	.chat-list a.hidden-chat {
+		border-color: rgba(178, 58, 58, 0.25);
+		background: linear-gradient(180deg, rgba(178, 58, 58, 0.05) 0%, rgba(178, 58, 58, 0.02) 100%);
 	}
 
 	.meta {
-		color: #666;
-		font-size: 0.9rem;
+		margin: 0;
+		font-size: 13px;
 	}
 
 	.muted {
-		color: #666;
 		margin: 0;
 	}
 </style>

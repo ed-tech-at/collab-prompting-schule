@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Header from '$lib/Header.svelte';
 	import { page } from '$app/state';
-	import { asset } from '$app/paths';
+	import { asset, resolve } from '$app/paths';
 
 	let { children } = $props();
 	import './fonts.css';
@@ -32,6 +32,7 @@
 <footer>
 	<div class="main-width">
 		<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
+		<a href={resolve('/datenschutz')}>Datenschutz und Teilnahmebedingungen</a>
 		<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
 	</div>
 </footer>

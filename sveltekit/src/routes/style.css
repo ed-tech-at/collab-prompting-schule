@@ -141,14 +141,21 @@
       box-shadow: 5px 5px 10px rgba(65, 132, 152, 0.25);
 
     }
-    .btn-primary:hover{ background: var(--primary-hover); }
+    .btn-primary:hover{ 
+      color: #ffffff;
+      background: var(--primary-hover); 
+    }
 
     .btn-accent{
       background: var(--accent);
       color: #1E1E1E;
       box-shadow: 5px 5px 10px rgba(244, 162, 97, 0.25);
     }
-    .btn-accent:hover{ background: var(--accent-hover); }
+    .btn-accent:hover{
+       background: var(--accent-hover);
+      color: #1E1E1E;
+      
+    }
 
     .btn-ghost{
       background: transparent;
@@ -168,6 +175,26 @@
       background: rgba(31,111,120,0.06);
     }
 
+    .btn-danger{
+      background: var(--danger);
+      color: #ffffff;
+      box-shadow: 5px 5px 10px rgba(178, 58, 58, 0.22);
+    }
+    .btn-danger:hover{
+      background: var(--danger-hover);
+      color: #ffffff;
+    }
+
+    .btn-success{
+      background: var(--success);
+      color: #ffffff;
+      box-shadow: 5px 5px 10px rgba(58, 167, 109, 0.22);
+    }
+    .btn-success:hover{
+      background: var(--success-hover);
+      color: #ffffff;
+    }
+
     header.hero{
       padding: 28px 0 8px;
     }
@@ -181,6 +208,10 @@
     a {
       color: var(--primary);
     }
+    a:hover {
+      color: var(--primary-hover);
+    }
+    
 
     .lead{
       margin: 0;
@@ -215,15 +246,28 @@
     }
 
     h2{
-      font-size: 18px;
-      margin: 0 0 12px;
+      font-size: 1.3em;
+      margin: 0 0 0.2em;
       /* letter-spacing: -0.01em; */
     }
 
     h3{
-      font-size: 16px;
-      margin: 0 0 12px;
+      font-size: 1.1em;
+      margin: 0 0 0.2em;
+
+      /* margin: 0 0 12px; */
       /* letter-spacing: -0.01em; */
+    }
+
+    h4 {
+      font-size: 1.05em;
+    }
+    h5 {
+      font-size: 1.02em;
+    }
+
+    p {
+      margin-top: 0;
     }
 
     .options{
@@ -285,7 +329,7 @@
       display: block;
     }
 
-    input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea {
+    input[type="text"], input[type="number"],input[type="datetime-local"], input[type="email"], input[type="password"], textarea {
       width: 100%;
       padding: 10px 12px;
       border-radius: 12px;
@@ -338,8 +382,9 @@
       overflow: auto;
       padding: 12px;
       border-radius: var(--radius);
-      border-end-end-radius: 0;
-      border-end-start-radius: 0;
+      /* border-end-end-radius: 0; */
+      /* border-end-start-radius: 0; */
+      margin-bottom: 1em;
 
       border: 1px solid var(--border);
       background: linear-gradient(180deg, #FFFFFF 0%, #F7FBFB 100%);
@@ -384,15 +429,22 @@
       display:flex;
       gap: 10px;
       align-items:center;
-      border-top: 1px solid var(--muted);
+      /* border-top: 1px solid var(--muted); */
       padding-top: 0em;
-      margin-bottom: 1em;
+      margin-bottom: 0;
+      bottom: 0;
+      position: sticky;
      
+    }
+
+    .send-button {
+      padding: 10px 11px 10px 10px;
     }
 
     .chat-input textarea{
       flex: 1;
       border-top-left-radius: 0;
+      border-top-right-radius: 0;
       margin: 0;
       width: 100%;
     }
@@ -401,6 +453,20 @@
       font-size: 12px;
       color: var(--muted);
       margin: 6px 0 0;
+    }
+
+    .error-window {
+      margin-top: 8px;
+      margin-bottom: 0;
+      padding: 8px 12px;
+      border: 1px solid #f3a3a3;
+      border-radius: 8px;
+      background: #fff1f1;
+    }
+
+    .error-window .error {
+      color: #b42318;
+      margin: 0;
     }
 
     /* .chat-list{
@@ -592,13 +658,13 @@
       pointer-events: none;
     }
 
-    .rating-form .star .fa-star{
+    .star .fa-star{
       font-size: 26px;
       color: #b4c2c6;
       transition: color 0.15s ease, transform 0.15s ease;
     }
 
-    .rating-form .star.active .fa-star{
+    .star.active .fa-star{
       color: #f4a261;
       text-shadow: 0 2px 8px rgba(244,162,97,0.35);
     }

@@ -109,6 +109,7 @@ export const CollabChatScalarFieldEnum = {
   student_rating: 'student_rating',
   teacher_comment: 'teacher_comment',
   student_comment: 'student_comment',
+  hidden: 'hidden',
   createdAt: 'createdAt'
 } as const
 

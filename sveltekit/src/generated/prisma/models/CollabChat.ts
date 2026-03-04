@@ -44,6 +44,7 @@ export type CollabChatMinAggregateOutputType = {
   student_rating: string | null
   teacher_comment: string | null
   student_comment: string | null
+  hidden: boolean | null
   createdAt: Date | null
 }
 
@@ -55,6 +56,7 @@ export type CollabChatMaxAggregateOutputType = {
   student_rating: string | null
   teacher_comment: string | null
   student_comment: string | null
+  hidden: boolean | null
   createdAt: Date | null
 }
 
@@ -66,6 +68,7 @@ export type CollabChatCountAggregateOutputType = {
   student_rating: number
   teacher_comment: number
   student_comment: number
+  hidden: number
   createdAt: number
   _all: number
 }
@@ -89,6 +92,7 @@ export type CollabChatMinAggregateInputType = {
   student_rating?: true
   teacher_comment?: true
   student_comment?: true
+  hidden?: true
   createdAt?: true
 }
 
@@ -100,6 +104,7 @@ export type CollabChatMaxAggregateInputType = {
   student_rating?: true
   teacher_comment?: true
   student_comment?: true
+  hidden?: true
   createdAt?: true
 }
 
@@ -111,6 +116,7 @@ export type CollabChatCountAggregateInputType = {
   student_rating?: true
   teacher_comment?: true
   student_comment?: true
+  hidden?: true
   createdAt?: true
   _all?: true
 }
@@ -209,6 +215,7 @@ export type CollabChatGroupByOutputType = {
   student_rating: string | null
   teacher_comment: string | null
   student_comment: string | null
+  hidden: boolean
   createdAt: Date
   _count: CollabChatCountAggregateOutputType | null
   _avg: CollabChatAvgAggregateOutputType | null
@@ -243,6 +250,7 @@ export type CollabChatWhereInput = {
   student_rating?: Prisma.StringNullableFilter<"CollabChat"> | string | null
   teacher_comment?: Prisma.StringNullableFilter<"CollabChat"> | string | null
   student_comment?: Prisma.StringNullableFilter<"CollabChat"> | string | null
+  hidden?: Prisma.BoolFilter<"CollabChat"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CollabChat"> | Date | string
   collabSpace?: Prisma.XOR<Prisma.CollabSpaceScalarRelationFilter, Prisma.CollabSpaceWhereInput>
   ChatEntries?: Prisma.ChatEntryListRelationFilter
@@ -256,6 +264,7 @@ export type CollabChatOrderByWithRelationInput = {
   student_rating?: Prisma.SortOrderInput | Prisma.SortOrder
   teacher_comment?: Prisma.SortOrderInput | Prisma.SortOrder
   student_comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  hidden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   collabSpace?: Prisma.CollabSpaceOrderByWithRelationInput
   ChatEntries?: Prisma.ChatEntryOrderByRelationAggregateInput
@@ -272,6 +281,7 @@ export type CollabChatWhereUniqueInput = Prisma.AtLeast<{
   student_rating?: Prisma.StringNullableFilter<"CollabChat"> | string | null
   teacher_comment?: Prisma.StringNullableFilter<"CollabChat"> | string | null
   student_comment?: Prisma.StringNullableFilter<"CollabChat"> | string | null
+  hidden?: Prisma.BoolFilter<"CollabChat"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CollabChat"> | Date | string
   collabSpace?: Prisma.XOR<Prisma.CollabSpaceScalarRelationFilter, Prisma.CollabSpaceWhereInput>
   ChatEntries?: Prisma.ChatEntryListRelationFilter
@@ -285,6 +295,7 @@ export type CollabChatOrderByWithAggregationInput = {
   student_rating?: Prisma.SortOrderInput | Prisma.SortOrder
   teacher_comment?: Prisma.SortOrderInput | Prisma.SortOrder
   student_comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  hidden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CollabChatCountOrderByAggregateInput
   _avg?: Prisma.CollabChatAvgOrderByAggregateInput
@@ -304,6 +315,7 @@ export type CollabChatScalarWhereWithAggregatesInput = {
   student_rating?: Prisma.StringNullableWithAggregatesFilter<"CollabChat"> | string | null
   teacher_comment?: Prisma.StringNullableWithAggregatesFilter<"CollabChat"> | string | null
   student_comment?: Prisma.StringNullableWithAggregatesFilter<"CollabChat"> | string | null
+  hidden?: Prisma.BoolWithAggregatesFilter<"CollabChat"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CollabChat"> | Date | string
 }
 
@@ -313,6 +325,7 @@ export type CollabChatCreateInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
   collabSpace: Prisma.CollabSpaceCreateNestedOneWithoutCollabChatsInput
   ChatEntries?: Prisma.ChatEntryCreateNestedManyWithoutCollabChatInput
@@ -326,6 +339,7 @@ export type CollabChatUncheckedCreateInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
   ChatEntries?: Prisma.ChatEntryUncheckedCreateNestedManyWithoutCollabChatInput
 }
@@ -336,6 +350,7 @@ export type CollabChatUpdateInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collabSpace?: Prisma.CollabSpaceUpdateOneRequiredWithoutCollabChatsNestedInput
   ChatEntries?: Prisma.ChatEntryUpdateManyWithoutCollabChatNestedInput
@@ -349,6 +364,7 @@ export type CollabChatUncheckedUpdateInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ChatEntries?: Prisma.ChatEntryUncheckedUpdateManyWithoutCollabChatNestedInput
 }
@@ -361,6 +377,7 @@ export type CollabChatCreateManyInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
 }
 
@@ -370,6 +387,7 @@ export type CollabChatUpdateManyMutationInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -381,6 +399,7 @@ export type CollabChatUncheckedUpdateManyInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -402,6 +421,7 @@ export type CollabChatCountOrderByAggregateInput = {
   student_rating?: Prisma.SortOrder
   teacher_comment?: Prisma.SortOrder
   student_comment?: Prisma.SortOrder
+  hidden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -418,6 +438,7 @@ export type CollabChatMaxOrderByAggregateInput = {
   student_rating?: Prisma.SortOrder
   teacher_comment?: Prisma.SortOrder
   student_comment?: Prisma.SortOrder
+  hidden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -429,6 +450,7 @@ export type CollabChatMinOrderByAggregateInput = {
   student_rating?: Prisma.SortOrder
   teacher_comment?: Prisma.SortOrder
   student_comment?: Prisma.SortOrder
+  hidden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -484,6 +506,10 @@ export type CollabChatUncheckedUpdateManyWithoutCollabSpaceNestedInput = {
   deleteMany?: Prisma.CollabChatScalarWhereInput | Prisma.CollabChatScalarWhereInput[]
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type CollabChatCreateNestedOneWithoutChatEntriesInput = {
   create?: Prisma.XOR<Prisma.CollabChatCreateWithoutChatEntriesInput, Prisma.CollabChatUncheckedCreateWithoutChatEntriesInput>
   connectOrCreate?: Prisma.CollabChatCreateOrConnectWithoutChatEntriesInput
@@ -504,6 +530,7 @@ export type CollabChatCreateWithoutCollabSpaceInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
   ChatEntries?: Prisma.ChatEntryCreateNestedManyWithoutCollabChatInput
 }
@@ -515,6 +542,7 @@ export type CollabChatUncheckedCreateWithoutCollabSpaceInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
   ChatEntries?: Prisma.ChatEntryUncheckedCreateNestedManyWithoutCollabChatInput
 }
@@ -556,6 +584,7 @@ export type CollabChatScalarWhereInput = {
   student_rating?: Prisma.StringNullableFilter<"CollabChat"> | string | null
   teacher_comment?: Prisma.StringNullableFilter<"CollabChat"> | string | null
   student_comment?: Prisma.StringNullableFilter<"CollabChat"> | string | null
+  hidden?: Prisma.BoolFilter<"CollabChat"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CollabChat"> | Date | string
 }
 
@@ -565,6 +594,7 @@ export type CollabChatCreateWithoutChatEntriesInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
   collabSpace: Prisma.CollabSpaceCreateNestedOneWithoutCollabChatsInput
 }
@@ -577,6 +607,7 @@ export type CollabChatUncheckedCreateWithoutChatEntriesInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
 }
 
@@ -602,6 +633,7 @@ export type CollabChatUpdateWithoutChatEntriesInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collabSpace?: Prisma.CollabSpaceUpdateOneRequiredWithoutCollabChatsNestedInput
 }
@@ -614,6 +646,7 @@ export type CollabChatUncheckedUpdateWithoutChatEntriesInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -624,6 +657,7 @@ export type CollabChatCreateManyCollabSpaceInput = {
   student_rating?: string | null
   teacher_comment?: string | null
   student_comment?: string | null
+  hidden?: boolean
   createdAt?: Date | string
 }
 
@@ -633,6 +667,7 @@ export type CollabChatUpdateWithoutCollabSpaceInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ChatEntries?: Prisma.ChatEntryUpdateManyWithoutCollabChatNestedInput
 }
@@ -644,6 +679,7 @@ export type CollabChatUncheckedUpdateWithoutCollabSpaceInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ChatEntries?: Prisma.ChatEntryUncheckedUpdateManyWithoutCollabChatNestedInput
 }
@@ -655,6 +691,7 @@ export type CollabChatUncheckedUpdateManyWithoutCollabSpaceInput = {
   student_rating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teacher_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   student_comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -697,6 +734,7 @@ export type CollabChatSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   student_rating?: boolean
   teacher_comment?: boolean
   student_comment?: boolean
+  hidden?: boolean
   createdAt?: boolean
   collabSpace?: boolean | Prisma.CollabSpaceDefaultArgs<ExtArgs>
   ChatEntries?: boolean | Prisma.CollabChat$ChatEntriesArgs<ExtArgs>
@@ -711,6 +749,7 @@ export type CollabChatSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   student_rating?: boolean
   teacher_comment?: boolean
   student_comment?: boolean
+  hidden?: boolean
   createdAt?: boolean
   collabSpace?: boolean | Prisma.CollabSpaceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["collabChat"]>
@@ -723,6 +762,7 @@ export type CollabChatSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   student_rating?: boolean
   teacher_comment?: boolean
   student_comment?: boolean
+  hidden?: boolean
   createdAt?: boolean
   collabSpace?: boolean | Prisma.CollabSpaceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["collabChat"]>
@@ -735,10 +775,11 @@ export type CollabChatSelectScalar = {
   student_rating?: boolean
   teacher_comment?: boolean
   student_comment?: boolean
+  hidden?: boolean
   createdAt?: boolean
 }
 
-export type CollabChatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "collabSpaceId" | "username" | "teacher_rating" | "student_rating" | "teacher_comment" | "student_comment" | "createdAt", ExtArgs["result"]["collabChat"]>
+export type CollabChatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "collabSpaceId" | "username" | "teacher_rating" | "student_rating" | "teacher_comment" | "student_comment" | "hidden" | "createdAt", ExtArgs["result"]["collabChat"]>
 export type CollabChatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collabSpace?: boolean | Prisma.CollabSpaceDefaultArgs<ExtArgs>
   ChatEntries?: boolean | Prisma.CollabChat$ChatEntriesArgs<ExtArgs>
@@ -765,6 +806,7 @@ export type $CollabChatPayload<ExtArgs extends runtime.Types.Extensions.Internal
     student_rating: string | null
     teacher_comment: string | null
     student_comment: string | null
+    hidden: boolean
     createdAt: Date
   }, ExtArgs["result"]["collabChat"]>
   composites: {}
@@ -1198,6 +1240,7 @@ export interface CollabChatFieldRefs {
   readonly student_rating: Prisma.FieldRef<"CollabChat", 'String'>
   readonly teacher_comment: Prisma.FieldRef<"CollabChat", 'String'>
   readonly student_comment: Prisma.FieldRef<"CollabChat", 'String'>
+  readonly hidden: Prisma.FieldRef<"CollabChat", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"CollabChat", 'DateTime'>
 }
     
