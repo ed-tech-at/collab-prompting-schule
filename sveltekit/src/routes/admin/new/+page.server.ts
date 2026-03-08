@@ -19,6 +19,7 @@ export const actions: Actions = {
 		const systemPrompt = data.get('system_prompt');
 		const password = data.get('password');
 		const studentPw = data.get('student_pw');
+		const manageEmail = data.get('manageEmail');
 
 		if (typeof password !== 'string' || !password) {
 			return fail(400, { success: false, message: 'Password is required.' });
@@ -33,7 +34,8 @@ export const actions: Actions = {
 				student_pw: typeof studentPw === 'string' && studentPw ? studentPw : null,
 				cryptVersion: 0,
 				question: typeof question === 'string' && question ? question : null,
-				system_prompt: typeof systemPrompt === 'string' && systemPrompt ? systemPrompt : null
+				system_prompt: typeof systemPrompt === 'string' && systemPrompt ? systemPrompt : null,
+				manageEmail: typeof manageEmail === 'string' && manageEmail ? manageEmail : null
 			},
 			select: { id: true }
 		} satisfies Parameters<typeof prisma.collabSpace.create>[0];

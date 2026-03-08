@@ -1,45 +1,120 @@
 <script lang="ts">
 	import type { ActionData } from './$types';
+	import { resolve } from '$app/paths';
 
 	export let form: ActionData;
+
+	let showEnvImport = false;
+	let envText = '';
+	let baseUrl = 'https://api.openai.com/v1/';
+	let apiKey = '';
+	let model = '';
+
+	const parseEnv = () => {
+		const map = new Map<string, string>();
+		for (const rawLine of envText.split(/\r?\n/)) {
+			const line = rawLine.trim();
+			if (!line || line.startsWith('#')) continue;
+			const eqIdx = line.indexOf('=');
+			if (eqIdx === -1) continue;
+			const key = line.slice(0, eqIdx).trim();
+			let value = line.slice(eqIdx + 1).trim();
+			if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+				value = value.slice(1, -1);
+			}
+			map.set(key, value);
+		}
+		if (map.has('OPENAI_BASE_URL')) baseUrl = map.get('OPENAI_BASE_URL') ?? baseUrl;
+		if (map.has('OPENAI_API_KEY')) apiKey = map.get('OPENAI_API_KEY') ?? apiKey;
+		if (map.has('OPENAI_MODEL')) model = map.get('OPENAI_MODEL') ?? model;
+		showEnvImport = false;
+	};
 </script>
 
 <section class="page">
-	<h1>Create CollabSpace</h1>
+	<h1>Neuen CollabSpace erstellen</h1>
 
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
 
 	<form method="POST" class="create-form">
+		<h2>Verwaltung</h2>
 		<label>
-			Password (plaintext)
+			Manage Passwort<sup class="label-required">*</sup>
 			<input name="password" type="text" required />
 		</label>
+		
 		<label>
-			Student Password (optional)
-			<input name="student_pw" type="text" />
+			E-Mail Adresse<sup class="label-required">*</sup>
+			<input name="manageEmail" type="email" required />
+		</label>
+
+		<h2>
+			KI Schnittstelle
+			{#if !showEnvImport}
+				<button type="button" class="btn btn-ghost" on:click={() => (showEnvImport = !showEnvImport)}>
+					.env importieren
+				</button>
+			{/if}
+
+		</h2>
+		{#if showEnvImport}
+			<label>
+				.env für Import
+				<textarea
+					rows="3"
+					placeholder={`OPENAI_API_KEY=YOUR_API_KEY_HERE\nOPENAI_BASE_URL=https://flaait.tugraz.at/llmduckt/llmapi/v1/\nOPENAI_MODEL=ministral-3:14b`}
+					bind:value={envText}
+				></textarea>
+				
+				<button type="button" class="btn btn-ghost" on:click={parseEnv}>Felder importieren</button>
+			</label>
+		{/if}
+		
+		<label>
+			LLM base_url<sup class="label-required">*</sup> 
+			<div class="muted" style="font-weight: 400;">Kompatibel zur <a href="https://platform.openai.com/docs/api-reference/chat" target="_blank">OpenAI Chat Completions API (v1)</a>.</div>
+			<input name="base_url" type="text" placeholder="https://flaait.tugraz.at/llmduckt/llmapi/v1/" bind:value={baseUrl} required />
 		</label>
 		<label>
-			base_url
-			<input name="base_url" type="text"  />
+			LLM API Key<sup class="label-required">*</sup>
+			<input name="api_key" type="text" bind:value={apiKey} required/>
 		</label>
 		<label>
-			api_key
-			<input name="api_key" type="text"  />
+			LLM Model<sup class="label-required">*</sup>
+			<input name="model"  type="text" bind:value={model} required />
 		</label>
 		<label>
-			model
-			<input name="model"  type="text" />
+			KI Systemprompt<sup class="label-required">*</sup>
+			<textarea name="system_prompt" rows="5" placeholder="Du bist ein hilfreicher Assistent." required >Du bist ein hilfreicher Assistent.</textarea>
 		</label>
+		
+		<h2>Teilnehmer:innen</h2>
+		
 		<label>
-			question
+			Teilnahmecode für den Beitritt<sup class="label-required">*</sup>
+			<input name="student_pw" type="text" required/>
+		</label>
+		
+		<label>
+			Aufgabe (optional)
 			<textarea name="question" rows="3"></textarea>
 		</label>
+
 		<label>
-			system_prompt
-			<textarea name="system_prompt" rows="5"></textarea>
+			Benutzerrichtlinie
+			<div class="checkbox_wrapper">
+				<input name="student_pw" type="checkbox" required />
+				<span>
+					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen. Ich stimme zu, kein urheberrechtlich geschütztes Material, Fragen oder Aussagen zu
+            Gewalt, Waffen, illegale Aktivitäten, Diskriminierung oder Hassrede oder jegliche Inhalte, die gegen geltende Gesetze oder ethische Standards verstoßen einzugeben.
+
+				</span>
+			</div>
+
 		</label>
+
 		<button type="submit" class="btn btn-ghost">Erstellen</button>
 	</form>
 </section>

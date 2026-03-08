@@ -22,14 +22,15 @@
 		question: data.collabSpace.question ?? '',
 		system_prompt: data.collabSpace.system_prompt ?? '',
 		createdAt: new Date(data.collabSpace.createdAt).toISOString().slice(0, 16),
-		collabChatsCount: data.collabSpace.collabChatsCount
+		collabChatsCount: data.collabSpace.collabChatsCount,
+		manageEmail: data.collabSpace.manageEmail
 	};
 </script>
 
 
-<section class="page">
-	<h1>CollabSpace ID {data.collabSpace.id} / Admin</h1>
-	<button type="button" class="btn btn-badge" on:click={() => (showSettings = !showSettings)}>
+<section class="bg-badge">
+	<h1>CollabSpace ID {data.collabSpace.id} / Verwaltung</h1>
+	<button type="button" class="btn btn-ghost" on:click={() => (showSettings = !showSettings)}>
 		{showSettings ? 'Einstellungen ausblenden' : 'Einstellungen anzeigen'}
 	</button>
 	<form method="POST" class="settings-form" hidden={!showSettings}>
@@ -40,7 +41,15 @@
 					<td><input name="id" type="number" bind:value={collabSpace.id} readonly /></td>
 				</tr>
 				<tr>
-					<th>LLM Base URL</th>
+					<th>Manage Passwort</th>
+					<td><input name="password" type="text" bind:value={collabSpace.password} /></td>
+				</tr>
+				<tr>
+					<th>E-Mail Adresse</th>
+					<td><input name="manageEmail" type="email" bind:value={collabSpace.manageEmail}/></td>
+				</tr>
+				<tr>
+					<th>LLM base_url</th>
 					<td><input name="base_url" type="text" bind:value={collabSpace.base_url} placeholder="https://flaait.tugraz.at/llmduckt/llmapi/v1/" /></td>
 				</tr>
 				<tr>
@@ -63,23 +72,24 @@
 					<th>LLM Model</th>
 					<td><input name="model" type="text" bind:value={collabSpace.model} /></td>
 				</tr>
+
 				<tr>
-					<th>Admin Passwort</th>
-					<td><input name="password" type="text" bind:value={collabSpace.password} /></td>
+					<th>KI Systemprompt</th>
+					<td><textarea name="system_prompt" rows="5" bind:value={collabSpace.system_prompt}></textarea></td>
 				</tr>
+			
 				<tr>
-					<th>Student Teilnahmecode</th>
+					<th>Aufgabe (optional)</th>
+					<td><textarea name="question" rows="3" bind:value={collabSpace.question}></textarea></td>
+				</tr>
+
+				<tr>
+					<th>Teilnahmecode für den Beitritt</th>
 					<td><input name="student_pw" type="text" bind:value={collabSpace.student_pw} /></td>
 				</tr>
 				
-				<tr>
-					<th>Aufgabe</th>
-					<td><textarea name="question" rows="3" bind:value={collabSpace.question}></textarea></td>
-				</tr>
-				<tr>
-					<th>LLM Systemprompt</th>
-					<td><textarea name="system_prompt" rows="5" bind:value={collabSpace.system_prompt}></textarea></td>
-				</tr>
+				
+			
 				<tr>
 					<th>Erstellt am</th>
 					<td>
@@ -166,6 +176,7 @@
 		width: 100%;
 		border-collapse: collapse;
 		border: 1px solid var(--border);
+		border: none;
 		border-radius: 12px;
 		overflow: hidden;
 		background: #fff;
