@@ -56,7 +56,7 @@
 {:else}
 	<section class="page">
 		{#if data.isAdmin}
-			<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
+			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)} class="btn btn-badge">Zu den Space-Einstellungen</a></p>
 		{/if}
 
 		{#if form?.message}
@@ -64,7 +64,7 @@
 		{/if}
 
 		{#if data.question}
-			<p class="question"><b>Aufgabe:</b> {data.question}</p>
+			<p class="question"><b>Aufgabe:</b> {@html data.question}</p>
 		{/if}
 
 		<form method="POST" action="?/createChat">

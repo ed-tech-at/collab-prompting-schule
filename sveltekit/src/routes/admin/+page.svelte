@@ -7,7 +7,7 @@
 </script>
 
 <section class="page">
-	<h1>Admin für CollabSpace</h1>
+	<h1>Verwaltung für CollabSpace</h1>
 
 	<h2>Bei bestehendem Space Anmelden</h2>
 	{#if form?.message}
@@ -32,13 +32,13 @@
 </section>
 
 	<section class="list">
-		<h2>Eingeloggte Admin Spaces</h2>
+		<h2>Verwaltung geöffnet für CollabSpaces</h2>
 		{#if data.loggedInAdminSpaces.length === 0}
 			<p class="muted">Keine Anmeldungen für CollabSpaces gefunden.</p>
 		{:else}
 			<ul>
 				{#each data.loggedInAdminSpaces as space}
-					<li><a href={resolve(`/admin/${space.id}`)}>Space #{space.id}</a></li>
+					<li><a href={resolve(`/admin/${space.id}`)}>Verwaltung CollabSpace #{space.id}</a></li>
 				{/each}
 			</ul>
 		{/if}

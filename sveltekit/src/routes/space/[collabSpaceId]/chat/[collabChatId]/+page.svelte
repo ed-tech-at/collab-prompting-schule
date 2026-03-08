@@ -137,9 +137,9 @@
 <section>
 	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
 	{#if data.isAdmin}
-	<section>
-		<div class="card">
-			<h3>Admin</h3>
+	<section class="bg-badge">
+		<!-- <div class="card bg-badge"> -->
+			<h3>Verwaltung</h3>
 			<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
 
 			<form method="POST" action="?/toggleHidden">
@@ -156,11 +156,11 @@
 			{#if form?.message && form?.actionType === 'hidden'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
-		</div>
+		<!-- </div> -->
 	</section>
 	{/if}
 	{#if data.question}
-		<p class="question"><b>Aufgabe:</b> {data.question}</p>
+		<p class="question"><b>Aufgabe:</b> {@html data.question}</p>
 	{/if}
 
 	<!-- <section> -->

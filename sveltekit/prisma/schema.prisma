@@ -23,6 +23,8 @@ model Teacher {
 
 model CollabSpace {
   id            Int      @id @default(autoincrement())
+  manageEmail String?
+  
   base_url      String?
   api_key      String?
   model      String?

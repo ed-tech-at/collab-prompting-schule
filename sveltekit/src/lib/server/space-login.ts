@@ -23,18 +23,18 @@ export const loginStudentForSpace = async ({
 	const username = data.get('username');
 	const collabSpaceIdRaw = forcedCollabSpaceId ?? Number(data.get('collabSpaceId'));
 
-	if (typeof studentPw !== 'string' || !studentPw) {
-		return {
-			ok: false,
-			failure: fail(400, { success: false, message: 'Student password is required.' })
-		};
-	}
+	// if (typeof studentPw !== 'string' || !studentPw) {
+		// return {
+			// ok: false,
+			// failure: fail(400, { success: false, message: 'Student password is required.' })
+		// };
+	// }
 
 	const collabSpaceId = Number(collabSpaceIdRaw);
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
 		return {
 			ok: false,
-			failure: fail(400, { success: false, message: 'CollabSpace ID must be a positive integer.' })
+			failure: fail(400, { success: false, message: 'CollabSpace ID muss eine Zahl sein.' })
 		};
 	}
 
@@ -43,7 +43,7 @@ export const loginStudentForSpace = async ({
 		select: { id: true, student_pw: true }
 	});
 	if (!collabSpace) {
-		return { ok: false, failure: fail(404, { success: false, message: 'CollabSpace not found.' }) };
+		return { ok: false, failure: fail(404, { success: false, message: 'CollabSpace nicht gefunden.' }) };
 	}
 	if (!collabSpace.student_pw || collabSpace.student_pw !== studentPw) {
 		return { ok: false, failure: fail(401, { success: false, message: 'Teilnahmecode falsch.' }) };

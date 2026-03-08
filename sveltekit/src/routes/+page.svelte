@@ -11,9 +11,9 @@
 </section>
 
 <section>
-	<h2>Eigenen CollabSpace erstellen</h2>
+	<h2>Eigenen CollabSpace erstellen oder verwalten</h2>
 	<p>Sie möchten eine eigene Einheit mit collab.prompting.schule gestalten? Sie benötigen interessierte Teilnehmer:innen und einen LLM-API Zugang, der mit der OpenAI <a href='https://platform.openai.com/docs/api-reference/chat' target="_blank">Chat Completions API <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a> kompatibel ist..</p>
-	<p><a class="btn btn-badge" href={resolve('/admin')}>Neuen CollabSpace erstellen</a></p>
+	<p><a class="btn btn-badge" href={resolve('/admin')}>CollabSpace Verwaltung</a></p>
 </section>
 
 <section>

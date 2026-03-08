@@ -87,6 +87,7 @@ export type TeacherScalarFieldEnum = (typeof TeacherScalarFieldEnum)[keyof typeo
 
 export const CollabSpaceScalarFieldEnum = {
   id: 'id',
+  manageEmail: 'manageEmail',
   base_url: 'base_url',
   api_key: 'api_key',
   model: 'model',
