@@ -1,9 +1,11 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
+	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
 
 	export let data: PageData;
 	export let form: ActionData;
+	let renderedQuestion = renderMarkdownWithBlankTargets(data.question ?? undefined);
 
 	const isOwnChat = (conversationId: number) => data.ownChatIds.includes(conversationId);
 	const normalizeRating = (rating: string | null | undefined) => {
@@ -64,7 +66,7 @@
 		{/if}
 
 		{#if data.question}
-			<p class="question"><b>Aufgabe:</b> {@html data.question}</p>
+			<div class="question"><b>Aufgabe:</b> {@html renderedQuestion}</div>
 		{/if}
 
 		<form method="POST" action="?/createChat">

@@ -10,6 +10,7 @@
 	let prompt = '';
 	let loading = false;
 	let errorMessage = '';
+	let renderedQuestion = renderMarkdownWithBlankTargets(data.question ?? undefined);
 	let rating = Number(data.studentRating ?? 0);
 	let teacherRating = Number(data.teacherRating ?? 0);
 	let studentComment = data.studentComment ?? '';
@@ -127,7 +128,7 @@
 	</section>
 	{/if}
 	{#if data.question}
-		<p class="question"><b>Aufgabe:</b> {@html data.question}</p>
+		<div class="question"><b>Aufgabe:</b> {@html renderedQuestion}</div>
 	{/if}
 
 	<!-- <section> -->

@@ -2,6 +2,7 @@
 	import Header from '$lib/Header.svelte';
 	import { page } from '$app/state';
 	import { asset, resolve } from '$app/paths';
+	import 'katex/dist/katex.min.css';
 
 	let { children } = $props();
 	import './fonts.css';

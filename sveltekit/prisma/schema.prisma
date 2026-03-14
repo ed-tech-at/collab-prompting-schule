@@ -33,6 +33,8 @@ model CollabSpace {
   student_pw String?
   cryptVersion Int @default(0)
 
+  mathRender Boolean @default(false)
+
 
   question      String?
   system_prompt       String?
