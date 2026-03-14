@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const cookiePayload = await getJwtCookie<{ password?: string }>(cookies, cookieName);
 	const cookiePassword = cookiePayload?.password;
 	if (!cookiePassword || typeof cookiePassword !== 'string') {
-		throw error(401, `Missing cookie "${cookieName}".`);
+		throw error(401, `Missing admin login.`);
 	}
 
 	if (cookiePassword !== collabSpace.password) {

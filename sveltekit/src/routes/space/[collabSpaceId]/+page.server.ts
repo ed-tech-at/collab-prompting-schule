@@ -3,27 +3,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import prisma from '$lib/server/db';
 import { getJwtCookie, setJwtCookie } from '$lib/server/jwt';
+import { getCollabSpaceLoginState, validateStudentCookie } from '$lib/server/collab-space-auth';
 import { loginStudentForSpace } from '$lib/server/space-login';
-
-const validateStudentCookie = async (collabSpaceId: number, cookieValue: string | undefined) => {
-	const findSpaceArgs = {
-		where: { id: collabSpaceId },
-		select: { id: true, student_pw: true, password: true }
-	} satisfies Parameters<typeof prisma.collabSpace.findUnique>[0];
-	const collabSpace = await prisma.collabSpace.findUnique(findSpaceArgs);
-
-	if (!collabSpace) {
-		throw error(404, 'CollabSpace not found.');
-	}
-	if (!cookieValue) {
-		throw error(401, 'Missing student cookie.');
-	}
-	if (!collabSpace.student_pw || collabSpace.student_pw !== cookieValue) {
-		throw error(403, 'Invalid student cookie.');
-	}
-
-	return collabSpace;
-};
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
@@ -32,17 +13,11 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
-	const collabSpace = await prisma.collabSpace.findUnique({
-		where: { id: collabSpaceId },
-		select: { id: true, student_pw: true, password: true, question: true }
-	});
-	if (!collabSpace) {
-		throw error(404, 'CollabSpace not found.');
-	}
-	const isStudentLoggedIn = Boolean(
-		studentCookie?.studentPw &&
-		collabSpace.student_pw &&
-		studentCookie.studentPw === collabSpace.student_pw
+	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
+	const { collabSpace, isAdmin, isStudentLoggedIn } = await getCollabSpaceLoginState(
+		collabSpaceId,
+		studentCookie?.studentPw,
+		adminCookie?.password
 	);
 	if (!isStudentLoggedIn) {
 		return {
@@ -54,8 +29,6 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 			ownChatIds: []
 		};
 	}
-	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
-	const isAdmin = Boolean(adminCookie?.password && adminCookie.password === collabSpace.password);
 
 	const ownChatIds = cookies
 		.getAll()
@@ -91,9 +64,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	} satisfies Parameters<typeof prisma.collabChat.findMany>[0];
 	const conversations = await prisma.collabChat.findMany(findManyArgs);
 
-	const collabSpaceDb = await prisma.collabSpace.findFirst({where: {id: collabSpaceId }, select: {question: true}});
-
-	return { collabSpaceId, question: collabSpaceDb?.question, conversations, isAdmin, ownChatIds, requiresLogin: false };
+	return { collabSpaceId, question: collabSpace.question, conversations, isAdmin, ownChatIds, requiresLogin: false };
 };
 
 export const actions: Actions = {
@@ -114,8 +85,9 @@ export const actions: Actions = {
 
 		// const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
 		const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
+		const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 
-		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
+		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw, adminCookie?.password);
 
 		const createArgs = {
 			data: { collabSpaceId, username: studentCookie?.username },

@@ -14,7 +14,6 @@
 	let teacherRating = Number(data.teacherRating ?? 0);
 	let studentComment = data.studentComment ?? '';
 	let teacherComment = data.teacherComment ?? '';
-	const FOOTER_MARKER = '[__FOOTER__]';
 	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string }> = (
 		data.messages ?? []
 	).map((message) => ({
@@ -76,48 +75,16 @@
 			const reader = res.body.getReader();
 			const decoder = new TextDecoder('utf-8');
 			let done = false;
-			let buffer = '';
-			let footerSeen = false;
 
 			scrollToBottom();
 
 			while (!done) {
 				const { value, done: streamDone } = await reader.read();
 				if (value) {
-					buffer += decoder.decode(value, { stream: true });
-
-					const markerIndex = buffer.indexOf(FOOTER_MARKER);
-					if (markerIndex !== -1) {
-						const textBeforeFooter = buffer.slice(0, markerIndex);
-						appendAssistantChunk(assistantIndex, textBeforeFooter);
-
-						const footerRaw = buffer.slice(markerIndex + FOOTER_MARKER.length).trim();
-						if (footerRaw) {
-							try {
-								JSON.parse(footerRaw);
-							} catch {
-								// ignore malformed footer payload
-							}
-						}
-
-						footerSeen = true;
-						done = true;
-						break;
-					}
-
-					// Keep a short tail in case footer marker is split across chunks.
-					const safeLen = Math.max(0, buffer.length - (FOOTER_MARKER.length - 1));
-					if (safeLen > 0) {
-						appendAssistantChunk(assistantIndex, buffer.slice(0, safeLen));
-						buffer = buffer.slice(safeLen);
-					}
+					appendAssistantChunk(assistantIndex, decoder.decode(value, { stream: true }));
 				}
 
-				done = done || streamDone;
-			}
-
-			if (!footerSeen && buffer.length > 0) {
-				appendAssistantChunk(assistantIndex, buffer);
+				done = streamDone;
 			}
 
 
