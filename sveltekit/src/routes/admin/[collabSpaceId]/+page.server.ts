@@ -100,6 +100,7 @@ export const actions: Actions = {
 		const question = data.get('question');
 		const systemPrompt = data.get('system_prompt');
 		const manageEmail = data.get('manageEmail');
+		const mathRender = data.get('mathRender') === 'on';
 
 		if (!Number.isInteger(nextId) || nextId <= 0) {
 			return fail(400, { success: false, message: 'id must be a positive integer.' });
@@ -120,6 +121,7 @@ export const actions: Actions = {
 					model: typeof model === 'string' && model ? model : null,
 					password,
 					student_pw: typeof studentPw === 'string' && studentPw ? studentPw : null,
+					mathRender,
 					question: typeof question === 'string' && question ? question : null,
 					manageEmail: typeof manageEmail === 'string' && manageEmail ? manageEmail : null,
 					system_prompt: typeof systemPrompt === 'string' && systemPrompt ? systemPrompt : null

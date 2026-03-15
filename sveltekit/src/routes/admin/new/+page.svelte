@@ -87,7 +87,7 @@
 		</label>
 		<label>
 			KI Systemprompt<sup class="label-required">*</sup>
-			<textarea name="system_prompt" rows="5" placeholder="Du bist ein hilfreicher Assistent." required >Du bist ein hilfreicher Assistent.</textarea>
+			<textarea name="system_prompt" rows="5" placeholder="Du bist ein hilfreicher Assistent." required >Du bist ein hilfreicher Assistent. Antworte auf Deutsch.</textarea>
 		</label>
 		
 		<h2>Teilnehmer:innen</h2>
@@ -98,7 +98,7 @@
 		</label>
 		
 		<label>
-			Aufgabe (optional)
+			Aufgabe (optional, HTML-Darstellung)
 			<textarea name="question" rows="3"></textarea>
 		</label>
 

@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		return {
 			collabSpaceId,
 			question: collabSpace.question,
+			mathRender: collabSpace.mathRender,
 			requiresLogin: true,
 			isAdmin: false,
 			conversations: [],
@@ -64,7 +65,15 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	} satisfies Parameters<typeof prisma.collabChat.findMany>[0];
 	const conversations = await prisma.collabChat.findMany(findManyArgs);
 
-	return { collabSpaceId, question: collabSpace.question, conversations, isAdmin, ownChatIds, requiresLogin: false };
+	return {
+		collabSpaceId,
+		question: collabSpace.question,
+		mathRender: collabSpace.mathRender,
+		conversations,
+		isAdmin,
+		ownChatIds,
+		requiresLogin: false
+	};
 };
 
 export const actions: Actions = {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
-	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
+	import { renderMarkdown } from '$lib/markdown';
 
 
 	export let data: PageData;
@@ -10,6 +10,9 @@
 	let prompt = '';
 	let loading = false;
 	let errorMessage = '';
+	let renderedQuestion = renderMarkdown(data.question ?? undefined, {
+		mathRender: data.mathRender
+	});
 	let rating = Number(data.studentRating ?? 0);
 	let teacherRating = Number(data.teacherRating ?? 0);
 	let studentComment = data.studentComment ?? '';
@@ -21,7 +24,7 @@
 		content: message.content,
 		html:
 			message.role === 'assistant'
-				? (renderMarkdownWithBlankTargets(message.content) ?? '')
+				? (renderMarkdown(message.content, { mathRender: data.mathRender }) ?? '')
 				: undefined
 	}));
 
@@ -29,7 +32,7 @@
 		if (!chunk) return;
 		const next = messages[assistantIndex];
 		next.content += chunk;
-		next.html = renderMarkdownWithBlankTargets(next.content) ?? '';
+		next.html = renderMarkdown(next.content, { mathRender: data.mathRender }) ?? '';
 		messages = [...messages];
 	};
 
@@ -102,7 +105,7 @@
 
 <h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 <section>
-	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
+	<p><a href={resolve(`/space/${data.collabSpaceId}`)}><i class="fas fa-chevron-circle-left"></i> Zurück zur Übersicht</a></p>
 	{#if data.isAdmin}
 	<section class="bg-badge">
 		<!-- <div class="card bg-badge"> -->
@@ -127,7 +130,7 @@
 	</section>
 	{/if}
 	{#if data.question}
-		<p class="question"><b>Aufgabe:</b> {@html data.question}</p>
+		<div class="question"><b>Aufgabe:</b> {@html renderedQuestion}</div>
 	{/if}
 
 	<!-- <section> -->
