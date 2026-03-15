@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
-	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
+	import { renderMarkdown } from '$lib/markdown';
 
 
 	export let data: PageData;
@@ -10,11 +10,13 @@
 	let prompt = '';
 	let loading = false;
 	let errorMessage = '';
+	let renderedQuestion = renderMarkdown(data.question ?? undefined, {
+		mathRender: data.mathRender
+	});
 	let rating = Number(data.studentRating ?? 0);
 	let teacherRating = Number(data.teacherRating ?? 0);
 	let studentComment = data.studentComment ?? '';
 	let teacherComment = data.teacherComment ?? '';
-	const FOOTER_MARKER = '[__FOOTER__]';
 	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string }> = (
 		data.messages ?? []
 	).map((message) => ({
@@ -22,7 +24,7 @@
 		content: message.content,
 		html:
 			message.role === 'assistant'
-				? (renderMarkdownWithBlankTargets(message.content) ?? '')
+				? (renderMarkdown(message.content, { mathRender: data.mathRender }) ?? '')
 				: undefined
 	}));
 
@@ -30,7 +32,7 @@
 		if (!chunk) return;
 		const next = messages[assistantIndex];
 		next.content += chunk;
-		next.html = renderMarkdownWithBlankTargets(next.content) ?? '';
+		next.html = renderMarkdown(next.content, { mathRender: data.mathRender }) ?? '';
 		messages = [...messages];
 	};
 
@@ -76,48 +78,16 @@
 			const reader = res.body.getReader();
 			const decoder = new TextDecoder('utf-8');
 			let done = false;
-			let buffer = '';
-			let footerSeen = false;
 
 			scrollToBottom();
 
 			while (!done) {
 				const { value, done: streamDone } = await reader.read();
 				if (value) {
-					buffer += decoder.decode(value, { stream: true });
-
-					const markerIndex = buffer.indexOf(FOOTER_MARKER);
-					if (markerIndex !== -1) {
-						const textBeforeFooter = buffer.slice(0, markerIndex);
-						appendAssistantChunk(assistantIndex, textBeforeFooter);
-
-						const footerRaw = buffer.slice(markerIndex + FOOTER_MARKER.length).trim();
-						if (footerRaw) {
-							try {
-								JSON.parse(footerRaw);
-							} catch {
-								// ignore malformed footer payload
-							}
-						}
-
-						footerSeen = true;
-						done = true;
-						break;
-					}
-
-					// Keep a short tail in case footer marker is split across chunks.
-					const safeLen = Math.max(0, buffer.length - (FOOTER_MARKER.length - 1));
-					if (safeLen > 0) {
-						appendAssistantChunk(assistantIndex, buffer.slice(0, safeLen));
-						buffer = buffer.slice(safeLen);
-					}
+					appendAssistantChunk(assistantIndex, decoder.decode(value, { stream: true }));
 				}
 
-				done = done || streamDone;
-			}
-
-			if (!footerSeen && buffer.length > 0) {
-				appendAssistantChunk(assistantIndex, buffer);
+				done = streamDone;
 			}
 
 
@@ -135,7 +105,7 @@
 
 <h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 <section>
-	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
+	<p><a href={resolve(`/space/${data.collabSpaceId}`)}><i class="fas fa-chevron-circle-left"></i> Zurück zur Übersicht</a></p>
 	{#if data.isAdmin}
 	<section class="bg-badge">
 		<!-- <div class="card bg-badge"> -->
@@ -160,7 +130,7 @@
 	</section>
 	{/if}
 	{#if data.question}
-		<p class="question"><b>Aufgabe:</b> {@html data.question}</p>
+		<div class="question"><b>Aufgabe:</b> {@html renderedQuestion}</div>
 	{/if}
 
 	<!-- <section> -->

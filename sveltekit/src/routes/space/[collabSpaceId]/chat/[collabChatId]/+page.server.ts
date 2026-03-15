@@ -2,39 +2,11 @@ import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import prisma from '$lib/server/db';
 import { getJwtCookie } from '$lib/server/jwt';
-
-const validateStudentCookie = async (collabSpaceId: number, cookieValue: string | undefined) => {
-	const findSpaceArgs = {
-		where: { id: collabSpaceId },
-		select: { id: true, student_pw: true, question: true, password: true }
-	} satisfies Parameters<typeof prisma.collabSpace.findUnique>[0];
-	const collabSpace = await prisma.collabSpace.findUnique(findSpaceArgs);
-
-	if (!collabSpace) {
-		throw error(404, 'CollabSpace not found.');
-	}
-	if (!cookieValue) {
-		throw error(401, 'Missing student cookie.');
-	}
-	if (!collabSpace.student_pw || collabSpace.student_pw !== cookieValue) {
-		throw error(403, 'Invalid student cookie.');
-	}
-
-	return collabSpace;
-};
-
-const validateAdminCookie = async (
-	collabSpaceId: number,
-	cookieValue: string | undefined
-): Promise<boolean> => {
-	if (!cookieValue) return false;
-	const findSpaceArgs = {
-		where: { id: collabSpaceId },
-		select: { id: true, password: true }
-	} satisfies Parameters<typeof prisma.collabSpace.findUnique>[0];
-	const collabSpace = await prisma.collabSpace.findUnique(findSpaceArgs);
-	return Boolean(collabSpace && cookieValue === collabSpace.password);
-};
+import {
+	getCollabSpaceLoginState,
+	validateAdminCookie,
+	validateStudentCookie
+} from '$lib/server/collab-space-auth';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
@@ -48,9 +20,15 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
-	const collabSpace = await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
 	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
-	const isAdmin = await validateAdminCookie(collabSpaceId, adminCookie?.password);
+	const { collabSpace, isAdmin, isStudentLoggedIn } = await getCollabSpaceLoginState(
+		collabSpaceId,
+		studentCookie?.studentPw,
+		adminCookie?.password
+	);
+	if (!isStudentLoggedIn) {
+		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw, adminCookie?.password);
+	}
 	const chatCookie = await getJwtCookie<{ collabChatId?: string }>(cookies, `CollabChatId${collabChatId}`);
 	const canChat = chatCookie?.collabChatId === String(collabChatId);
 
@@ -75,6 +53,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		collabSpaceId,
 		collabChatId,
 		question: collabSpace.question,
+		mathRender: collabSpace.mathRender,
 		isAdmin,
 		canChat,
 		hidden: collabChat.hidden,
@@ -141,7 +120,8 @@ export const actions: Actions = {
 		}
 
 		const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
-		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
+		const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
+		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw, adminCookie?.password);
 		const chatCookie = await getJwtCookie<{ collabChatId?: string }>(cookies, `CollabChatId${collabChatId}`);
 		if (chatCookie?.collabChatId !== String(collabChatId)) {
 			return fail(403, { success: false, message: 'CollabChat cookie required.', ratingType: 'student' });

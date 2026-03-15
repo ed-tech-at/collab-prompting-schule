@@ -45,6 +45,7 @@ export type CollabSpaceMinAggregateOutputType = {
   password: string | null
   student_pw: string | null
   cryptVersion: number | null
+  mathRender: boolean | null
   question: string | null
   system_prompt: string | null
   createdAt: Date | null
@@ -59,6 +60,7 @@ export type CollabSpaceMaxAggregateOutputType = {
   password: string | null
   student_pw: string | null
   cryptVersion: number | null
+  mathRender: boolean | null
   question: string | null
   system_prompt: string | null
   createdAt: Date | null
@@ -73,6 +75,7 @@ export type CollabSpaceCountAggregateOutputType = {
   password: number
   student_pw: number
   cryptVersion: number
+  mathRender: number
   question: number
   system_prompt: number
   createdAt: number
@@ -99,6 +102,7 @@ export type CollabSpaceMinAggregateInputType = {
   password?: true
   student_pw?: true
   cryptVersion?: true
+  mathRender?: true
   question?: true
   system_prompt?: true
   createdAt?: true
@@ -113,6 +117,7 @@ export type CollabSpaceMaxAggregateInputType = {
   password?: true
   student_pw?: true
   cryptVersion?: true
+  mathRender?: true
   question?: true
   system_prompt?: true
   createdAt?: true
@@ -127,6 +132,7 @@ export type CollabSpaceCountAggregateInputType = {
   password?: true
   student_pw?: true
   cryptVersion?: true
+  mathRender?: true
   question?: true
   system_prompt?: true
   createdAt?: true
@@ -228,6 +234,7 @@ export type CollabSpaceGroupByOutputType = {
   password: string
   student_pw: string | null
   cryptVersion: number
+  mathRender: boolean
   question: string | null
   system_prompt: string | null
   createdAt: Date
@@ -265,6 +272,7 @@ export type CollabSpaceWhereInput = {
   password?: Prisma.StringFilter<"CollabSpace"> | string
   student_pw?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   cryptVersion?: Prisma.IntFilter<"CollabSpace"> | number
+  mathRender?: Prisma.BoolFilter<"CollabSpace"> | boolean
   question?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   system_prompt?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CollabSpace"> | Date | string
@@ -280,6 +288,7 @@ export type CollabSpaceOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   student_pw?: Prisma.SortOrderInput | Prisma.SortOrder
   cryptVersion?: Prisma.SortOrder
+  mathRender?: Prisma.SortOrder
   question?: Prisma.SortOrderInput | Prisma.SortOrder
   system_prompt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -298,6 +307,7 @@ export type CollabSpaceWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"CollabSpace"> | string
   student_pw?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   cryptVersion?: Prisma.IntFilter<"CollabSpace"> | number
+  mathRender?: Prisma.BoolFilter<"CollabSpace"> | boolean
   question?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   system_prompt?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CollabSpace"> | Date | string
@@ -313,6 +323,7 @@ export type CollabSpaceOrderByWithAggregationInput = {
   password?: Prisma.SortOrder
   student_pw?: Prisma.SortOrderInput | Prisma.SortOrder
   cryptVersion?: Prisma.SortOrder
+  mathRender?: Prisma.SortOrder
   question?: Prisma.SortOrderInput | Prisma.SortOrder
   system_prompt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -335,6 +346,7 @@ export type CollabSpaceScalarWhereWithAggregatesInput = {
   password?: Prisma.StringWithAggregatesFilter<"CollabSpace"> | string
   student_pw?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   cryptVersion?: Prisma.IntWithAggregatesFilter<"CollabSpace"> | number
+  mathRender?: Prisma.BoolWithAggregatesFilter<"CollabSpace"> | boolean
   question?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   system_prompt?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CollabSpace"> | Date | string
@@ -348,6 +360,7 @@ export type CollabSpaceCreateInput = {
   password: string
   student_pw?: string | null
   cryptVersion?: number
+  mathRender?: boolean
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
@@ -363,6 +376,7 @@ export type CollabSpaceUncheckedCreateInput = {
   password: string
   student_pw?: string | null
   cryptVersion?: number
+  mathRender?: boolean
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
@@ -377,6 +391,7 @@ export type CollabSpaceUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   student_pw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cryptVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  mathRender?: Prisma.BoolFieldUpdateOperationsInput | boolean
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +407,7 @@ export type CollabSpaceUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   student_pw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cryptVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  mathRender?: Prisma.BoolFieldUpdateOperationsInput | boolean
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -407,6 +423,7 @@ export type CollabSpaceCreateManyInput = {
   password: string
   student_pw?: string | null
   cryptVersion?: number
+  mathRender?: boolean
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
@@ -420,6 +437,7 @@ export type CollabSpaceUpdateManyMutationInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   student_pw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cryptVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  mathRender?: Prisma.BoolFieldUpdateOperationsInput | boolean
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -434,6 +452,7 @@ export type CollabSpaceUncheckedUpdateManyInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   student_pw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cryptVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  mathRender?: Prisma.BoolFieldUpdateOperationsInput | boolean
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -448,6 +467,7 @@ export type CollabSpaceCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   student_pw?: Prisma.SortOrder
   cryptVersion?: Prisma.SortOrder
+  mathRender?: Prisma.SortOrder
   question?: Prisma.SortOrder
   system_prompt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -467,6 +487,7 @@ export type CollabSpaceMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   student_pw?: Prisma.SortOrder
   cryptVersion?: Prisma.SortOrder
+  mathRender?: Prisma.SortOrder
   question?: Prisma.SortOrder
   system_prompt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -481,6 +502,7 @@ export type CollabSpaceMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   student_pw?: Prisma.SortOrder
   cryptVersion?: Prisma.SortOrder
+  mathRender?: Prisma.SortOrder
   question?: Prisma.SortOrder
   system_prompt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -498,6 +520,10 @@ export type CollabSpaceScalarRelationFilter = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -526,6 +552,7 @@ export type CollabSpaceCreateWithoutCollabChatsInput = {
   password: string
   student_pw?: string | null
   cryptVersion?: number
+  mathRender?: boolean
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
@@ -540,6 +567,7 @@ export type CollabSpaceUncheckedCreateWithoutCollabChatsInput = {
   password: string
   student_pw?: string | null
   cryptVersion?: number
+  mathRender?: boolean
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
@@ -569,6 +597,7 @@ export type CollabSpaceUpdateWithoutCollabChatsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   student_pw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cryptVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  mathRender?: Prisma.BoolFieldUpdateOperationsInput | boolean
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -583,6 +612,7 @@ export type CollabSpaceUncheckedUpdateWithoutCollabChatsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   student_pw?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cryptVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  mathRender?: Prisma.BoolFieldUpdateOperationsInput | boolean
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -628,6 +658,7 @@ export type CollabSpaceSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   password?: boolean
   student_pw?: boolean
   cryptVersion?: boolean
+  mathRender?: boolean
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
@@ -644,6 +675,7 @@ export type CollabSpaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   password?: boolean
   student_pw?: boolean
   cryptVersion?: boolean
+  mathRender?: boolean
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
@@ -658,6 +690,7 @@ export type CollabSpaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   password?: boolean
   student_pw?: boolean
   cryptVersion?: boolean
+  mathRender?: boolean
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
@@ -672,12 +705,13 @@ export type CollabSpaceSelectScalar = {
   password?: boolean
   student_pw?: boolean
   cryptVersion?: boolean
+  mathRender?: boolean
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
 }
 
-export type CollabSpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "manageEmail" | "base_url" | "api_key" | "model" | "password" | "student_pw" | "cryptVersion" | "question" | "system_prompt" | "createdAt", ExtArgs["result"]["collabSpace"]>
+export type CollabSpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "manageEmail" | "base_url" | "api_key" | "model" | "password" | "student_pw" | "cryptVersion" | "mathRender" | "question" | "system_prompt" | "createdAt", ExtArgs["result"]["collabSpace"]>
 export type CollabSpaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collabChats?: boolean | Prisma.CollabSpace$collabChatsArgs<ExtArgs>
   _count?: boolean | Prisma.CollabSpaceCountOutputTypeDefaultArgs<ExtArgs>
@@ -699,6 +733,7 @@ export type $CollabSpacePayload<ExtArgs extends runtime.Types.Extensions.Interna
     password: string
     student_pw: string | null
     cryptVersion: number
+    mathRender: boolean
     question: string | null
     system_prompt: string | null
     createdAt: Date
@@ -1134,6 +1169,7 @@ export interface CollabSpaceFieldRefs {
   readonly password: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly student_pw: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly cryptVersion: Prisma.FieldRef<"CollabSpace", 'Int'>
+  readonly mathRender: Prisma.FieldRef<"CollabSpace", 'Boolean'>
   readonly question: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly system_prompt: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly createdAt: Prisma.FieldRef<"CollabSpace", 'DateTime'>
@@ -1333,6 +1369,11 @@ export type CollabSpaceFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` CollabSpaces.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CollabSpaces.
+   */
   distinct?: Prisma.CollabSpaceScalarFieldEnum | Prisma.CollabSpaceScalarFieldEnum[]
 }
 

@@ -1,37 +1,10 @@
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import OpenAI from 'openai';
 import type { ChatCompletionMessageParam } from 'openai/resources/space/completions';
 import prisma from '$lib/server/db';
 import { getJwtCookie } from '$lib/server/jwt';
-
-const validateStudentCookie = async (collabSpaceId: number, cookieValue: string | undefined) => {
-	const findSpaceArgs = {
-		where: { id: collabSpaceId },
-		select: {
-			id: true,
-			student_pw: true,
-			api_key: true,
-			base_url: true,
-			model: true,
-			system_prompt: true,
-			question: true
-		}
-	} satisfies Parameters<typeof prisma.collabSpace.findUnique>[0];
-	const collabSpace = await prisma.collabSpace.findUnique(findSpaceArgs);
-
-	if (!collabSpace) {
-		throw error(404, 'CollabSpace not found.');
-	}
-	if (!cookieValue) {
-		throw error(401, 'Missing student cookie.');
-	}
-	if (!collabSpace.student_pw || collabSpace.student_pw !== cookieValue) {
-		throw error(403, 'Invalid student cookie.');
-	}
-
-	return collabSpace;
-};
+import { validateStudentCookie } from '$lib/server/collab-space-auth';
 
 export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
@@ -65,7 +38,12 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
-	const collabSpace = await validateStudentCookie(collabSpaceId, studentCookie?.studentPw);
+	const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
+	const collabSpace = await validateStudentCookie(
+		collabSpaceId,
+		studentCookie?.studentPw,
+		adminCookie?.password
+	);
 
 	const findChatArgs = {
 		where: { id: collabChatId, collabSpaceId },
@@ -91,7 +69,16 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	// const systemParts = [collabSpace.system_prompt?.trim(), collabSpace.question?.trim()]
 		// .filter((part): part is string => Boolean(part && part.length > 0));
 
-	const systemPrompt = collabSpace.system_prompt?.length > 0 ? collabSpace.system_prompt : 'You are a helpful assistant.';
+	const customSystemPrompt = collabSpace.system_prompt;
+	const baseSystemPrompt =
+		typeof customSystemPrompt === 'string' && customSystemPrompt.length > 0
+			? customSystemPrompt
+			: 'You are a helpful assistant.';
+	const latexFormattingInstruction =
+		'When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters.';
+	const systemPrompt = collabSpace.mathRender
+		? `${baseSystemPrompt}\n\n${latexFormattingInstruction}`
+		: baseSystemPrompt;
 
 	const history = collabChat.ChatEntries.filter(
 		(entry) => (entry.role === 'user' || entry.role === 'assistant') && typeof entry.message === 'string'
@@ -121,38 +108,34 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 		const stream = await client.chat.completions.create({
 			model: collabSpace.model,
 			messages,
-			stream: true,
-			stream_options: { include_usage: true }
+			stream: true
 		});
 
 		const encoder = new TextEncoder();
 		let fullText = '';
-		let usage: { promptTokens: number; completionTokens: number } = {
-			promptTokens: 0,
-			completionTokens: 0
-		};
+		let controllerClosed = false;
 
 		const streamResponse = new ReadableStream({
 			async start(controller) {
 				try {
 					for await (const chunk of stream) {
+						if (controllerClosed) break;
+
 						const delta = chunk.choices?.[0]?.delta?.content;
 						if (typeof delta === 'string' && delta.length > 0) {
 							fullText += delta;
-							controller.enqueue(encoder.encode(delta));
-						}
-
-						if (chunk.usage) {
-							usage = {
-								promptTokens: chunk.usage.prompt_tokens ?? usage.promptTokens,
-								completionTokens: chunk.usage.completion_tokens ?? usage.completionTokens
-							};
+							try {
+								controller.enqueue(encoder.encode(delta));
+							} catch {
+								controllerClosed = true;
+								break;
+							}
 						}
 					}
 
-					const footer = JSON.stringify({ __footer: true, ...usage });
-					controller.enqueue(encoder.encode(`\n[__FOOTER__]${footer}`));
-					controller.close();
+					if (!controllerClosed) {
+						controller.close();
+					}
 
 					const createAssistantEntryArgs = {
 						data: {
@@ -164,8 +147,15 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 					await prisma.chatEntry.create(createAssistantEntryArgs);
 				} catch (err) {
 					console.error('Collab chat stream failed', err);
-					controller.error(err);
+					if (!controllerClosed) {
+						try {
+							controller.error(err);
+						} catch {}
+					}
 				}
+			},
+			cancel() {
+				controllerClosed = true;
 			}
 		});
 

@@ -19,6 +19,7 @@
 		password: data.collabSpace.password,
 		student_pw: data.collabSpace.student_pw ?? '',
 		cryptVersion: data.collabSpace.cryptVersion,
+		mathRender: data.collabSpace.mathRender,
 		question: data.collabSpace.question ?? '',
 		system_prompt: data.collabSpace.system_prompt ?? '',
 		createdAt: new Date(data.collabSpace.createdAt).toISOString().slice(0, 16),
@@ -75,11 +76,22 @@
 
 				<tr>
 					<th>KI Systemprompt</th>
-					<td><textarea name="system_prompt" rows="5" bind:value={collabSpace.system_prompt}></textarea></td>
+					<td>
+						<textarea name="system_prompt" rows="5" bind:value={collabSpace.system_prompt}></textarea>
+						<label class="math-render-toggle">
+							<input type="checkbox" name="mathRender" bind:checked={collabSpace.mathRender} />
+							Math rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
+						</label>
+						{#if collabSpace.mathRender}
+							<p class="system-prompt-note">
+								When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters. (this is automatically appended)
+							</p>
+						{/if}
+					</td>
 				</tr>
 			
 				<tr>
-					<th>Aufgabe (optional)</th>
+					<th>Aufgabe (optional, HTML-Darstellung)</th>
 					<td><textarea name="question" rows="3" bind:value={collabSpace.question}></textarea></td>
 				</tr>
 
@@ -231,6 +243,26 @@
 
 	.api-key-toggle input[type='checkbox'] {
 		width: auto;
+	}
+
+	.math-render-toggle {
+		display: inline-flex;
+		gap: 0.4rem;
+		align-items: center;
+		margin-top: 0.65rem;
+		font-weight: 600;
+		margin-bottom: 0;
+	}
+
+	.math-render-toggle input[type='checkbox'] {
+		width: auto;
+	}
+
+	.system-prompt-note {
+		margin: 0.6rem 0 0;
+		font-size: 13px;
+		line-height: 1.45;
+		color: var(--muted);
 	}
 
 	input:disabled {
