@@ -34,13 +34,17 @@
 
     * {
       box-sizing: border-box; 
-  		font-family: 'Jost', sans-serif;
+  		/* font-family: 'Jost', sans-serif; */
     }
     html, body{
       margin: 0;
       padding: 0;
       /* font-family: var(--font); */
   		font-family: 'Jost', sans-serif;
+    }
+
+    textarea, button, input {
+      font-family: 'Jost', sans-serif;
     }
     
     body {
@@ -344,6 +348,12 @@
       background: #fff;
     }
 
+    input[readonly],
+    textarea[readonly] {
+      background: #f3f6f8;
+      color: var(--muted);
+    }
+
     button[type='submit'] {
       display: block;
       text-align: center;
@@ -376,6 +386,10 @@
       padding: 10px 12px;
       font-size: 14px;
       border-radius: 12px;
+    }
+
+    pre, code {
+      /* font-family: monospace; */
     }
 
     /* Chat */
@@ -456,13 +470,27 @@
       padding: 10px 11px 10px 10px;
     }
 
-    .chat-input textarea{
+    .chat-input textarea#chat-prompt {
       flex: 1;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       margin: 0;
       width: 100%;
+      transition: background-color .3s;
+      background-color: white;
     }
+
+    .chat-input textarea#chat-prompt:focus {
+      outline: 2px solid rgb(98, 184, 231);
+    
+    }
+
+    .chat-input textarea#chat-prompt.chat-prompt-loading {
+      background-color: var(--bg);
+    }
+
+
+
     .chat-input .actions {
       display: flex;
   

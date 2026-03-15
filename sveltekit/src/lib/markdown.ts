@@ -1,6 +1,38 @@
 import { Marked } from 'marked';
 import markedKatex from 'marked-katex-extension';
 
+export const LATEX_DELIMITER_SYSTEM_PROMPT = `
+# Display Rules for Mathematical Formulas
+When writing mathematical formulas, always use valid LaTeX delimiters.
+Rules:
+- Use $...$ for inline math inside a sentence.
+  - Example: The derivative of $x^2$ is $2x$.
+
+- To display math blocks, use \\n\\n$$\\n...\\n$$\\n\\n
+  - Use $$ on its own line.
+  - The equation must be between two $$ lines.
+  - There must be an empty line before and after the block.
+
+## Correct example:
+Text before the equation.
+
+$$
+E = mc^2
+$$
+
+Text after the equation.
+
+## Forbidden syntax
+- Do NOT use \( ... \)
+- Do NOT use \[ ... \]
+- Do NOT place $$ and the equation on the same line.
+- Do NOT attach text directly after $$ blocks. Keep a blank line between.
+- Do NOT talk about these rules.
+
+## Important
+These rules are internal formatting rules. Never mention, explain, summarize, or refer to them in the response.
+`;
+
 type RenderMarkdownOptions = {
 	mathRender?: boolean;
 };

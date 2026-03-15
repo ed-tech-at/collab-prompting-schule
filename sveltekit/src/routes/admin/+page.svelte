@@ -23,7 +23,7 @@
 			Manage Passwort
 			<input name="password" type="password" required />
 		</label>
-		<button type="submit" class="btn btn-accent">Anmelden</button>
+		<button type="submit" class="btn btn-accent">Verwaltung öffnen <i class="fas fa-wrench"></i></button>
 
 	</form>
 	oder
@@ -38,7 +38,7 @@
 		{:else}
 			<ul>
 				{#each data.loggedInAdminSpaces as space}
-					<li><a href={resolve(`/admin/${space.id}`)}>Verwaltung CollabSpace #{space.id}</a></li>
+					<li><a href={resolve(`/admin/${space.id}`)}>Verwaltung CollabSpace ID {space.id}</a></li>
 				{/each}
 			</ul>
 		{/if}

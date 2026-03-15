@@ -5,6 +5,7 @@ import type { ChatCompletionMessageParam } from 'openai/resources/space/completi
 import prisma from '$lib/server/db';
 import { getJwtCookie } from '$lib/server/jwt';
 import { validateStudentCookie } from '$lib/server/collab-space-auth';
+import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
 
 export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
@@ -74,10 +75,8 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 		typeof customSystemPrompt === 'string' && customSystemPrompt.length > 0
 			? customSystemPrompt
 			: 'You are a helpful assistant.';
-	const latexFormattingInstruction =
-		'When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters.';
 	const systemPrompt = collabSpace.mathRender
-		? `${baseSystemPrompt}\n\n${latexFormattingInstruction}`
+		? `${baseSystemPrompt}\n\n${LATEX_DELIMITER_SYSTEM_PROMPT}`
 		: baseSystemPrompt;
 
 	const history = collabChat.ChatEntries.filter(

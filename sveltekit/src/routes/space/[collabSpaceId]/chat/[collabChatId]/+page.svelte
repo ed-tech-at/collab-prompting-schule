@@ -110,7 +110,7 @@
 	<section class="bg-badge">
 		<!-- <div class="card bg-badge"> -->
 			<h3>Verwaltung</h3>
-			<p>Angemeldet als Admin: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen</a></p>
+			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen <i class="fas fa-wrench"></i></a></p>
 
 			<form method="POST" action="?/toggleHidden">
 				{#if data.hidden}
@@ -139,7 +139,11 @@
 		<div class="chat-window">
 			<!-- <div class="messages"> -->
 				{#if messages.length === 0}
-					<p class="muted empty">Nachricht eingeben um zu starten.</p>
+					{#if data.canChat}
+						<label for="chat-prompt" class="muted empty empty-prompt">Nachricht eingeben um zu starten.</label>
+					{:else}
+						<p class="muted empty">Es ist noch keine Nachricht eingegeben.</p>
+					{/if}
 				{/if}
 				{#each messages as message}
 					<div class="bubble {message.role}">
@@ -159,11 +163,12 @@
 
 		{#if data.canChat}
 				<div class="chat-input">
-					<!-- <label style="width: 100%;"> -->
-						<!-- Nachricht -->
+						<!-- <label style="width: 100%;"> -->
+							<!-- Nachricht -->
 						<textarea
+							id="chat-prompt"
 							bind:value={prompt}
-							class=""
+							class={loading ? 'chat-prompt-loading' : ''}
 							rows="3"
 							placeholder="Geben Sie Ihre Nachricht ein..."
 							on:keydown={(e) => {
@@ -289,6 +294,13 @@
 </section>
 
 <style>
+
+	.empty-prompt {
+		font-weight: 200;
+		text-align: center;
+		margin-top: 6em;
+	}
+
 	/* .page {
 		display: grid;
 		gap: 1rem;
@@ -374,6 +386,11 @@
 	.empty {
 		text-align: center;
 		margin: 2rem 0;
+	}
+
+	.empty-prompt {
+		cursor: pointer;
+		font-weight: 400;
 	}
 
 	.bubble {

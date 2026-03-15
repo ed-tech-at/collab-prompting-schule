@@ -1,15 +1,23 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import type { PageData } from './$types';
 	import { resolve } from '$app/paths';
+	import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
 
 	export let data: PageData;
 	let showSettings = false;
 	let overwriteApiKey = false;
+	const nl2br = (value: string) => value.replace(/\n/g, '<br>');
+	const mathSystemPromptNote = `${LATEX_DELIMITER_SYSTEM_PROMPT} (this is automatically appended)`;
 	const normalizeRating = (rating: string | null | undefined) => {
 		const value = Number(rating);
 		if (!Number.isInteger(value) || value < 1 || value > 5) return 0;
 		return value;
 	};
+	const participationPath = resolve(`/space/${data.collabSpace.id}`);
+	const participationLink = browser
+		? new URL(participationPath, window.location.href).toString().replace(/^http:/, 'https:')
+		: participationPath;
 
 	let collabSpace = {
 		id: data.collabSpace.id,
@@ -31,9 +39,20 @@
 
 <section class="bg-badge">
 	<h1>CollabSpace ID {data.collabSpace.id} / Verwaltung</h1>
-	<button type="button" class="btn btn-ghost" on:click={() => (showSettings = !showSettings)}>
-		{showSettings ? 'Einstellungen ausblenden' : 'Einstellungen anzeigen'}
+
+	<label>
+		Teilnahmelink:
+		<input type="text" value={participationLink} readonly />
+	</label>
+
+	<p><button type="button" class="btn btn-ghost" on:click={() => (showSettings = !showSettings)}>
+		{#if showSettings}
+			Einstellungen ausblenden
+		{:else}
+			Vertrauliche Einstellungen anzeigen <i class="fa-solid fa-key"></i>
+		{/if}
 	</button>
+	</p>
 	<form method="POST" class="settings-form" hidden={!showSettings}>
 		<table>
 			<tbody>
@@ -83,9 +102,10 @@
 							Math rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
 						</label>
 						{#if collabSpace.mathRender}
-							<p class="system-prompt-note">
-								When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters. (this is automatically appended)
-							</p>
+							<p class="system-prompt-note">Folgender Text wird automatisch an den Systemprompt angefügt:</p>
+							<pre  class="system-prompt-note" style="color: var(--primary-hover);">
+								{@html nl2br(mathSystemPromptNote)}
+							</pre>
 						{/if}
 					</td>
 				</tr>
@@ -227,11 +247,7 @@
 		font-size: 14px;
 	}
 
-	input[readonly],
-	textarea[readonly] {
-		background: #f3f6f8;
-		color: var(--muted);
-	}
+	
 
 	.api-key-toggle {
 		display: inline-flex;

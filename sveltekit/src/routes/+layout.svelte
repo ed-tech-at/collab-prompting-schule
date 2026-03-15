@@ -21,7 +21,7 @@
 	<link rel="shortcut icon" href={asset("/favicon/favicon.ico")} />
 	<link rel="apple-touch-icon" sizes="180x180" href={asset("/favicon/apple-touch-icon.png")} />
 	<link rel="manifest" href={asset("/favicon/site.webmanifest")} />
-	<link rel="stylesheet" href={asset("/fonts/fontawesome-free-5.15.3-web/css/all.min.css")} />
+	<link rel="stylesheet" href={asset("/fonts/fontawesome-free-7.2.0-web/css/all.min.css")} />
 
 </svelte:head>
 <Header
