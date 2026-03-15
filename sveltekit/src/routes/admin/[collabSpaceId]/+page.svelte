@@ -1,10 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { resolve } from '$app/paths';
+	import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
 
 	export let data: PageData;
 	let showSettings = false;
 	let overwriteApiKey = false;
+	const nl2br = (value: string) => value.replace(/\n/g, '<br>');
+	const mathSystemPromptNote = `${LATEX_DELIMITER_SYSTEM_PROMPT} (this is automatically appended)`;
 	const normalizeRating = (rating: string | null | undefined) => {
 		const value = Number(rating);
 		if (!Number.isInteger(value) || value < 1 || value > 5) return 0;
@@ -83,9 +86,11 @@
 							Math rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
 						</label>
 						{#if collabSpace.mathRender}
-							<p class="system-prompt-note">
-								When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters. (this is automatically appended)
-							</p>
+							<p class="system-prompt-note">Folgender Text wird automatisch an den Systemprompt angefügt:</p>
+							<code  class="system-prompt-note" style="font-family: monospace;
+  color: var(--primary-hover);">
+								{@html nl2br(mathSystemPromptNote)}
+							</code>
 						{/if}
 					</td>
 				</tr>

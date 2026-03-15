@@ -1,6 +1,16 @@
 import { Marked } from 'marked';
 import markedKatex from 'marked-katex-extension';
 
+export const LATEX_DELIMITER_SYSTEM_PROMPT = `When writing mathematical formulas, always use valid LaTeX delimiters.
+Rules:
+- Use $...$ for inline math inside a sentence.
+- Use $$...$$ for display math blocks.
+  Display math blocks must:
+  - Start with $$ on its own line.
+  - End with $$ on its own line.
+  - Be separated from surrounding text by a blank line before and after.
+Do NOT use \\( ... \\), \\[ ... \\], plain parentheses, or brackets as math delimiters.`;
+
 type RenderMarkdownOptions = {
 	mathRender?: boolean;
 };
