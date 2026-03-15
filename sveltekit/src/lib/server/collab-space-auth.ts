@@ -7,6 +7,7 @@ const collabSpaceAuthArgs = {
 		student_pw: true,
 		password: true,
 		question: true,
+		mathRender: true,
 		api_key: true,
 		base_url: true,
 		model: true,

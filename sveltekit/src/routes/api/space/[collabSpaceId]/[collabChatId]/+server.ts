@@ -69,14 +69,16 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	// const systemParts = [collabSpace.system_prompt?.trim(), collabSpace.question?.trim()]
 		// .filter((part): part is string => Boolean(part && part.length > 0));
 
-	const latexFormattingInstruction =
-		'When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters.';
 	const customSystemPrompt = collabSpace.system_prompt;
 	const baseSystemPrompt =
 		typeof customSystemPrompt === 'string' && customSystemPrompt.length > 0
 			? customSystemPrompt
 			: 'You are a helpful assistant.';
-	const systemPrompt = `${baseSystemPrompt}\n\n${latexFormattingInstruction}`;
+	const latexFormattingInstruction =
+		'When writing mathematical formulas, always use valid LaTeX delimiters. Use $$...$$ for display math on separate lines and $...$ for inline math. Do not use \\(...\\), \\[...\\], plain parentheses, or plain brackets as math delimiters.';
+	const systemPrompt = collabSpace.mathRender
+		? `${baseSystemPrompt}\n\n${latexFormattingInstruction}`
+		: baseSystemPrompt;
 
 	const history = collabChat.ChatEntries.filter(
 		(entry) => (entry.role === 'user' || entry.role === 'assistant') && typeof entry.message === 'string'

@@ -1,11 +1,13 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
-	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
+	import { renderMarkdown } from '$lib/markdown';
 
 	export let data: PageData;
 	export let form: ActionData;
-	let renderedQuestion = renderMarkdownWithBlankTargets(data.question ?? undefined);
+	let renderedQuestion = renderMarkdown(data.question ?? undefined, {
+		mathRender: data.mathRender
+	});
 
 	const isOwnChat = (conversationId: number) => data.ownChatIds.includes(conversationId);
 	const normalizeRating = (rating: string | null | undefined) => {

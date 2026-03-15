@@ -94,6 +94,7 @@ export const CollabSpaceScalarFieldEnum = {
   password: 'password',
   student_pw: 'student_pw',
   cryptVersion: 'cryptVersion',
+  mathRender: 'mathRender',
   question: 'question',
   system_prompt: 'system_prompt',
   createdAt: 'createdAt'

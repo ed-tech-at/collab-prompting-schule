@@ -53,6 +53,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		collabSpaceId,
 		collabChatId,
 		question: collabSpace.question,
+		mathRender: collabSpace.mathRender,
 		isAdmin,
 		canChat,
 		hidden: collabChat.hidden,

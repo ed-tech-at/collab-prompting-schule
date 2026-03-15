@@ -506,10 +506,6 @@ export type CollabChatUncheckedUpdateManyWithoutCollabSpaceNestedInput = {
   deleteMany?: Prisma.CollabChatScalarWhereInput | Prisma.CollabChatScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type CollabChatCreateNestedOneWithoutChatEntriesInput = {
   create?: Prisma.XOR<Prisma.CollabChatCreateWithoutChatEntriesInput, Prisma.CollabChatUncheckedCreateWithoutChatEntriesInput>
   connectOrCreate?: Prisma.CollabChatCreateOrConnectWithoutChatEntriesInput
@@ -1438,6 +1434,11 @@ export type CollabChatFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` CollabChats.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CollabChats.
+   */
   distinct?: Prisma.CollabChatScalarFieldEnum | Prisma.CollabChatScalarFieldEnum[]
 }
 

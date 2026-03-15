@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
-	import { renderMarkdownWithBlankTargets } from '$lib/markdown';
+	import { renderMarkdown } from '$lib/markdown';
 
 
 	export let data: PageData;
@@ -10,7 +10,9 @@
 	let prompt = '';
 	let loading = false;
 	let errorMessage = '';
-	let renderedQuestion = renderMarkdownWithBlankTargets(data.question ?? undefined);
+	let renderedQuestion = renderMarkdown(data.question ?? undefined, {
+		mathRender: data.mathRender
+	});
 	let rating = Number(data.studentRating ?? 0);
 	let teacherRating = Number(data.teacherRating ?? 0);
 	let studentComment = data.studentComment ?? '';
@@ -22,7 +24,7 @@
 		content: message.content,
 		html:
 			message.role === 'assistant'
-				? (renderMarkdownWithBlankTargets(message.content) ?? '')
+				? (renderMarkdown(message.content, { mathRender: data.mathRender }) ?? '')
 				: undefined
 	}));
 
@@ -30,7 +32,7 @@
 		if (!chunk) return;
 		const next = messages[assistantIndex];
 		next.content += chunk;
-		next.html = renderMarkdownWithBlankTargets(next.content) ?? '';
+		next.html = renderMarkdown(next.content, { mathRender: data.mathRender }) ?? '';
 		messages = [...messages];
 	};
 
