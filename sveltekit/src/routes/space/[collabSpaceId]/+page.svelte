@@ -17,9 +17,6 @@
 	};
 </script>
 
-<svelte:head>
-	<link rel="stylesheet" href="/fonts/fontawesome-free-5.15.3-web/css/all.min.css" />
-</svelte:head>
 
 <h1>CollabSpace ID {data.collabSpaceId} / CollabChat</h1>
 {#if data.requiresLogin}
@@ -54,13 +51,13 @@
 				</div>
 			</label>
 
-			<button type="submit" class="btn btn-primary">Teilnehmen</button>
+			<button type="submit" class="btn btn-primary">Teilnehmen <i class="fas fa-sign-in-alt"></i></button>
 		</form>
 	</section>
 {:else}
 	<section class="page">
 		{#if data.isAdmin}
-			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)} class="btn btn-badge">Zu den Space-Einstellungen</a></p>
+			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)} class="btn btn-badge">Zu den Space-Einstellungen <i class="fas fa-wrench"></i></a></p>
 		{/if}
 
 		{#if form?.message}
@@ -72,7 +69,7 @@
 		{/if}
 
 		<form method="POST" action="?/createChat">
-			<button class="btn btn-primary" type="submit">Neuen Chat starten</button>
+			<button class="btn btn-primary" type="submit">Neuen Chat starten <i class="fas fa-plus-square"></i></button>
 		</form>
 	</section>
 

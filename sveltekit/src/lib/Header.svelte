@@ -35,11 +35,13 @@
     /* height: 50px; */
 	}
 	.site-header .main-width {
-		display: grid;
-		grid-template-columns: 1fr auto 1fr;
+		/* display: grid; */
+		/* grid-template-columns: 1fr auto 1fr; */
 		align-items: center;
 		gap: 1rem;
 		padding: 0.75rem 1rem;
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.brand {

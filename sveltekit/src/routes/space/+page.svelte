@@ -42,7 +42,7 @@
 
 		</label>
 
-		<button type="submit" class="btn btn-primary">Teilnehmen</button>
+		<button type="submit" class="btn btn-primary">Teilnehmen <i class="fas fa-sign-in-alt"></i></button>
 
 	</form>
 </section>
@@ -50,7 +50,7 @@
 	<section class="list">
 		<h2>Angemeldete CollabSpaces</h2>
 		{#if data.loggedInChats.length === 0}
-			<p class="muted">Keine eingeloggt CollabChats gefunden.</p>
+			<p class="muted">Keine angemeldete CollabSpaces gefunden.</p>
 		{:else}
 			<ul>
 				{#each data.loggedInChats as chat}

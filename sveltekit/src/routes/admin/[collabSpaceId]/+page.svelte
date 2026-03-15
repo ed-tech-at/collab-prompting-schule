@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import type { PageData } from './$types';
 	import { resolve } from '$app/paths';
 	import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
@@ -13,6 +14,10 @@
 		if (!Number.isInteger(value) || value < 1 || value > 5) return 0;
 		return value;
 	};
+	const participationPath = resolve(`/space/${data.collabSpace.id}`);
+	const participationLink = browser
+		? new URL(participationPath, window.location.href).toString().replace(/^http:/, 'https:')
+		: participationPath;
 
 	let collabSpace = {
 		id: data.collabSpace.id,
@@ -34,9 +39,20 @@
 
 <section class="bg-badge">
 	<h1>CollabSpace ID {data.collabSpace.id} / Verwaltung</h1>
-	<button type="button" class="btn btn-ghost" on:click={() => (showSettings = !showSettings)}>
-		{showSettings ? 'Einstellungen ausblenden' : 'Einstellungen anzeigen'}
+
+	<label>
+		Teilnahmelink:
+		<input type="text" value={participationLink} readonly />
+	</label>
+
+	<p><button type="button" class="btn btn-ghost" on:click={() => (showSettings = !showSettings)}>
+		{#if showSettings}
+			Einstellungen ausblenden
+		{:else}
+			Vertrauliche Einstellungen anzeigen <i class="fa-solid fa-key"></i>
+		{/if}
 	</button>
+	</p>
 	<form method="POST" class="settings-form" hidden={!showSettings}>
 		<table>
 			<tbody>
@@ -87,10 +103,9 @@
 						</label>
 						{#if collabSpace.mathRender}
 							<p class="system-prompt-note">Folgender Text wird automatisch an den Systemprompt angefügt:</p>
-							<code  class="system-prompt-note" style="font-family: monospace;
-  color: var(--primary-hover);">
+							<pre  class="system-prompt-note" style="color: var(--primary-hover);">
 								{@html nl2br(mathSystemPromptNote)}
-							</code>
+							</pre>
 						{/if}
 					</td>
 				</tr>
@@ -232,11 +247,7 @@
 		font-size: 14px;
 	}
 
-	input[readonly],
-	textarea[readonly] {
-		background: #f3f6f8;
-		color: var(--muted);
-	}
+	
 
 	.api-key-toggle {
 		display: inline-flex;
