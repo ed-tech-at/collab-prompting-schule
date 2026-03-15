@@ -105,7 +105,7 @@
 
 <h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 <section>
-	<p><a href={resolve(`/space/${data.collabSpaceId}`)}>Zurück zur Übersicht</a></p>
+	<p><a href={resolve(`/space/${data.collabSpaceId}`)}><i class="fas fa-chevron-circle-left"></i> Zurück zur Übersicht</a></p>
 	{#if data.isAdmin}
 	<section class="bg-badge">
 		<!-- <div class="card bg-badge"> -->
