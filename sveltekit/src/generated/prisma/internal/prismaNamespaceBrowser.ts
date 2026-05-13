@@ -87,6 +87,7 @@ export type TeacherScalarFieldEnum = (typeof TeacherScalarFieldEnum)[keyof typeo
 
 export const CollabSpaceScalarFieldEnum = {
   id: 'id',
+  title: 'title',
   manageEmail: 'manageEmail',
   base_url: 'base_url',
   api_key: 'api_key',
@@ -97,7 +98,8 @@ export const CollabSpaceScalarFieldEnum = {
   mathRender: 'mathRender',
   question: 'question',
   system_prompt: 'system_prompt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  toDelete: 'toDelete'
 } as const
 
 export type CollabSpaceScalarFieldEnum = (typeof CollabSpaceScalarFieldEnum)[keyof typeof CollabSpaceScalarFieldEnum]
@@ -112,7 +114,8 @@ export const CollabChatScalarFieldEnum = {
   teacher_comment: 'teacher_comment',
   student_comment: 'student_comment',
   hidden: 'hidden',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  toDelete: 'toDelete'
 } as const
 
 export type CollabChatScalarFieldEnum = (typeof CollabChatScalarFieldEnum)[keyof typeof CollabChatScalarFieldEnum]

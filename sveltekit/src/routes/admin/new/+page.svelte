@@ -41,17 +41,24 @@
 	<form method="POST" class="create-form">
 		<h2>Verwaltung</h2>
 		<label>
-			Manage Passwort<sup class="label-required">*</sup>
+			Titel des CollabSpace
+			<div class="muted" style="font-weight: 400;">Optional. Die CollabSpace-ID wird immer zusätzlich angezeigt.</div>
+			<input name="title" type="text" />
+		</label>
+		<label>
+			Verwaltungspasswort<sup class="label-required">*</sup>
+			<div class="muted" style="font-weight: 400;">Dieses Passwort ist nur für Lehrende zur späteren Verwaltung dieses CollabSpace.</div>
 			<input name="password" type="text" required />
 		</label>
 		
 		<label>
-			E-Mail Adresse<sup class="label-required">*</sup>
+			E-Mail-Adresse<sup class="label-required">*</sup>
+			<div class="muted" style="font-weight: 400;">Die Adresse wird für Benachrichtigungen und Meldungen zum CollabSpace verwendet. Dadurch wird kein Account erstellt.</div>
 			<input name="manageEmail" type="email" required />
 		</label>
 
 		<h2>
-			KI Schnittstelle
+			KI-Schnittstelle
 			{#if !showEnvImport}
 				<button type="button" class="btn btn-ghost" on:click={() => (showEnvImport = !showEnvImport)}>
 					.env importieren
@@ -82,11 +89,11 @@
 			<input name="api_key" type="text" bind:value={apiKey} required/>
 		</label>
 		<label>
-			LLM Model<sup class="label-required">*</sup>
+			LLM-Modell<sup class="label-required">*</sup>
 			<input name="model"  type="text" bind:value={model} required />
 		</label>
 		<label>
-			KI Systemprompt<sup class="label-required">*</sup>
+			KI-Systemprompt<sup class="label-required">*</sup>
 			<textarea name="system_prompt" rows="5" placeholder="Du bist ein hilfreicher Assistent." required >Du bist ein hilfreicher Assistent. Antworte auf Deutsch.</textarea>
 		</label>
 		
@@ -94,6 +101,7 @@
 		
 		<label>
 			Teilnahmecode für den Beitritt<sup class="label-required">*</sup>
+			<div class="muted" style="font-weight: 400;">Diesen Code geben Teilnehmende ein. Er ist nicht das Verwaltungspasswort.</div>
 			<input name="student_pw" type="text" required/>
 		</label>
 		
@@ -101,11 +109,15 @@
 			Aufgabe (optional, HTML-Darstellung)
 			<textarea name="question" rows="3"></textarea>
 		</label>
+		<label class="math-render-toggle">
+			<input type="checkbox" name="mathRender" />
+			Mathematik-Rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
+		</label>
 
 		<label>
 			Benutzerrichtlinie
 			<div class="checkbox_wrapper">
-				<input name="student_pw" type="checkbox" required />
+				<input name="accepted_guidelines" type="checkbox" required />
 				<span>
 					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen. Ich stimme zu, kein urheberrechtlich geschütztes Material, Fragen oder Aussagen zu
             Gewalt, Waffen, illegale Aktivitäten, Diskriminierung oder Hassrede oder jegliche Inhalte, die gegen geltende Gesetze oder ethische Standards verstoßen einzugeben.

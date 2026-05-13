@@ -23,9 +23,9 @@
 
 <p>Ihre Sitzung wird für die Dauer von 8 Tagen in einem lokalen Cookie gespeichert. Dies ist notwendig, um die Nutzung der Website ordnungsgemäß zu ermöglichen.</p>
 
-<p>Sie können jederzeit Ihre Sitzung unter <a href={resolve("/logout")}>/logout</a> oder durch den Link <i>Cookies löschen und von allen CollabSpaces abmelden</i> auf der Startseite beenden.</p>
+<p>Sie können jederzeit Ihre lokalen Sitzungen unter <a href={resolve("/logout")}>/logout</a> oder durch den Link <i>Von allen lokalen Sitzungen abmelden</i> auf der Startseite beenden.</p>
 
-<p>Ihre Eingaben können durch den Vortragenden und andere Teilnehmenden Ihrem Username zugeordnet werden.</p>
+<p>Ihre Eingaben können durch den Vortragenden und andere Teilnehmende Ihrem Anzeigenamen zugeordnet werden.</p>
 
 
 
@@ -37,7 +37,7 @@ Die im Rahmen der Nutzung unserer Website erhobenen Daten, wie der frei gewählt
 Unsere Plattform nutzt moderne KI-Technologien zur Unterstützung interaktiver Lernobjekte. Diese kommen insbesondere bei der dynamischen Generierung von Inhalten, bei der Analyse von Eingaben sowie zur Verbesserung der Benutzererfahrung zum Einsatz. Die Verarbeitung erfolgt ausschließlich zur Bereitstellung und Wartung der Dienste. Die eingesetzten Modelle lernen nicht aus den individuellen Inhalten der Nutzer:innen. 
 
 <h5>2.3 Hinweise für CollabSpace-Ersteller:innen</h5>
-<p>Beim Anlegen eines CollabSpace-Raums ist die Eingabe einer gültigen E-Mail-Adresse erforderlich. Diese wird verwendet, um Sie über wichtige Ereignisse zu informieren – etwa wenn Inhalte aus Ihrem CollabSpace gemeldet werden. In solchen Fällen erhalten Sie automatisch eine Benachrichtigung an die angegebene Adresse. Auf Wunsch kann auch die meldende Person eine Kopie dieser Benachrichtigung erhalten und so Ihre E-Mail Adresse erfahren.</p>
+<p>Beim Anlegen eines CollabSpace-Raums ist die Eingabe einer gültigen E-Mail-Adresse erforderlich. Diese wird verwendet, um Sie über wichtige Ereignisse zu informieren – etwa wenn Inhalte aus Ihrem CollabSpace gemeldet werden. In solchen Fällen erhalten Sie automatisch eine Benachrichtigung an die angegebene Adresse. Auf Wunsch kann auch die meldende Person eine Kopie dieser Benachrichtigung erhalten und so Ihre E-Mail-Adresse erfahren.</p>
 
 
 <b>Unzulässige Inhalte</b>

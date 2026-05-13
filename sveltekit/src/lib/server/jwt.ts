@@ -13,7 +13,7 @@ export interface SessionPayload {
 }
 
 function loginPath(url: URL) {
-	const loginResolved = resolve('/login');
+	const loginResolved = resolve('/');
 	return new URL(loginResolved, url).pathname;
 }
 

@@ -196,7 +196,7 @@ export type ChatEntryGroupByOutputType = {
   _max: ChatEntryMaxAggregateOutputType | null
 }
 
-type GetChatEntryGroupByPayload<T extends ChatEntryGroupByArgs> = Prisma.PrismaPromise<
+export type GetChatEntryGroupByPayload<T extends ChatEntryGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ChatEntryGroupByOutputType, T['by']> &
       {

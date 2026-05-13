@@ -23,6 +23,7 @@ model Teacher {
 
 model CollabSpace {
   id            Int      @id @default(autoincrement())
+  title         String?
   manageEmail String?
   
   base_url      String?
@@ -40,6 +41,7 @@ model CollabSpace {
   system_prompt       String?
     
   createdAt     DateTime @default(now())
+  toDelete      DateTime?
 
   collabChats    CollabChat[]
 
@@ -65,6 +67,7 @@ model CollabChat {
   ChatEntries    ChatEntry[]
     
   createdAt     DateTime @default(now())
+  toDelete      DateTime?
 
 }
 
@@ -83,6 +86,5 @@ model ChatEntry {
   
   createdAt     DateTime @default(now())
 }
-
 
 

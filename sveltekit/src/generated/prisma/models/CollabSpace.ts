@@ -38,6 +38,7 @@ export type CollabSpaceSumAggregateOutputType = {
 
 export type CollabSpaceMinAggregateOutputType = {
   id: number | null
+  title: string | null
   manageEmail: string | null
   base_url: string | null
   api_key: string | null
@@ -49,10 +50,12 @@ export type CollabSpaceMinAggregateOutputType = {
   question: string | null
   system_prompt: string | null
   createdAt: Date | null
+  toDelete: Date | null
 }
 
 export type CollabSpaceMaxAggregateOutputType = {
   id: number | null
+  title: string | null
   manageEmail: string | null
   base_url: string | null
   api_key: string | null
@@ -64,10 +67,12 @@ export type CollabSpaceMaxAggregateOutputType = {
   question: string | null
   system_prompt: string | null
   createdAt: Date | null
+  toDelete: Date | null
 }
 
 export type CollabSpaceCountAggregateOutputType = {
   id: number
+  title: number
   manageEmail: number
   base_url: number
   api_key: number
@@ -79,6 +84,7 @@ export type CollabSpaceCountAggregateOutputType = {
   question: number
   system_prompt: number
   createdAt: number
+  toDelete: number
   _all: number
 }
 
@@ -95,6 +101,7 @@ export type CollabSpaceSumAggregateInputType = {
 
 export type CollabSpaceMinAggregateInputType = {
   id?: true
+  title?: true
   manageEmail?: true
   base_url?: true
   api_key?: true
@@ -106,10 +113,12 @@ export type CollabSpaceMinAggregateInputType = {
   question?: true
   system_prompt?: true
   createdAt?: true
+  toDelete?: true
 }
 
 export type CollabSpaceMaxAggregateInputType = {
   id?: true
+  title?: true
   manageEmail?: true
   base_url?: true
   api_key?: true
@@ -121,10 +130,12 @@ export type CollabSpaceMaxAggregateInputType = {
   question?: true
   system_prompt?: true
   createdAt?: true
+  toDelete?: true
 }
 
 export type CollabSpaceCountAggregateInputType = {
   id?: true
+  title?: true
   manageEmail?: true
   base_url?: true
   api_key?: true
@@ -136,6 +147,7 @@ export type CollabSpaceCountAggregateInputType = {
   question?: true
   system_prompt?: true
   createdAt?: true
+  toDelete?: true
   _all?: true
 }
 
@@ -227,6 +239,7 @@ export type CollabSpaceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type CollabSpaceGroupByOutputType = {
   id: number
+  title: string | null
   manageEmail: string | null
   base_url: string | null
   api_key: string | null
@@ -238,6 +251,7 @@ export type CollabSpaceGroupByOutputType = {
   question: string | null
   system_prompt: string | null
   createdAt: Date
+  toDelete: Date | null
   _count: CollabSpaceCountAggregateOutputType | null
   _avg: CollabSpaceAvgAggregateOutputType | null
   _sum: CollabSpaceSumAggregateOutputType | null
@@ -245,7 +259,7 @@ export type CollabSpaceGroupByOutputType = {
   _max: CollabSpaceMaxAggregateOutputType | null
 }
 
-type GetCollabSpaceGroupByPayload<T extends CollabSpaceGroupByArgs> = Prisma.PrismaPromise<
+export type GetCollabSpaceGroupByPayload<T extends CollabSpaceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CollabSpaceGroupByOutputType, T['by']> &
       {
@@ -265,6 +279,7 @@ export type CollabSpaceWhereInput = {
   OR?: Prisma.CollabSpaceWhereInput[]
   NOT?: Prisma.CollabSpaceWhereInput | Prisma.CollabSpaceWhereInput[]
   id?: Prisma.IntFilter<"CollabSpace"> | number
+  title?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   manageEmail?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   base_url?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   api_key?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
@@ -276,11 +291,13 @@ export type CollabSpaceWhereInput = {
   question?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   system_prompt?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CollabSpace"> | Date | string
+  toDelete?: Prisma.DateTimeNullableFilter<"CollabSpace"> | Date | string | null
   collabChats?: Prisma.CollabChatListRelationFilter
 }
 
 export type CollabSpaceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
   manageEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   base_url?: Prisma.SortOrderInput | Prisma.SortOrder
   api_key?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -292,6 +309,7 @@ export type CollabSpaceOrderByWithRelationInput = {
   question?: Prisma.SortOrderInput | Prisma.SortOrder
   system_prompt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  toDelete?: Prisma.SortOrderInput | Prisma.SortOrder
   collabChats?: Prisma.CollabChatOrderByRelationAggregateInput
 }
 
@@ -300,6 +318,7 @@ export type CollabSpaceWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CollabSpaceWhereInput | Prisma.CollabSpaceWhereInput[]
   OR?: Prisma.CollabSpaceWhereInput[]
   NOT?: Prisma.CollabSpaceWhereInput | Prisma.CollabSpaceWhereInput[]
+  title?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   manageEmail?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   base_url?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   api_key?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
@@ -311,11 +330,13 @@ export type CollabSpaceWhereUniqueInput = Prisma.AtLeast<{
   question?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   system_prompt?: Prisma.StringNullableFilter<"CollabSpace"> | string | null
   createdAt?: Prisma.DateTimeFilter<"CollabSpace"> | Date | string
+  toDelete?: Prisma.DateTimeNullableFilter<"CollabSpace"> | Date | string | null
   collabChats?: Prisma.CollabChatListRelationFilter
 }, "id">
 
 export type CollabSpaceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
   manageEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   base_url?: Prisma.SortOrderInput | Prisma.SortOrder
   api_key?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -327,6 +348,7 @@ export type CollabSpaceOrderByWithAggregationInput = {
   question?: Prisma.SortOrderInput | Prisma.SortOrder
   system_prompt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  toDelete?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CollabSpaceCountOrderByAggregateInput
   _avg?: Prisma.CollabSpaceAvgOrderByAggregateInput
   _max?: Prisma.CollabSpaceMaxOrderByAggregateInput
@@ -339,6 +361,7 @@ export type CollabSpaceScalarWhereWithAggregatesInput = {
   OR?: Prisma.CollabSpaceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CollabSpaceScalarWhereWithAggregatesInput | Prisma.CollabSpaceScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"CollabSpace"> | number
+  title?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   manageEmail?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   base_url?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   api_key?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
@@ -350,9 +373,11 @@ export type CollabSpaceScalarWhereWithAggregatesInput = {
   question?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   system_prompt?: Prisma.StringNullableWithAggregatesFilter<"CollabSpace"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CollabSpace"> | Date | string
+  toDelete?: Prisma.DateTimeNullableWithAggregatesFilter<"CollabSpace"> | Date | string | null
 }
 
 export type CollabSpaceCreateInput = {
+  title?: string | null
   manageEmail?: string | null
   base_url?: string | null
   api_key?: string | null
@@ -364,11 +389,13 @@ export type CollabSpaceCreateInput = {
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
+  toDelete?: Date | string | null
   collabChats?: Prisma.CollabChatCreateNestedManyWithoutCollabSpaceInput
 }
 
 export type CollabSpaceUncheckedCreateInput = {
   id?: number
+  title?: string | null
   manageEmail?: string | null
   base_url?: string | null
   api_key?: string | null
@@ -380,10 +407,12 @@ export type CollabSpaceUncheckedCreateInput = {
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
+  toDelete?: Date | string | null
   collabChats?: Prisma.CollabChatUncheckedCreateNestedManyWithoutCollabSpaceInput
 }
 
 export type CollabSpaceUpdateInput = {
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manageEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   base_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   api_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -395,11 +424,13 @@ export type CollabSpaceUpdateInput = {
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  toDelete?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collabChats?: Prisma.CollabChatUpdateManyWithoutCollabSpaceNestedInput
 }
 
 export type CollabSpaceUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manageEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   base_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   api_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -411,11 +442,13 @@ export type CollabSpaceUncheckedUpdateInput = {
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  toDelete?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collabChats?: Prisma.CollabChatUncheckedUpdateManyWithoutCollabSpaceNestedInput
 }
 
 export type CollabSpaceCreateManyInput = {
   id?: number
+  title?: string | null
   manageEmail?: string | null
   base_url?: string | null
   api_key?: string | null
@@ -427,9 +460,11 @@ export type CollabSpaceCreateManyInput = {
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
+  toDelete?: Date | string | null
 }
 
 export type CollabSpaceUpdateManyMutationInput = {
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manageEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   base_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   api_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -441,10 +476,12 @@ export type CollabSpaceUpdateManyMutationInput = {
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  toDelete?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CollabSpaceUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manageEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   base_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   api_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -456,10 +493,12 @@ export type CollabSpaceUncheckedUpdateManyInput = {
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  toDelete?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CollabSpaceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   manageEmail?: Prisma.SortOrder
   base_url?: Prisma.SortOrder
   api_key?: Prisma.SortOrder
@@ -471,6 +510,7 @@ export type CollabSpaceCountOrderByAggregateInput = {
   question?: Prisma.SortOrder
   system_prompt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  toDelete?: Prisma.SortOrder
 }
 
 export type CollabSpaceAvgOrderByAggregateInput = {
@@ -480,6 +520,7 @@ export type CollabSpaceAvgOrderByAggregateInput = {
 
 export type CollabSpaceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   manageEmail?: Prisma.SortOrder
   base_url?: Prisma.SortOrder
   api_key?: Prisma.SortOrder
@@ -491,10 +532,12 @@ export type CollabSpaceMaxOrderByAggregateInput = {
   question?: Prisma.SortOrder
   system_prompt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  toDelete?: Prisma.SortOrder
 }
 
 export type CollabSpaceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   manageEmail?: Prisma.SortOrder
   base_url?: Prisma.SortOrder
   api_key?: Prisma.SortOrder
@@ -506,6 +549,7 @@ export type CollabSpaceMinOrderByAggregateInput = {
   question?: Prisma.SortOrder
   system_prompt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  toDelete?: Prisma.SortOrder
 }
 
 export type CollabSpaceSumOrderByAggregateInput = {
@@ -545,6 +589,7 @@ export type CollabSpaceUpdateOneRequiredWithoutCollabChatsNestedInput = {
 }
 
 export type CollabSpaceCreateWithoutCollabChatsInput = {
+  title?: string | null
   manageEmail?: string | null
   base_url?: string | null
   api_key?: string | null
@@ -556,10 +601,12 @@ export type CollabSpaceCreateWithoutCollabChatsInput = {
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
+  toDelete?: Date | string | null
 }
 
 export type CollabSpaceUncheckedCreateWithoutCollabChatsInput = {
   id?: number
+  title?: string | null
   manageEmail?: string | null
   base_url?: string | null
   api_key?: string | null
@@ -571,6 +618,7 @@ export type CollabSpaceUncheckedCreateWithoutCollabChatsInput = {
   question?: string | null
   system_prompt?: string | null
   createdAt?: Date | string
+  toDelete?: Date | string | null
 }
 
 export type CollabSpaceCreateOrConnectWithoutCollabChatsInput = {
@@ -590,6 +638,7 @@ export type CollabSpaceUpdateToOneWithWhereWithoutCollabChatsInput = {
 }
 
 export type CollabSpaceUpdateWithoutCollabChatsInput = {
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manageEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   base_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   api_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -601,10 +650,12 @@ export type CollabSpaceUpdateWithoutCollabChatsInput = {
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  toDelete?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CollabSpaceUncheckedUpdateWithoutCollabChatsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   manageEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   base_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   api_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -616,6 +667,7 @@ export type CollabSpaceUncheckedUpdateWithoutCollabChatsInput = {
   question?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   system_prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  toDelete?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -651,6 +703,7 @@ export type CollabSpaceCountOutputTypeCountCollabChatsArgs<ExtArgs extends runti
 
 export type CollabSpaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  title?: boolean
   manageEmail?: boolean
   base_url?: boolean
   api_key?: boolean
@@ -662,12 +715,14 @@ export type CollabSpaceSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
+  toDelete?: boolean
   collabChats?: boolean | Prisma.CollabSpace$collabChatsArgs<ExtArgs>
   _count?: boolean | Prisma.CollabSpaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["collabSpace"]>
 
 export type CollabSpaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  title?: boolean
   manageEmail?: boolean
   base_url?: boolean
   api_key?: boolean
@@ -679,10 +734,12 @@ export type CollabSpaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
+  toDelete?: boolean
 }, ExtArgs["result"]["collabSpace"]>
 
 export type CollabSpaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  title?: boolean
   manageEmail?: boolean
   base_url?: boolean
   api_key?: boolean
@@ -694,10 +751,12 @@ export type CollabSpaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
+  toDelete?: boolean
 }, ExtArgs["result"]["collabSpace"]>
 
 export type CollabSpaceSelectScalar = {
   id?: boolean
+  title?: boolean
   manageEmail?: boolean
   base_url?: boolean
   api_key?: boolean
@@ -709,9 +768,10 @@ export type CollabSpaceSelectScalar = {
   question?: boolean
   system_prompt?: boolean
   createdAt?: boolean
+  toDelete?: boolean
 }
 
-export type CollabSpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "manageEmail" | "base_url" | "api_key" | "model" | "password" | "student_pw" | "cryptVersion" | "mathRender" | "question" | "system_prompt" | "createdAt", ExtArgs["result"]["collabSpace"]>
+export type CollabSpaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "manageEmail" | "base_url" | "api_key" | "model" | "password" | "student_pw" | "cryptVersion" | "mathRender" | "question" | "system_prompt" | "createdAt" | "toDelete", ExtArgs["result"]["collabSpace"]>
 export type CollabSpaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collabChats?: boolean | Prisma.CollabSpace$collabChatsArgs<ExtArgs>
   _count?: boolean | Prisma.CollabSpaceCountOutputTypeDefaultArgs<ExtArgs>
@@ -726,6 +786,7 @@ export type $CollabSpacePayload<ExtArgs extends runtime.Types.Extensions.Interna
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
+    title: string | null
     manageEmail: string | null
     base_url: string | null
     api_key: string | null
@@ -737,6 +798,7 @@ export type $CollabSpacePayload<ExtArgs extends runtime.Types.Extensions.Interna
     question: string | null
     system_prompt: string | null
     createdAt: Date
+    toDelete: Date | null
   }, ExtArgs["result"]["collabSpace"]>
   composites: {}
 }
@@ -1162,6 +1224,7 @@ export interface Prisma__CollabSpaceClient<T, Null = never, ExtArgs extends runt
  */
 export interface CollabSpaceFieldRefs {
   readonly id: Prisma.FieldRef<"CollabSpace", 'Int'>
+  readonly title: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly manageEmail: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly base_url: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly api_key: Prisma.FieldRef<"CollabSpace", 'String'>
@@ -1173,6 +1236,7 @@ export interface CollabSpaceFieldRefs {
   readonly question: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly system_prompt: Prisma.FieldRef<"CollabSpace", 'String'>
   readonly createdAt: Prisma.FieldRef<"CollabSpace", 'DateTime'>
+  readonly toDelete: Prisma.FieldRef<"CollabSpace", 'DateTime'>
 }
     
 

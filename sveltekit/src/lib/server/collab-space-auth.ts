@@ -4,6 +4,7 @@ import prisma from '$lib/server/db';
 const collabSpaceAuthArgs = {
 	select: {
 		id: true,
+		title: true,
 		student_pw: true,
 		password: true,
 		question: true,
@@ -18,8 +19,8 @@ const collabSpaceAuthArgs = {
 type CollabSpaceAuth = NonNullable<Awaited<ReturnType<typeof getCollabSpaceAuth>>>;
 
 export const getCollabSpaceAuth = async (collabSpaceId: number) => {
-	const collabSpace = await prisma.collabSpace.findUnique({
-		where: { id: collabSpaceId },
+	const collabSpace = await prisma.collabSpace.findFirst({
+		where: { id: collabSpaceId, toDelete: null },
 		...collabSpaceAuthArgs
 	});
 

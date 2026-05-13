@@ -12,10 +12,10 @@ const clearAllCookies = (cookies: Cookies) => {
 
 export const GET: RequestHandler = async ({ cookies }) => {
 	clearAllCookies(cookies);
-	throw redirect(302, resolve('/'));
+	throw redirect(302, `${resolve('/')}?loggedOut=1`);
 };
 
 export const POST: RequestHandler = async ({ cookies }) => {
 	clearAllCookies(cookies);
-	throw redirect(302, resolve('/'));
+	throw redirect(302, `${resolve('/')}?loggedOut=1`);
 };

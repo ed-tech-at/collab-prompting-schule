@@ -9,7 +9,7 @@ export const load: LayoutLoad = ({ params }) => {
 			{ name: '<i class="fa fa-home"></i>', href: resolve('/') },
 
 			// { name: 'CollabSpace', href: resolve('/space') },
-			{ name: `CollabSpace ID ${collabSpaceId}`, href: resolve(`/space/${collabSpaceId}`) }
+			{ name: `CollabSpace-ID ${collabSpaceId}`, href: resolve(`/space/${collabSpaceId}`) }
 		]
 	};
 };

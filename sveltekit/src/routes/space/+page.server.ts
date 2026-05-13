@@ -17,8 +17,8 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	}
 
 	const findManyArgs = {
-		where: { id: { in: loggedInSpaceIds } },
-		select: { id: true },
+		where: { id: { in: loggedInSpaceIds }, toDelete: null },
+		select: { id: true, title: true },
 		orderBy: { id: 'asc' }
 	} satisfies Parameters<typeof prisma.collabSpace.findMany>[0];
 	const collabSpaces = await prisma.collabSpace.findMany(findManyArgs);

@@ -4,23 +4,25 @@
 
 	export let data: PageData;
 	export let form: ActionData;
+
+	const spaceTitle = (space: { title: string | null }) => space.title?.trim() ?? '';
 </script>
 
 <section class="page">
 	<h1>Verwaltung für CollabSpace</h1>
 
-	<h2>Bei bestehendem Space Anmelden</h2>
+	<h2>Bei bestehendem Space anmelden</h2>
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
 
 	<form method="POST" action="?/login" class="login-form">
 		<label>
-			CollabSpace ID
+			CollabSpace-ID
 			<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 		<label>
-			Manage Passwort
+			Verwaltungspasswort
 			<input name="password" type="password" required />
 		</label>
 		<button type="submit" class="btn btn-accent">Verwaltung öffnen <i class="fas fa-wrench"></i></button>
@@ -38,7 +40,14 @@
 		{:else}
 			<ul>
 				{#each data.loggedInAdminSpaces as space}
-					<li><a href={resolve(`/admin/${space.id}`)}>Verwaltung CollabSpace ID {space.id}</a></li>
+					<li>
+						<a href={resolve(`/admin/${space.id}`)}>
+							Verwaltung: CollabSpace-ID {space.id}
+							{#if spaceTitle(space)}
+								<span class="muted">- {spaceTitle(space)}</span>
+							{/if}
+						</a>
+					</li>
 				{/each}
 			</ul>
 		{/if}
