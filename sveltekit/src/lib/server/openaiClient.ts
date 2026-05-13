@@ -12,6 +12,15 @@ type LLMConfig = {
 	embeddingModel: string;
 };
 
+type RepositoryConfigClient = {
+	repository: {
+		findUnique(args: {
+			where: { url: string };
+			select: { LLM_API: true };
+		}): Promise<{ LLM_API: unknown } | null>;
+	};
+};
+
 const requireString = (value: unknown, key: string): string => {
 	if (typeof value === 'string' && value.trim()) return value.trim();
 	throw new Error(`Missing LLM config: ${key}`);
@@ -20,7 +29,7 @@ const requireString = (value: unknown, key: string): string => {
 export async function loadRepoConfig(repoUrl: string): Promise<LLMConfig> {
 	if (!repoUrl) throw new Error('repoUrl required for LLM config');
 
-	const repo = await prisma.repository.findUnique({
+	const repo = await (prisma as unknown as RepositoryConfigClient).repository.findUnique({
 		where: { url: repoUrl },
 		select: { LLM_API: true }
 	});

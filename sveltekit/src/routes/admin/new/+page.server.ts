@@ -12,6 +12,7 @@ export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const data = await request.formData();
 
+		const title = data.get('title');
 		const baseUrl = data.get('base_url');
 		const apiKey = data.get('api_key');
 		const model = data.get('model');
@@ -20,19 +21,22 @@ export const actions: Actions = {
 		const password = data.get('password');
 		const studentPw = data.get('student_pw');
 		const manageEmail = data.get('manageEmail');
+		const mathRender = data.get('mathRender') === 'on';
 
 		if (typeof password !== 'string' || !password) {
-			return fail(400, { success: false, message: 'Password is required.' });
+			return fail(400, { success: false, message: 'Verwaltungspasswort ist erforderlich.' });
 		}
 
 		const createArgs = {
 			data: {
+				title: typeof title === 'string' && title.trim() ? title.trim() : null,
 				base_url: typeof baseUrl === 'string' && baseUrl ? baseUrl : null,
 				api_key: typeof apiKey === 'string' && apiKey ? apiKey : null,
 				model: typeof model === 'string' && model ? model : null,
 				password,
 				student_pw: typeof studentPw === 'string' && studentPw ? studentPw : null,
 				cryptVersion: 0,
+				mathRender,
 				question: typeof question === 'string' && question ? question : null,
 				system_prompt: typeof systemPrompt === 'string' && systemPrompt ? systemPrompt : null,
 				manageEmail: typeof manageEmail === 'string' && manageEmail ? manageEmail : null

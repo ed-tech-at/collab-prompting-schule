@@ -34,12 +34,12 @@ export const loginStudentForSpace = async ({
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
 		return {
 			ok: false,
-			failure: fail(400, { success: false, message: 'CollabSpace ID muss eine Zahl sein.' })
+			failure: fail(400, { success: false, message: 'CollabSpace-ID muss eine Zahl sein.' })
 		};
 	}
 
-	const collabSpace = await prisma.collabSpace.findUnique({
-		where: { id: collabSpaceId },
+	const collabSpace = await prisma.collabSpace.findFirst({
+		where: { id: collabSpaceId, toDelete: null },
 		select: { id: true, student_pw: true }
 	});
 	if (!collabSpace) {

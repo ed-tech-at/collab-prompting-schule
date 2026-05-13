@@ -17,6 +17,8 @@
 	let teacherRating = Number(data.teacherRating ?? 0);
 	let studentComment = data.studentComment ?? '';
 	let teacherComment = data.teacherComment ?? '';
+	let confirmDeleteChat = false;
+	const spaceTitle = data.title?.trim() ?? '';
 	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string }> = (
 		data.messages ?? []
 	).map((message) => ({
@@ -103,7 +105,12 @@
 </script>
 
 
-<h1>Space ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
+{#if spaceTitle}
+	<h1>{spaceTitle}</h1>
+	<p class="space-id">CollabSpace-ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</p>
+{:else}
+	<h1>CollabSpace-ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
+{/if}
 <section>
 	<p><a href={resolve(`/space/${data.collabSpaceId}`)}><i class="fas fa-chevron-circle-left"></i> Zurück zur Übersicht</a></p>
 	{#if data.isAdmin}
@@ -111,11 +118,12 @@
 		<!-- <div class="card bg-badge"> -->
 			<h3>Verwaltung</h3>
 			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen <i class="fas fa-wrench"></i></a></p>
+			<p class="muted">Versteckte Chats bleiben für Lehrende sichtbar, werden Teilnehmenden aber nicht angezeigt.</p>
 
 			<form method="POST" action="?/toggleHidden">
 				{#if data.hidden}
 					<button type="submit" name="hiddenAction" value="unhide" class="btn btn-success">
-						Für Teilnehmende entsperren
+						Für Teilnehmende anzeigen
 					</button>
 				{:else}
 					<button type="submit" name="hiddenAction" value="hide" class="btn btn-danger">
@@ -124,6 +132,19 @@
 				{/if}
 			</form>
 			{#if form?.message && form?.actionType === 'hidden'}
+				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
+			{/if}
+			<form method="POST" action="?/deleteChat" class="delete-chat-form">
+				{#if confirmDeleteChat}
+				<button type="button" class="btn btn-ghost" on:click={() => (confirmDeleteChat = false)}>Abbrechen</button>
+				<button type="submit" class="btn btn-danger btn-no-margin">Löschung vormerken</button>
+				{:else}
+					<button type="button" class="btn btn-danger" on:click={() => (confirmDeleteChat = true)}>
+						Chat löschen
+					</button>
+				{/if}
+			</form>
+			{#if form?.message && form?.actionType === 'deleteChat'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
 		<!-- </div> -->
@@ -136,11 +157,11 @@
 	<!-- <section> -->
 		<h3>Chat</h3>
 
-		<div class="chat-window">
+		<div class="chat-window" class:empty-chat={messages.length === 0}>
 			<!-- <div class="messages"> -->
 				{#if messages.length === 0}
 					{#if data.canChat}
-						<label for="chat-prompt" class="muted empty empty-prompt">Nachricht eingeben um zu starten.</label>
+						<label for="chat-prompt" class="muted empty empty-prompt">Nachricht eingeben, um zu starten.</label>
 					{:else}
 						<p class="muted empty">Es ist noch keine Nachricht eingegeben.</p>
 					{/if}
@@ -180,10 +201,10 @@
 						></textarea>
 					<!-- </label> -->
 						<div class="actions">
-							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading}>
+							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading} aria-label="Nachricht senden">
 								<i class={loading ? 'fas fa-spinner fa-spin' : 'far fa-paper-plane'} aria-hidden="true"></i>
 							</button>
-							<button type="button" class="btn btn-badge send-button" on:click={scrollToBottom}>
+							<button type="button" class="btn btn-badge send-button" on:click={scrollToBottom} aria-label="Zum Chat-Ende springen">
 							<i class="fa fa-arrow-down"></i>
 							</button>
 						</div>
@@ -224,7 +245,7 @@
 					bind:value={studentComment}
 					placeholder="Optionaler Kommentar zur Bewertung"
 				></textarea>
-				<p>Nach Ihrer Bewertung können andere Teilnehmenden diesen CollabChat sehen.</p>
+				<p>Nach Ihrer Bewertung können andere Teilnehmende diesen CollabChat sehen.</p>
 				<button type="submit" class="btn">Bewertung speichern</button>
 			</form>
 			<!-- {#if data.studentComment} -->
@@ -261,7 +282,7 @@
 		<div class="card rating-card teacher-rating-card" style="margin-top: 3em;">
 			<h3>Lehrenden-Bewertung</h3>
 			<form method="POST" action="?/rateTeacher" class="rating-form">
-				<div class="stars teacher-stars" role="radiogroup" aria-label="Lehrerenden-Bewertung von 1 bis 5">
+				<div class="stars teacher-stars" role="radiogroup" aria-label="Lehrenden-Bewertung von 1 bis 5">
 					{#each [1, 2, 3, 4, 5] as value}
 						<label class="star" class:active={value <= teacherRating}>
 							<input type="radio" name="teacherRating" value={value} bind:group={teacherRating} />
@@ -281,7 +302,7 @@
 					bind:value={teacherComment}
 					placeholder="Optionaler Kommentar zur Lehrenden-Bewertung"
 				></textarea>
-				<button type="submit" class="btn">Lehrerenden-Bewertung speichern</button>
+				<button type="submit" class="btn">Lehrenden-Bewertung speichern</button>
 			</form>
 			<!-- {#if data.teacherComment} -->
 				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.teacherComment}</p> -->
@@ -295,10 +316,24 @@
 
 <style>
 
+	.delete-chat-form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		align-items: center;
+		margin-top: 1rem;
+	}
+
+	.chat-window.empty-chat {
+		min-height: 220px;
+		height: auto;
+	}
+
 	.empty-prompt {
 		font-weight: 200;
 		text-align: center;
-		margin-top: 6em;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
 	}
 
 	/* .page {

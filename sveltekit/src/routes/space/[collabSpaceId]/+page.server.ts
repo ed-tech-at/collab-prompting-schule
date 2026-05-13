@@ -6,10 +6,18 @@ import { getJwtCookie, setJwtCookie } from '$lib/server/jwt';
 import { getCollabSpaceLoginState, validateStudentCookie } from '$lib/server/collab-space-auth';
 import { loginStudentForSpace } from '$lib/server/space-login';
 
+const escapeHtml = (value: string) =>
+	value
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
+
 export const load: PageServerLoad = async ({ params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		throw error(400, 'Invalid CollabSpace ID.');
+		throw error(400, 'CollabSpace-ID ist ungültig.');
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -20,8 +28,16 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		adminCookie?.password
 	);
 	if (!isStudentLoggedIn) {
+		const spaceLabel = collabSpace.title?.trim()
+			? `CollabSpace-ID ${collabSpaceId}: ${collabSpace.title.trim()}`
+			: `CollabSpace-ID ${collabSpaceId}`;
 		return {
+			navItems: [
+				{ name: '<i class="fa fa-home"></i>', href: resolve('/') },
+				{ name: escapeHtml(spaceLabel), href: resolve(`/space/${collabSpaceId}`) }
+			],
 			collabSpaceId,
+			title: collabSpace.title,
 			question: collabSpace.question,
 			mathRender: collabSpace.mathRender,
 			requiresLogin: true,
@@ -41,15 +57,14 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const ratingWhere = {
 		OR: [{ student_rating: { gt: '0' } }, { teacher_rating: { gt: '0' } }]
 	};
-	const conversationWhere = {
-		collabSpaceId,
-		OR: [
-			...(ownChatIds.length > 0 ? [{ id: { in: ownChatIds } }] : []),
-			ratingWhere
-		],
-		// ...(isAdmin ? {} : { hidden: false })
-		hidden: false
-	};
+	const conversationWhere = isAdmin
+		? { collabSpaceId, toDelete: null }
+		: {
+				collabSpaceId,
+				toDelete: null,
+				OR: [...(ownChatIds.length > 0 ? [{ id: { in: ownChatIds } }] : []), ratingWhere],
+				hidden: false
+			};
 	const findManyArgs = {
 		where: conversationWhere,
 		orderBy: { createdAt: 'desc' },
@@ -60,13 +75,22 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 			student_rating: true,
 			teacher_rating: true,
 			student_comment: true,
-			teacher_comment: true
+			teacher_comment: true,
+			hidden: true
 		}
 	} satisfies Parameters<typeof prisma.collabChat.findMany>[0];
 	const conversations = await prisma.collabChat.findMany(findManyArgs);
+	const spaceLabel = collabSpace.title?.trim()
+		? `CollabSpace-ID ${collabSpaceId}: ${collabSpace.title.trim()}`
+		: `CollabSpace-ID ${collabSpaceId}`;
 
 	return {
+		navItems: [
+			{ name: '<i class="fa fa-home"></i>', href: resolve('/') },
+			{ name: escapeHtml(spaceLabel), href: resolve(`/space/${collabSpaceId}`) }
+		],
 		collabSpaceId,
+		title: collabSpace.title,
 		question: collabSpace.question,
 		mathRender: collabSpace.mathRender,
 		conversations,
@@ -80,7 +104,7 @@ export const actions: Actions = {
 	login: async ({ request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'Invalid CollabSpace ID.' });
+			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.' });
 		}
 		const result = await loginStudentForSpace({ request, cookies, forcedCollabSpaceId: collabSpaceId });
 		if (!result.ok) return result.failure;
@@ -89,7 +113,7 @@ export const actions: Actions = {
 	createChat: async ({ params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'Invalid CollabSpace ID.' });
+			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.' });
 		}
 
 		// const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);

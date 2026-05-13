@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import OpenAI from 'openai';
-import type { ChatCompletionMessageParam } from 'openai/resources/space/completions';
+import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import prisma from '$lib/server/db';
 import { getJwtCookie } from '$lib/server/jwt';
 import { validateStudentCookie } from '$lib/server/collab-space-auth';
@@ -12,21 +12,21 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const collabChatId = Number(params.collabChatId);
 
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		return json({ success: false, message: 'Invalid CollabSpace ID.' }, { status: 400 });
+		return json({ success: false, message: 'CollabSpace-ID ist ungültig.' }, { status: 400 });
 	}
 	if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-		return json({ success: false, message: 'Invalid CollabChat ID.' }, { status: 400 });
+		return json({ success: false, message: 'CollabChat-ID ist ungültig.' }, { status: 400 });
 	}
 	const chatCookie = await getJwtCookie<{ collabChatId?: string }>(cookies, `CollabChatId${collabChatId}`);
 	if (chatCookie?.collabChatId !== String(collabChatId)) {
-		return json({ success: false, message: 'CollabChat cookie required.' }, { status: 403 });
+		return json({ success: false, message: 'Keine gültige Chat-Sitzung gefunden.' }, { status: 403 });
 	}
 
 	let body: unknown;
 	try {
 		body = await request.json();
 	} catch {
-		return json({ success: false, message: 'Invalid JSON body.' }, { status: 400 });
+		return json({ success: false, message: 'Ungültige Anfrage.' }, { status: 400 });
 	}
 
 	const prompt =
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 			: '';
 
 	if (!prompt) {
-		return json({ success: false, message: 'Missing prompt.' }, { status: 400 });
+		return json({ success: false, message: 'Nachricht fehlt.' }, { status: 400 });
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	);
 
 	const findChatArgs = {
-		where: { id: collabChatId, collabSpaceId },
+		where: { id: collabChatId, collabSpaceId, toDelete: null },
 		include: {
 			ChatEntries: {
 				orderBy: { createdAt: 'asc' }
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const collabChat = await prisma.collabChat.findFirst(findChatArgs);
 
 	if (!collabChat) {
-		return json({ success: false, message: 'CollabChat not found.' }, { status: 404 });
+		return json({ success: false, message: 'CollabChat nicht gefunden.' }, { status: 404 });
 	}
 
 	if (!collabSpace.api_key) {

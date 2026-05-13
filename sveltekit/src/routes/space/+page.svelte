@@ -4,37 +4,42 @@
 
 	export let data: PageData;
 	export let form: ActionData;
+	type BasicForm = { success?: boolean; message?: string };
+	$: formState = form as BasicForm | undefined;
+
+	const spaceTitle = (space: { title: string | null }) => space.title?.trim() ?? '';
 </script>
 
 <h1>Einem CollabSpace beitreten</h1>
 
 <section>
 
-	{#if form?.message}
-		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
+	{#if formState?.message}
+		<p class={`notice ${formState?.success ? 'success' : 'error'}`}>{formState.message}</p>
 	{/if}
 
 	<form method="POST" action="?/login" class="login-form">
 
 		<label>
-				CollabSpace ID
+				CollabSpace-ID
 				<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 
 		<label>
-			Dein Username
+			Ihr Anzeigename
 			<input name="username" type="text" required />
 		</label>
 
 		<label>
 			Teilnahmecode
-			<input name="student_pw" type="password" />
+			<div class="muted" style="font-weight: 400;">Der Teilnahmecode ist der Code aus Ihrer Einladung, nicht das Verwaltungspasswort.</div>
+			<input name="student_pw" type="password" required />
 		</label>
 
 		<label>
 			Benutzerrichtlinie
 			<div class="checkbox_wrapper">
-				<input name="student_pw" type="checkbox" required />
+				<input name="accepted_guidelines" type="checkbox" required />
 				<span>
 					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen.
 				</span>
@@ -50,11 +55,18 @@
 	<section class="list">
 		<h2>Angemeldete CollabSpaces</h2>
 		{#if data.loggedInChats.length === 0}
-			<p class="muted">Keine angemeldete CollabSpaces gefunden.</p>
+			<p class="muted">Keine angemeldeten CollabSpaces gefunden.</p>
 		{:else}
 			<ul>
 				{#each data.loggedInChats as chat}
-					<li><a href={resolve(`/space/${chat.id}`)}>CollabSpace ID {chat.id}</a></li>
+					<li>
+						<a href={resolve(`/space/${chat.id}`)}>
+							CollabSpace-ID {chat.id}
+							{#if spaceTitle(chat)}
+								<span class="muted">- {spaceTitle(chat)}</span>
+							{/if}
+						</a>
+					</li>
 				{/each}
 			</ul>
 		{/if}
