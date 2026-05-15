@@ -108,14 +108,16 @@
 		<label>
 			Aufgabe (optional, HTML-Darstellung)
 			<textarea name="question" rows="3"></textarea>
-		</label>
-		<label class="math-render-toggle">
-			<input type="checkbox" name="mathRender" />
-			Mathematik-Rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
+			
+			<label class="math-render-toggle checkbox_wrapper">
+				<input type="checkbox" name="mathRender" />
+				Mathematik-Rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
+			</label>
+
 		</label>
 
 		<label>
-			Benutzerrichtlinie
+			Benutzerrichtlinie<span class="label-required">*</span>
 			<div class="checkbox_wrapper">
 				<input name="accepted_guidelines" type="checkbox" required />
 				<span>
@@ -127,7 +129,7 @@
 
 		</label>
 
-		<button type="submit" class="btn btn-ghost">Erstellen</button>
+		<button type="submit" class="btn btn-badge">Erstellen</button>
 	</form>
 </section>
 

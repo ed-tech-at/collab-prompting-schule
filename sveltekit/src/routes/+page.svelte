@@ -24,7 +24,7 @@
 		<p class="lead">CollabSpaces für Lehrveranstaltungen: Aufgabe anlegen, Teilnahmelink teilen und CollabChats gemeinsam besprechen.</p>
 	</div>
 	<a class="btn btn-faq" href={resolve('/faq')}>
-		FAQ und Kurzanleitung <i class="fas fa-circle-question"></i>
+		<span>FAQ & <br>Kurzanleitung</span> <i class="fas fa-circle-question"></i>
 	</a>
 </section>
 
@@ -56,18 +56,59 @@
 	}
 
 	.btn-faq {
+		position: relative;
+		z-index: 0;
+		isolation: isolate;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.55rem;
-		background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+		background: transparent;
 		color: #fff;
 		box-shadow: 0 10px 22px rgba(31, 111, 120, 0.24);
+		overflow: hidden;
 		white-space: nowrap;
+		transition: box-shadow 0.3s ease;
+		line-height: 1.4em;
+		text-align: center;
+
+	}
+	.btn-faq i {
+		font-size: 2em;
+	}
+
+	.btn-faq::before,
+	.btn-faq::after {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		content: '';
+	}
+
+	.btn-faq::after {
+		z-index: -2;
+		background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+	}
+
+	.btn-faq::before {
+		z-index: -1;
+		background: linear-gradient(135deg, var(--primary-hover) 0%, #6bbfc1 100%);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.btn-faq > span,
+	.btn-faq > :global(i) {
+		position: relative;
+		z-index: 1;
 	}
 
 	.btn-faq:hover {
 		color: #fff;
-		background: linear-gradient(135deg, var(--primary-hover) 0%, #6bbfc1 100%);
+		box-shadow: 0 12px 26px rgba(31, 111, 120, 0.3);
+	}
+
+	.btn-faq:hover::before {
+		opacity: 1;
 	}
 
 	@media (max-width: 700px) {
