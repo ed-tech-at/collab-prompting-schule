@@ -21,23 +21,23 @@
 	<form method="POST" action="?/login" class="login-form">
 
 		<label>
-				CollabSpace-ID
+				CollabSpace-ID<span class="label-required">*</span>
 				<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 
 		<label>
-			Ihr Anzeigename
+			Ihr Anzeigename<span class="label-required">*</span>
 			<input name="username" type="text" required />
 		</label>
 
 		<label>
-			Teilnahmecode
-			<div class="muted" style="font-weight: 400;">Der Teilnahmecode ist der Code aus Ihrer Einladung, nicht das Verwaltungspasswort.</div>
+			Teilnahmecode<span class="label-required">*</span>
+			<!-- <div class="muted" style="font-weight: 400;">Der Teilnahmecode ist der Code aus Ihrer Einladung, nicht das Verwaltungspasswort.</div> -->
 			<input name="student_pw" type="password" required />
 		</label>
 
 		<label>
-			Benutzerrichtlinie
+			Benutzerrichtlinie<span class="label-required">*</span>
 			<div class="checkbox_wrapper">
 				<input name="accepted_guidelines" type="checkbox" required />
 				<span>

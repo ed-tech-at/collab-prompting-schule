@@ -18,14 +18,14 @@
 
 	<form method="POST" action="?/login" class="login-form">
 		<label>
-			CollabSpace-ID
+			CollabSpace-ID<span class="label-required">*</span>
 			<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 		<label>
-			Verwaltungspasswort
+			Verwaltungspasswort<span class="label-required">*</span>
 			<input name="password" type="password" required />
 		</label>
-		<button type="submit" class="btn btn-accent">Verwaltung öffnen <i class="fas fa-wrench"></i></button>
+		<button type="submit" class="btn btn-primary">Verwaltung öffnen <i class="fas fa-wrench"></i></button>
 
 	</form>
 	oder

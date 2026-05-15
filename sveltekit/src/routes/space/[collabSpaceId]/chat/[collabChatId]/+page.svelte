@@ -118,16 +118,16 @@
 		<!-- <div class="card bg-badge"> -->
 			<h3>Verwaltung</h3>
 			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen <i class="fas fa-wrench"></i></a></p>
-			<p class="muted">Versteckte Chats bleiben für Lehrende sichtbar, werden Teilnehmenden aber nicht angezeigt.</p>
+
 
 			<form method="POST" action="?/toggleHidden">
 				{#if data.hidden}
 					<button type="submit" name="hiddenAction" value="unhide" class="btn btn-success">
-						Für Teilnehmende anzeigen
+						Für Teilnehmende anzeigen <i class="fa-regular fa-eye"></i>
 					</button>
 				{:else}
-					<button type="submit" name="hiddenAction" value="hide" class="btn btn-danger">
-						Für Teilnehmende verstecken
+					<button type="submit" name="hiddenAction" value="hide" class="btn btn-accent">
+						Für Teilnehmende verstecken <i class="fa-regular fa-eye-slash"></i>
 					</button>
 				{/if}
 			</form>
