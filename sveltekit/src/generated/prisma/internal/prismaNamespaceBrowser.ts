@@ -54,7 +54,8 @@ export const ModelName = {
   Teacher: 'Teacher',
   CollabSpace: 'CollabSpace',
   CollabChat: 'CollabChat',
-  ChatEntry: 'ChatEntry'
+  ChatEntry: 'ChatEntry',
+  ChatEntryImage: 'ChatEntryImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -96,6 +97,7 @@ export const CollabSpaceScalarFieldEnum = {
   student_pw: 'student_pw',
   cryptVersion: 'cryptVersion',
   mathRender: 'mathRender',
+  imageUpload: 'imageUpload',
   question: 'question',
   system_prompt: 'system_prompt',
   createdAt: 'createdAt',
@@ -130,6 +132,16 @@ export const ChatEntryScalarFieldEnum = {
 } as const
 
 export type ChatEntryScalarFieldEnum = (typeof ChatEntryScalarFieldEnum)[keyof typeof ChatEntryScalarFieldEnum]
+
+
+export const ChatEntryImageScalarFieldEnum = {
+  id: 'id',
+  dataUrl: 'dataUrl',
+  chatEntryId: 'chatEntryId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatEntryImageScalarFieldEnum = (typeof ChatEntryImageScalarFieldEnum)[keyof typeof ChatEntryImageScalarFieldEnum]
 
 
 export const SortOrder = {

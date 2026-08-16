@@ -114,6 +114,11 @@
 				Mathematik-Rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
 			</label>
 
+			<label class="math-render-toggle checkbox_wrapper">
+				<input type="checkbox" name="imageUpload" />
+				Bild-Upload für Teilnehmende erlauben (LLM-Modell muss Bildeingaben unterstützen)
+			</label>
+
 		</label>
 
 		<label>

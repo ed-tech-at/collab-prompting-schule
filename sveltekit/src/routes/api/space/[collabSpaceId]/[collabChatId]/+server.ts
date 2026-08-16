@@ -7,6 +7,24 @@ import { getJwtCookie } from '$lib/server/jwt';
 import { validateStudentCookie } from '$lib/server/collab-space-auth';
 import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
 
+const MAX_IMAGES_PER_MESSAGE = 3;
+const MAX_IMAGE_DATA_URL_LENGTH = 2 * 1024 * 1024;
+const IMAGE_DATA_URL_PATTERN = /^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/]+=*$/;
+
+const toMessageContent = (message: string, imageDataUrls: string[]) => {
+	if (imageDataUrls.length === 0) return message;
+	const parts: Array<
+		{ type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } }
+	> = [];
+	if (message.length > 0) {
+		parts.push({ type: 'text', text: message });
+	}
+	for (const url of imageDataUrls) {
+		parts.push({ type: 'image_url', image_url: { url } });
+	}
+	return parts;
+};
+
 export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 	const collabChatId = Number(params.collabChatId);
@@ -34,8 +52,25 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 			? (body as { prompt: string }).prompt.trim()
 			: '';
 
-	if (!prompt) {
+	const imagesRaw =
+		body && typeof body === 'object' && 'images' in body ? (body as { images?: unknown }).images : undefined;
+	const images = Array.isArray(imagesRaw) ? imagesRaw : [];
+
+	if (!prompt && images.length === 0) {
 		return json({ success: false, message: 'Nachricht fehlt.' }, { status: 400 });
+	}
+	if (images.length > MAX_IMAGES_PER_MESSAGE) {
+		return json(
+			{ success: false, message: `Maximal ${MAX_IMAGES_PER_MESSAGE} Bilder pro Nachricht erlaubt.` },
+			{ status: 400 }
+		);
+	}
+	const imageDataUrls: string[] = [];
+	for (const image of images) {
+		if (typeof image !== 'string' || image.length > MAX_IMAGE_DATA_URL_LENGTH || !IMAGE_DATA_URL_PATTERN.test(image)) {
+			return json({ success: false, message: 'Ungültiges Bildformat.' }, { status: 400 });
+		}
+		imageDataUrls.push(image);
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -46,11 +81,23 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 		adminCookie?.password
 	);
 
+	if (images.length > 0 && !collabSpace.imageUpload) {
+		return json(
+			{ success: false, message: 'Bild-Upload ist in diesem CollabSpace nicht aktiviert.' },
+			{ status: 400 }
+		);
+	}
+
 	const findChatArgs = {
 		where: { id: collabChatId, collabSpaceId, toDelete: null },
 		include: {
 			ChatEntries: {
-				orderBy: { createdAt: 'asc' }
+				orderBy: { createdAt: 'asc' },
+				include: {
+					images: {
+						orderBy: { id: 'asc' }
+					}
+				}
 			}
 		}
 	} satisfies Parameters<typeof prisma.collabChat.findFirst>[0];
@@ -79,16 +126,26 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 		? `${baseSystemPrompt}\n\n${LATEX_DELIMITER_SYSTEM_PROMPT}`
 		: baseSystemPrompt;
 
-	const history = collabChat.ChatEntries.filter(
+	const history: ChatCompletionMessageParam[] = collabChat.ChatEntries.filter(
 		(entry) => (entry.role === 'user' || entry.role === 'assistant') && typeof entry.message === 'string'
-	).map((entry) => ({ role: entry.role as 'user' | 'assistant', content: entry.message as string }));
+	).map((entry) =>
+		entry.role === 'user'
+			? {
+					role: 'user',
+					content: toMessageContent(entry.message as string, entry.images.map((image) => image.dataUrl))
+				}
+			: { role: 'assistant', content: entry.message as string }
+	);
 
 	try {
 		const createUserEntryArgs = {
 			data: {
 				collabChatId,
 				role: 'user',
-				message: prompt
+				message: prompt,
+				...(imageDataUrls.length > 0
+					? { images: { create: imageDataUrls.map((dataUrl) => ({ dataUrl })) } }
+					: {})
 			}
 		} satisfies Parameters<typeof prisma.chatEntry.create>[0];
 		await prisma.chatEntry.create(createUserEntryArgs);
@@ -101,7 +158,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 		const messages: ChatCompletionMessageParam[] = [
 			{ role: 'system', content: systemPrompt },
 			...history,
-			{ role: 'user', content: prompt }
+			{ role: 'user', content: toMessageContent(prompt, imageDataUrls) }
 		];
 
 		const stream = await client.chat.completions.create({

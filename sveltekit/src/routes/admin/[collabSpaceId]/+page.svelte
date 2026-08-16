@@ -36,6 +36,7 @@
 		student_pw: data.collabSpace.student_pw ?? '',
 		cryptVersion: data.collabSpace.cryptVersion,
 		mathRender: data.collabSpace.mathRender,
+		imageUpload: data.collabSpace.imageUpload,
 		question: data.collabSpace.question ?? '',
 		system_prompt: data.collabSpace.system_prompt ?? '',
 		createdAt: new Date(data.collabSpace.createdAt).toISOString().slice(0, 16),
@@ -173,6 +174,19 @@
 							{#if collabSpace.mathRender}
 								<p class="system-prompt-note">Folgender Text wird automatisch an den KI-Systemprompt angefügt:</p>
 								<pre class="system-prompt-note" style="color: var(--primary-hover);">{@html nl2br(mathSystemPromptNote)}</pre>
+							{/if}
+						</td>
+					</tr>
+
+					<tr>
+						<th>Bild-Upload</th>
+						<td>
+							<label class="math-render-toggle">
+								<input type="checkbox" name="imageUpload" bind:checked={collabSpace.imageUpload} />
+								Bild-Upload für Teilnehmende erlauben
+							</label>
+							{#if collabSpace.imageUpload}
+								<p class="field-help">Das gewählte LLM-Modell muss Bildeingaben (Vision) unterstützen, sonst schlagen Nachrichten mit Bildern fehl.</p>
 							{/if}
 						</td>
 					</tr>

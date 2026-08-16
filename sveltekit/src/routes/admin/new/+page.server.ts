@@ -22,6 +22,7 @@ export const actions: Actions = {
 		const studentPw = data.get('student_pw');
 		const manageEmail = data.get('manageEmail');
 		const mathRender = data.get('mathRender') === 'on';
+		const imageUpload = data.get('imageUpload') === 'on';
 
 		if (typeof password !== 'string' || !password) {
 			return fail(400, { success: false, message: 'Verwaltungspasswort ist erforderlich.' });
@@ -37,6 +38,7 @@ export const actions: Actions = {
 				student_pw: typeof studentPw === 'string' && studentPw ? studentPw : null,
 				cryptVersion: 0,
 				mathRender,
+				imageUpload,
 				question: typeof question === 'string' && question ? question : null,
 				system_prompt: typeof systemPrompt === 'string' && systemPrompt ? systemPrompt : null,
 				manageEmail: typeof manageEmail === 'string' && manageEmail ? manageEmail : null

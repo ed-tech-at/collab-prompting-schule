@@ -221,6 +221,7 @@ export type ChatEntryWhereInput = {
   collabChatId?: Prisma.IntFilter<"ChatEntry"> | number
   createdAt?: Prisma.DateTimeFilter<"ChatEntry"> | Date | string
   collabChat?: Prisma.XOR<Prisma.CollabChatScalarRelationFilter, Prisma.CollabChatWhereInput>
+  images?: Prisma.ChatEntryImageListRelationFilter
 }
 
 export type ChatEntryOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type ChatEntryOrderByWithRelationInput = {
   collabChatId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   collabChat?: Prisma.CollabChatOrderByWithRelationInput
+  images?: Prisma.ChatEntryImageOrderByRelationAggregateInput
 }
 
 export type ChatEntryWhereUniqueInput = Prisma.AtLeast<{
@@ -242,6 +244,7 @@ export type ChatEntryWhereUniqueInput = Prisma.AtLeast<{
   collabChatId?: Prisma.IntFilter<"ChatEntry"> | number
   createdAt?: Prisma.DateTimeFilter<"ChatEntry"> | Date | string
   collabChat?: Prisma.XOR<Prisma.CollabChatScalarRelationFilter, Prisma.CollabChatWhereInput>
+  images?: Prisma.ChatEntryImageListRelationFilter
 }, "id">
 
 export type ChatEntryOrderByWithAggregationInput = {
@@ -273,6 +276,7 @@ export type ChatEntryCreateInput = {
   message?: string | null
   createdAt?: Date | string
   collabChat: Prisma.CollabChatCreateNestedOneWithoutChatEntriesInput
+  images?: Prisma.ChatEntryImageCreateNestedManyWithoutChatEntryInput
 }
 
 export type ChatEntryUncheckedCreateInput = {
@@ -281,6 +285,7 @@ export type ChatEntryUncheckedCreateInput = {
   message?: string | null
   collabChatId: number
   createdAt?: Date | string
+  images?: Prisma.ChatEntryImageUncheckedCreateNestedManyWithoutChatEntryInput
 }
 
 export type ChatEntryUpdateInput = {
@@ -288,6 +293,7 @@ export type ChatEntryUpdateInput = {
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   collabChat?: Prisma.CollabChatUpdateOneRequiredWithoutChatEntriesNestedInput
+  images?: Prisma.ChatEntryImageUpdateManyWithoutChatEntryNestedInput
 }
 
 export type ChatEntryUncheckedUpdateInput = {
@@ -296,6 +302,7 @@ export type ChatEntryUncheckedUpdateInput = {
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   collabChatId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ChatEntryImageUncheckedUpdateManyWithoutChatEntryNestedInput
 }
 
 export type ChatEntryCreateManyInput = {
@@ -364,6 +371,11 @@ export type ChatEntrySumOrderByAggregateInput = {
   collabChatId?: Prisma.SortOrder
 }
 
+export type ChatEntryScalarRelationFilter = {
+  is?: Prisma.ChatEntryWhereInput
+  isNot?: Prisma.ChatEntryWhereInput
+}
+
 export type ChatEntryCreateNestedManyWithoutCollabChatInput = {
   create?: Prisma.XOR<Prisma.ChatEntryCreateWithoutCollabChatInput, Prisma.ChatEntryUncheckedCreateWithoutCollabChatInput> | Prisma.ChatEntryCreateWithoutCollabChatInput[] | Prisma.ChatEntryUncheckedCreateWithoutCollabChatInput[]
   connectOrCreate?: Prisma.ChatEntryCreateOrConnectWithoutCollabChatInput | Prisma.ChatEntryCreateOrConnectWithoutCollabChatInput[]
@@ -406,10 +418,25 @@ export type ChatEntryUncheckedUpdateManyWithoutCollabChatNestedInput = {
   deleteMany?: Prisma.ChatEntryScalarWhereInput | Prisma.ChatEntryScalarWhereInput[]
 }
 
+export type ChatEntryCreateNestedOneWithoutImagesInput = {
+  create?: Prisma.XOR<Prisma.ChatEntryCreateWithoutImagesInput, Prisma.ChatEntryUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.ChatEntryCreateOrConnectWithoutImagesInput
+  connect?: Prisma.ChatEntryWhereUniqueInput
+}
+
+export type ChatEntryUpdateOneRequiredWithoutImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.ChatEntryCreateWithoutImagesInput, Prisma.ChatEntryUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.ChatEntryCreateOrConnectWithoutImagesInput
+  upsert?: Prisma.ChatEntryUpsertWithoutImagesInput
+  connect?: Prisma.ChatEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChatEntryUpdateToOneWithWhereWithoutImagesInput, Prisma.ChatEntryUpdateWithoutImagesInput>, Prisma.ChatEntryUncheckedUpdateWithoutImagesInput>
+}
+
 export type ChatEntryCreateWithoutCollabChatInput = {
   role?: string | null
   message?: string | null
   createdAt?: Date | string
+  images?: Prisma.ChatEntryImageCreateNestedManyWithoutChatEntryInput
 }
 
 export type ChatEntryUncheckedCreateWithoutCollabChatInput = {
@@ -417,6 +444,7 @@ export type ChatEntryUncheckedCreateWithoutCollabChatInput = {
   role?: string | null
   message?: string | null
   createdAt?: Date | string
+  images?: Prisma.ChatEntryImageUncheckedCreateNestedManyWithoutChatEntryInput
 }
 
 export type ChatEntryCreateOrConnectWithoutCollabChatInput = {
@@ -456,6 +484,52 @@ export type ChatEntryScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ChatEntry"> | Date | string
 }
 
+export type ChatEntryCreateWithoutImagesInput = {
+  role?: string | null
+  message?: string | null
+  createdAt?: Date | string
+  collabChat: Prisma.CollabChatCreateNestedOneWithoutChatEntriesInput
+}
+
+export type ChatEntryUncheckedCreateWithoutImagesInput = {
+  id?: number
+  role?: string | null
+  message?: string | null
+  collabChatId: number
+  createdAt?: Date | string
+}
+
+export type ChatEntryCreateOrConnectWithoutImagesInput = {
+  where: Prisma.ChatEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChatEntryCreateWithoutImagesInput, Prisma.ChatEntryUncheckedCreateWithoutImagesInput>
+}
+
+export type ChatEntryUpsertWithoutImagesInput = {
+  update: Prisma.XOR<Prisma.ChatEntryUpdateWithoutImagesInput, Prisma.ChatEntryUncheckedUpdateWithoutImagesInput>
+  create: Prisma.XOR<Prisma.ChatEntryCreateWithoutImagesInput, Prisma.ChatEntryUncheckedCreateWithoutImagesInput>
+  where?: Prisma.ChatEntryWhereInput
+}
+
+export type ChatEntryUpdateToOneWithWhereWithoutImagesInput = {
+  where?: Prisma.ChatEntryWhereInput
+  data: Prisma.XOR<Prisma.ChatEntryUpdateWithoutImagesInput, Prisma.ChatEntryUncheckedUpdateWithoutImagesInput>
+}
+
+export type ChatEntryUpdateWithoutImagesInput = {
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  collabChat?: Prisma.CollabChatUpdateOneRequiredWithoutChatEntriesNestedInput
+}
+
+export type ChatEntryUncheckedUpdateWithoutImagesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  collabChatId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ChatEntryCreateManyCollabChatInput = {
   id?: number
   role?: string | null
@@ -467,6 +541,7 @@ export type ChatEntryUpdateWithoutCollabChatInput = {
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ChatEntryImageUpdateManyWithoutChatEntryNestedInput
 }
 
 export type ChatEntryUncheckedUpdateWithoutCollabChatInput = {
@@ -474,6 +549,7 @@ export type ChatEntryUncheckedUpdateWithoutCollabChatInput = {
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ChatEntryImageUncheckedUpdateManyWithoutChatEntryNestedInput
 }
 
 export type ChatEntryUncheckedUpdateManyWithoutCollabChatInput = {
@@ -484,6 +560,35 @@ export type ChatEntryUncheckedUpdateManyWithoutCollabChatInput = {
 }
 
 
+/**
+ * Count Type ChatEntryCountOutputType
+ */
+
+export type ChatEntryCountOutputType = {
+  images: number
+}
+
+export type ChatEntryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  images?: boolean | ChatEntryCountOutputTypeCountImagesArgs
+}
+
+/**
+ * ChatEntryCountOutputType without action
+ */
+export type ChatEntryCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatEntryCountOutputType
+   */
+  select?: Prisma.ChatEntryCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ChatEntryCountOutputType without action
+ */
+export type ChatEntryCountOutputTypeCountImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatEntryImageWhereInput
+}
+
 
 export type ChatEntrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -492,6 +597,8 @@ export type ChatEntrySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   collabChatId?: boolean
   createdAt?: boolean
   collabChat?: boolean | Prisma.CollabChatDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.ChatEntry$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.ChatEntryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chatEntry"]>
 
 export type ChatEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -523,6 +630,8 @@ export type ChatEntrySelectScalar = {
 export type ChatEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "message" | "collabChatId" | "createdAt", ExtArgs["result"]["chatEntry"]>
 export type ChatEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collabChat?: boolean | Prisma.CollabChatDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.ChatEntry$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.ChatEntryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChatEntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collabChat?: boolean | Prisma.CollabChatDefaultArgs<ExtArgs>
@@ -535,6 +644,7 @@ export type $ChatEntryPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "ChatEntry"
   objects: {
     collabChat: Prisma.$CollabChatPayload<ExtArgs>
+    images: Prisma.$ChatEntryImagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -937,6 +1047,7 @@ readonly fields: ChatEntryFieldRefs;
 export interface Prisma__ChatEntryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   collabChat<T extends Prisma.CollabChatDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CollabChatDefaultArgs<ExtArgs>>): Prisma.Prisma__CollabChatClient<runtime.Types.Result.GetResult<Prisma.$CollabChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  images<T extends Prisma.ChatEntry$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatEntry$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatEntryImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1369,6 +1480,30 @@ export type ChatEntryDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many ChatEntries to delete.
    */
   limit?: number
+}
+
+/**
+ * ChatEntry.images
+ */
+export type ChatEntry$imagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatEntryImage
+   */
+  select?: Prisma.ChatEntryImageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatEntryImage
+   */
+  omit?: Prisma.ChatEntryImageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatEntryImageInclude<ExtArgs> | null
+  where?: Prisma.ChatEntryImageWhereInput
+  orderBy?: Prisma.ChatEntryImageOrderByWithRelationInput | Prisma.ChatEntryImageOrderByWithRelationInput[]
+  cursor?: Prisma.ChatEntryImageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatEntryImageScalarFieldEnum | Prisma.ChatEntryImageScalarFieldEnum[]
 }
 
 /**

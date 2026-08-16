@@ -387,7 +387,8 @@ export const ModelName = {
   Teacher: 'Teacher',
   CollabSpace: 'CollabSpace',
   CollabChat: 'CollabChat',
-  ChatEntry: 'ChatEntry'
+  ChatEntry: 'ChatEntry',
+  ChatEntryImage: 'ChatEntryImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "teacher" | "collabSpace" | "collabChat" | "chatEntry"
+    modelProps: "teacher" | "collabSpace" | "collabChat" | "chatEntry" | "chatEntryImage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChatEntryImage: {
+      payload: Prisma.$ChatEntryImagePayload<ExtArgs>
+      fields: Prisma.ChatEntryImageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChatEntryImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChatEntryImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>
+        }
+        findFirst: {
+          args: Prisma.ChatEntryImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChatEntryImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>
+        }
+        findMany: {
+          args: Prisma.ChatEntryImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>[]
+        }
+        create: {
+          args: Prisma.ChatEntryImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>
+        }
+        createMany: {
+          args: Prisma.ChatEntryImageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChatEntryImageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>[]
+        }
+        delete: {
+          args: Prisma.ChatEntryImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>
+        }
+        update: {
+          args: Prisma.ChatEntryImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ChatEntryImageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChatEntryImageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChatEntryImageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ChatEntryImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChatEntryImagePayload>
+        }
+        aggregate: {
+          args: Prisma.ChatEntryImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChatEntryImage>
+        }
+        groupBy: {
+          args: Prisma.ChatEntryImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatEntryImageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChatEntryImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatEntryImageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -765,6 +840,7 @@ export const CollabSpaceScalarFieldEnum = {
   student_pw: 'student_pw',
   cryptVersion: 'cryptVersion',
   mathRender: 'mathRender',
+  imageUpload: 'imageUpload',
   question: 'question',
   system_prompt: 'system_prompt',
   createdAt: 'createdAt',
@@ -799,6 +875,16 @@ export const ChatEntryScalarFieldEnum = {
 } as const
 
 export type ChatEntryScalarFieldEnum = (typeof ChatEntryScalarFieldEnum)[keyof typeof ChatEntryScalarFieldEnum]
+
+
+export const ChatEntryImageScalarFieldEnum = {
+  id: 'id',
+  dataUrl: 'dataUrl',
+  chatEntryId: 'chatEntryId',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatEntryImageScalarFieldEnum = (typeof ChatEntryImageScalarFieldEnum)[keyof typeof ChatEntryImageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1007,6 +1093,7 @@ export type GlobalOmitConfig = {
   collabSpace?: Prisma.CollabSpaceOmit
   collabChat?: Prisma.CollabChatOmit
   chatEntry?: Prisma.ChatEntryOmit
+  chatEntryImage?: Prisma.ChatEntryImageOmit
 }
 
 /* Types for Logging */
