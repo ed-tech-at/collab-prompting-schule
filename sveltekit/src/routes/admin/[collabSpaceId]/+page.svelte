@@ -236,9 +236,22 @@
 		<div class="export-zone">
 			<h3>JSON-Export</h3>
 			<p>Enthält die Einstellungen, Chats und Nachrichten dieses CollabSpace inklusive vorgemerkter Löschungen. API-Key sowie Verwaltungs- und Teilnahmepasswort sind nicht enthalten.</p>
-			<a class="btn btn-ghost" href={resolve(`/admin/${data.collabSpace.id}/export`)}>
-				JSON-Export <i class="fas fa-download"></i>
-			</a>
+			{#if data.collabSpace.imageUpload}
+				<p>Hochgeladene Bilder stehen im JSON nur als Metadaten (ID, Typ, Grösse, Dateiname). Der ZIP-Export enthält zusätzlich die Bilddateien selbst und kann dadurch sehr gross werden.</p>
+			{/if}
+			<div class="export-actions">
+				<a class="btn btn-ghost" href={resolve(`/admin/${data.collabSpace.id}/export`)}>
+					JSON-Export <i class="fas fa-download"></i>
+				</a>
+				{#if data.collabSpace.imageUpload}
+					<a
+						class="btn btn-ghost"
+						href={`${resolve(`/admin/${data.collabSpace.id}/export`)}?images=zip`}
+					>
+						Export mit Bildern (ZIP) <i class="fas fa-file-zipper"></i>
+					</a>
+				{/if}
+			</div>
 		</div>
 	</div>
 </section>
@@ -419,6 +432,13 @@
 
 	.export-zone p {
 		color: var(--muted);
+	}
+
+	.export-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		align-items: center;
 	}
 
 	.danger-zone form,
