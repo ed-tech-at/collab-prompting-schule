@@ -20,6 +20,8 @@ Studierende starten innerhalb eines Spaces eigene **CollabChats** mit dem konfig
 ### Bisherige Schritte
 - Feburar 2026: Entwicklung der Anwendung
 - **2026:** Bereitstellung unter `https://collab.prompting.schule`
+- Juli 2026: JSON-Export der Space-Daten
+- August 2026: Bild-Upload für Teilnehmende sowie ZIP-Export der Space-Daten
 
 ### Nächste Schritte
 - Erprobung in weiteren Lehr-/Lernszenarien
@@ -36,6 +38,8 @@ Studierende starten innerhalb eines Spaces eigene **CollabChats** mit dem konfig
     - Systemprompt
     - Admin-Passwort
     - Teilnahmecode für Lernende
+    - Mathematik-Rendering (KaTeX) für Formeln in den Antworten
+    - Bild-Upload für Teilnehmende (standardmäßig deaktiviert)
 - Teilnehmende treten einem Space mit **Space-ID, Username und Teilnahmecode** bei
 - Innerhalb eines Spaces können Teilnehmende beliebig neue **Einzelchats** starten
 - Nur die Person, die einen Chat erstellt hat, kann darin weitere Nachrichten senden
@@ -46,6 +50,23 @@ Studierende starten innerhalb eines Spaces eigene **CollabChats** mit dem konfig
 - Lehrende können Chats zusätzlich **verstecken oder wieder freigeben**
 - Lehrende sehen in der Admin-Oberfläche alle Konversationen eines Spaces samt Bewertungen und Kommentaren
 - Mehrere Spaces und Logins werden per Cookie-Session für **8 Tage** gespeichert
+
+#### Bild-Upload (Bild-Prompting)
+- Pro Space aktivierbar; ist im Auslieferungszustand **deaktiviert**
+- Teilnehmende hängen Bilder per Dateiauswahl, **Drag & Drop** oder **Einfügen aus der Zwischenablage** an eine Nachricht an
+- Auch Nachrichten **ohne Text**, also reine Bildnachrichten, sind möglich
+- Bilder bleiben Teil des Gesprächsverlaufs und werden bei Folgefragen erneut an das Modell übergeben
+- **Voraussetzung:** Das hinterlegte Sprachmodell muss Bildeingaben (Vision) unterstützen — es wird derselbe LLM-Zugang wie für Text verwendet, kein separates Bildmodell
+- Unterstützt wird jedes Format, das der Browser darstellen kann (JPEG, PNG, WebP, GIF, AVIF …); die Bilder werden vor dem Versand im Browser auf max. 1568 Pixel Kantenlänge verkleinert und als JPEG kodiert
+- Nicht verarbeitbar sind **HEIC/HEIF**-Dateien (iPhone-Format) am Desktop; Transparenz wird auf Weiß gesetzt und von animierten GIFs bleibt das erste Bild
+- Maximal **3 Bilder pro Nachricht**
+
+#### Export der Space-Daten
+- Lehrende können einen Space jederzeit aus der Verwaltung herunterladen
+- **JSON-Export:** Einstellungen, alle Chats und alle Nachrichten in einer Datei, inklusive der zur Löschung vorgemerkten Chats
+- **ZIP-Export mit Bildern:** dieselbe JSON-Datei plus die hochgeladenen Bilder als einzelne Bilddateien; wird nur angeboten, wenn der Space Bild-Upload nutzt
+- **Nicht enthalten:** API-Key, Verwaltungspasswort und Teilnahmecode
+- Eignet sich für Archivierung, Weiterverarbeitung und die wissenschaftliche Auswertung von Prompting-Verläufen
 
 ### Didaktischer Mehrwert
 - KI-Nutzung wird nicht nur individuell, sondern **vergleichbar und besprechbar**
@@ -63,6 +84,8 @@ Studierende starten innerhalb eines Spaces eigene **CollabChats** mit dem konfig
 - Webanwendung auf Basis von **SvelteKit**
 - LLM-Anbindung über die **OpenAI Node SDK**
 - Markdown-Ausgabe für Assistant-Antworten
+- Bildeingaben werden als multimodale Nachrichten (`image_url`) an die Chat-Completions-API übergeben und in der Datenbank beim jeweiligen Chateintrag gespeichert
+- Export als JSON bzw. ZIP direkt aus der Verwaltung, ohne zusätzliche Werkzeuge
 - Self-Hosting ist laut Repository grundsätzlich möglich; TU-Graz-spezifische Kennzeichen müssen dabei entfernt werden
 
 ### Abgrenzung
