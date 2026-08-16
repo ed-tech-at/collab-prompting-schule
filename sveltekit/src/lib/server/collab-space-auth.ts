@@ -9,6 +9,7 @@ const collabSpaceAuthArgs = {
 		password: true,
 		question: true,
 		mathRender: true,
+		imageUpload: true,
 		api_key: true,
 		base_url: true,
 		model: true,

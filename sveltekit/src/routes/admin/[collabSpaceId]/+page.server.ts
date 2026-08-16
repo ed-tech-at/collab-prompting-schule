@@ -119,6 +119,7 @@ export const actions: Actions = {
 		const systemPrompt = data.get('system_prompt');
 		const manageEmail = data.get('manageEmail');
 		const mathRender = data.get('mathRender') === 'on';
+		const imageUpload = data.get('imageUpload') === 'on';
 
 		if (!Number.isInteger(nextId) || nextId <= 0) {
 			return fail(400, { success: false, message: 'CollabSpace-ID muss eine positive Zahl sein.' });
@@ -141,6 +142,7 @@ export const actions: Actions = {
 					password,
 					student_pw: typeof studentPw === 'string' && studentPw ? studentPw : null,
 					mathRender,
+					imageUpload,
 					question: typeof question === 'string' && question ? question : null,
 					manageEmail: typeof manageEmail === 'string' && manageEmail ? manageEmail : null,
 					system_prompt: typeof systemPrompt === 'string' && systemPrompt ? systemPrompt : null

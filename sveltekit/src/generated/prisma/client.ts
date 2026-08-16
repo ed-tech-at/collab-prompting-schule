@@ -61,3 +61,8 @@ export type CollabChat = Prisma.CollabChatModel
  * 
  */
 export type ChatEntry = Prisma.ChatEntryModel
+/**
+ * Model ChatEntryImage
+ * 
+ */
+export type ChatEntryImage = Prisma.ChatEntryImageModel

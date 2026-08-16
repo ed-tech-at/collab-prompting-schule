@@ -19,16 +19,104 @@
 	let teacherComment = data.teacherComment ?? '';
 	let confirmDeleteChat = false;
 	const spaceTitle = data.title?.trim() ?? '';
-	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string }> = (
+	let messages: Array<{ role: 'user' | 'assistant'; content: string; html?: string; images?: string[] }> = (
 		data.messages ?? []
 	).map((message) => ({
 		role: message.role,
 		content: message.content,
+		images: message.images,
 		html:
 			message.role === 'assistant'
 				? (renderMarkdown(message.content, { mathRender: data.mathRender }) ?? '')
 				: undefined
 	}));
+
+	const MAX_IMAGES_PER_MESSAGE = 3;
+	const MAX_IMAGE_DIMENSION = 1568;
+	let pendingImages: string[] = [];
+	let dragOver = false;
+	let fileInput: HTMLInputElement | null = null;
+
+	const loadImageElement = (file: File) =>
+		new Promise<HTMLImageElement>((resolvePromise, rejectPromise) => {
+			const objectUrl = URL.createObjectURL(file);
+			const img = new Image();
+			img.onload = () => resolvePromise(img);
+			img.onerror = () => {
+				URL.revokeObjectURL(objectUrl);
+				rejectPromise(new Error('Bild konnte nicht gelesen werden.'));
+			};
+			img.src = objectUrl;
+		});
+
+	const compressImage = async (file: File): Promise<string> => {
+		const img = await loadImageElement(file);
+		try {
+			const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.naturalWidth, img.naturalHeight));
+			const width = Math.max(1, Math.round(img.naturalWidth * scale));
+			const height = Math.max(1, Math.round(img.naturalHeight * scale));
+
+			const canvas = document.createElement('canvas');
+			canvas.width = width;
+			canvas.height = height;
+			const ctx = canvas.getContext('2d');
+			if (!ctx) throw new Error('Bild konnte nicht verarbeitet werden.');
+			ctx.fillStyle = '#ffffff';
+			ctx.fillRect(0, 0, width, height);
+			ctx.drawImage(img, 0, 0, width, height);
+			return canvas.toDataURL('image/jpeg', 0.85);
+		} finally {
+			URL.revokeObjectURL(img.src);
+		}
+	};
+
+	const addImageFiles = async (files: Iterable<File>) => {
+		if (!data.imageUpload) return;
+		errorMessage = '';
+		for (const file of files) {
+			if (!file.type.startsWith('image/')) continue;
+			if (pendingImages.length >= MAX_IMAGES_PER_MESSAGE) {
+				errorMessage = `Maximal ${MAX_IMAGES_PER_MESSAGE} Bilder pro Nachricht möglich.`;
+				break;
+			}
+			try {
+				const dataUrl = await compressImage(file);
+				pendingImages = [...pendingImages, dataUrl];
+			} catch {
+				errorMessage = 'Ein Bild konnte nicht verarbeitet werden.';
+			}
+		}
+	};
+
+	const onFileInputChange = async (event: Event) => {
+		const input = event.currentTarget as HTMLInputElement;
+		if (input.files) {
+			await addImageFiles(input.files);
+		}
+		input.value = '';
+	};
+
+	const onDrop = async (event: DragEvent) => {
+		dragOver = false;
+		if (!data.imageUpload || !event.dataTransfer) return;
+		await addImageFiles(event.dataTransfer.files);
+	};
+
+	const onPaste = async (event: ClipboardEvent) => {
+		if (!data.imageUpload || !event.clipboardData) return;
+		const files = Array.from(event.clipboardData.items)
+			.filter((item) => item.kind === 'file' && item.type.startsWith('image/'))
+			.map((item) => item.getAsFile())
+			.filter((file): file is File => file !== null);
+		if (files.length > 0) {
+			event.preventDefault();
+			await addImageFiles(files);
+		}
+	};
+
+	const removePendingImage = (index: number) => {
+		pendingImages = pendingImages.filter((_, i) => i !== index);
+	};
 
 	const appendAssistantChunk = (assistantIndex: number, chunk: string) => {
 		if (!chunk) return;
@@ -46,7 +134,7 @@
 	}
 
 	const send = async () => {
-		if (!prompt.trim()) {
+		if (!prompt.trim() && pendingImages.length === 0) {
 			errorMessage = 'Bitte geben Sie eine Nachricht ein.';
 
 			scrollToBottom();
@@ -56,10 +144,12 @@
 
 		errorMessage = '';
 		const nextPrompt = prompt.trim();
+		const nextImages = pendingImages;
 		prompt = '';
+		pendingImages = [];
 		loading = true;
 
-		messages = [...messages, { role: 'user', content: nextPrompt }];
+		messages = [...messages, { role: 'user', content: nextPrompt, images: nextImages }];
 		messages = [...messages, { role: 'assistant', content: '', html: '' }];
 		const assistantIndex = messages.length - 1;
 
@@ -69,7 +159,7 @@
 				{
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ prompt: nextPrompt })
+					body: JSON.stringify({ prompt: nextPrompt, images: nextImages })
 				}
 			);
 
@@ -172,7 +262,16 @@
 							<div class="bubble-content">{@html message.html}</div>
 							<div class="meta">Chatbot</div>
 							{:else}
-							<div class="bubble-content">{message.content}</div>
+							<div class="bubble-content">
+								{#if message.images && message.images.length > 0}
+									<div class="bubble-images">
+										{#each message.images as image}
+											<img src={image} alt="Hochgeladenes Bild" class="bubble-image" />
+										{/each}
+									</div>
+								{/if}
+								{message.content}
+							</div>
 							<div class="meta">Nutzer:in</div>
 						{/if}
 					</div>
@@ -183,23 +282,72 @@
 
 
 		{#if data.canChat}
-				<div class="chat-input">
-						<!-- <label style="width: 100%;"> -->
-							<!-- Nachricht -->
-						<textarea
-							id="chat-prompt"
-							bind:value={prompt}
-							class={loading ? 'chat-prompt-loading' : ''}
-							rows="3"
-							placeholder="Geben Sie Ihre Nachricht ein..."
-							on:keydown={(e) => {
-								if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-									e.preventDefault();
-									send();
-								}
-							}}
-						></textarea>
-					<!-- </label> -->
+				<div
+					class="chat-input"
+					class:drag-over={dragOver}
+					role="group"
+					aria-label="Chat-Eingabe"
+					on:dragover|preventDefault={() => {
+						if (data.imageUpload) dragOver = true;
+					}}
+					on:dragleave={() => (dragOver = false)}
+					on:drop|preventDefault={onDrop}
+				>
+						{#if data.imageUpload}
+							<div class="image-actions">
+								<input
+									type="file"
+									accept="image/*"
+									multiple
+									class="image-file-input"
+									bind:this={fileInput}
+									on:change={onFileInputChange}
+								/>
+								<button
+									type="button"
+									class="btn btn-badge send-button"
+									on:click={() => fileInput?.click()}
+									disabled={loading}
+									aria-label="Bild anhängen"
+									title="Bild anhängen (oder per Drag & Drop / Einfügen)"
+								>
+									<i class="far fa-image" aria-hidden="true"></i>
+								</button>
+							</div>
+						{/if}
+						<div class="prompt-column">
+							{#if data.imageUpload && pendingImages.length > 0}
+								<div class="pending-images">
+									{#each pendingImages as image, index}
+										<div class="pending-image">
+											<img src={image} alt={`Bild ${index + 1} (Vorschau)`} />
+											<button
+												type="button"
+												class="pending-image-remove"
+												on:click={() => removePendingImage(index)}
+												aria-label="Bild entfernen"
+											>
+												<i class="fas fa-times" aria-hidden="true"></i>
+											</button>
+										</div>
+									{/each}
+								</div>
+							{/if}
+							<textarea
+								id="chat-prompt"
+								bind:value={prompt}
+								class={loading ? 'chat-prompt-loading' : ''}
+								rows="3"
+								placeholder="Geben Sie Ihre Nachricht ein..."
+								on:paste={onPaste}
+								on:keydown={(e) => {
+									if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+										e.preventDefault();
+										send();
+									}
+								}}
+							></textarea>
+						</div>
 						<div class="actions">
 							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading} aria-label="Nachricht senden">
 								<i class={loading ? 'fas fa-spinner fa-spin' : 'far fa-paper-plane'} aria-hidden="true"></i>
@@ -327,6 +475,91 @@
 	.chat-window.empty-chat {
 		min-height: 220px;
 		height: auto;
+	}
+
+	.bubble-images {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 0.35rem;
+	}
+
+	.bubble-image {
+		max-width: 100%;
+		max-height: 240px;
+		border-radius: 8px;
+		display: block;
+	}
+
+	.prompt-column {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.pending-images {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 10px;
+		background: white;
+		border: 1px solid #cfd6e0;
+		border-radius: 6px;
+	}
+
+	.pending-image {
+		position: relative;
+	}
+
+	.pending-image img {
+		height: 80px;
+		width: auto;
+		max-width: 140px;
+		object-fit: cover;
+		border-radius: 8px;
+		border: 1px solid #cfd6e0;
+		display: block;
+	}
+
+	.pending-image-remove {
+		position: absolute;
+		top: -8px;
+		right: -8px;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		border: none;
+		background: #333;
+		color: #fff;
+		font-size: 0.7rem;
+		line-height: 1;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+	}
+
+	.pending-image-remove:hover {
+		background: #8a1c1c;
+	}
+
+	.image-file-input {
+		display: none;
+	}
+
+	.image-actions {
+		display: flex;
+		flex-direction: column;
+		align-self: center;
+	}
+
+	.chat-input.drag-over {
+		outline: 2px dashed #1f7ae0;
+		outline-offset: 2px;
+		border-radius: 8px;
 	}
 
 	.empty-prompt {

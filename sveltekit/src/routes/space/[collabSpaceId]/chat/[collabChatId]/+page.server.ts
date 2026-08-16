@@ -45,7 +45,12 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		where: { id: collabChatId, collabSpaceId, toDelete: null },
 		include: {
 			ChatEntries: {
-				orderBy: { createdAt: 'asc' }
+				orderBy: { createdAt: 'asc' },
+				include: {
+					images: {
+						orderBy: { id: 'asc' }
+					}
+				}
 			}
 		}
 	} satisfies Parameters<typeof prisma.collabChat.findFirst>[0];
@@ -72,6 +77,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		title: collabSpace.title,
 		question: collabSpace.question,
 		mathRender: collabSpace.mathRender,
+		imageUpload: collabSpace.imageUpload,
 		isAdmin,
 		canChat,
 		hidden: collabChat.hidden,
@@ -83,7 +89,8 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 			.filter((entry) => entry.role === 'user' || entry.role === 'assistant')
 			.map((entry) => ({
 				role: entry.role as 'user' | 'assistant',
-				content: entry.message ?? ''
+				content: entry.message ?? '',
+				images: entry.images.map((image) => image.dataUrl)
 			}))
 	};
 };

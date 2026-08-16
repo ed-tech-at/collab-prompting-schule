@@ -35,6 +35,7 @@ model CollabSpace {
   cryptVersion Int @default(0)
 
   mathRender Boolean @default(false)
+  imageUpload Boolean @default(false)
 
 
   question      String?
@@ -83,7 +84,21 @@ model ChatEntry {
   collabChatId Int
   collabChat    CollabChat  @relation(fields: [collabChatId], references: [id], onDelete: Cascade)
 
-  
+  images ChatEntryImage[]
+
+
+  createdAt     DateTime @default(now())
+}
+
+
+model ChatEntryImage {
+  id            Int      @id @default(autoincrement())
+
+  dataUrl String
+
+  chatEntryId Int
+  chatEntry    ChatEntry  @relation(fields: [chatEntryId], references: [id], onDelete: Cascade)
+
   createdAt     DateTime @default(now())
 }
 
