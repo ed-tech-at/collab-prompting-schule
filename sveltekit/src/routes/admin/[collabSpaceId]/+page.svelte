@@ -232,6 +232,14 @@
 				<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 			{/if}
 		</div>
+
+		<div class="export-zone">
+			<h3>JSON-Export</h3>
+			<p>Enthält die Einstellungen, Chats und Nachrichten dieses CollabSpace inklusive vorgemerkter Löschungen. API-Key sowie Verwaltungs- und Teilnahmepasswort sind nicht enthalten.</p>
+			<a class="btn btn-ghost" href={resolve(`/admin/${data.collabSpace.id}/export`)}>
+				JSON-Export <i class="fas fa-download"></i>
+			</a>
+		</div>
 	</div>
 </section>
 <section>
@@ -395,6 +403,22 @@
 		border-radius: 12px;
 		padding: 1rem;
 		background: rgba(178, 58, 58, 0.04);
+	}
+
+	.export-zone {
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		padding: 1rem;
+		background: #fff;
+	}
+
+	.export-zone h3,
+	.export-zone p {
+		margin-top: 0;
+	}
+
+	.export-zone p {
+		color: var(--muted);
 	}
 
 	.danger-zone form,
