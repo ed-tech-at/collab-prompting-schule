@@ -237,7 +237,7 @@
 			<h3>JSON-Export</h3>
 			<p>Enthält die Einstellungen, Chats und Nachrichten dieses CollabSpace inklusive vorgemerkter Löschungen. API-Key sowie Verwaltungs- und Teilnahmepasswort sind nicht enthalten.</p>
 			{#if data.collabSpace.imageUpload}
-				<p>Hochgeladene Bilder stehen im JSON nur als Metadaten (ID, Typ, Grösse, Dateiname). Der ZIP-Export enthält zusätzlich die Bilddateien selbst und kann dadurch sehr gross werden.</p>
+				<p>Hochgeladene Bilder stehen im JSON nur als Metadaten (ID, Typ, Größe, Dateiname). Der ZIP-Export enthält zusätzlich die Bilddateien selbst und kann dadurch sehr groß werden.</p>
 			{/if}
 			<div class="export-actions">
 				<a class="btn btn-ghost" href={resolve(`/admin/${data.collabSpace.id}/export`)}>

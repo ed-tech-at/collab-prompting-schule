@@ -14,7 +14,7 @@ const FILE_EXTENSIONS: Record<string, string> = {
 	'image/gif': 'gif'
 };
 
-/** Schutz davor, dass ein sehr grosser Export den Node-Prozess aufbraucht. */
+/** Schutz davor, dass ein sehr großer Export den Node-Prozess aufbraucht. */
 const MAX_EXPORT_IMAGE_BYTES = 512 * 1024 * 1024;
 
 export const GET: RequestHandler = async ({ params, cookies, url }) => {
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ params, cookies, url }) => {
 		const extension = mimeType ? FILE_EXTENSIONS[mimeType] : undefined;
 
 		if (!match || !extension) {
-			// Unbekanntes oder beschaedigtes Format: Metadaten melden, aber nicht daran scheitern.
+			// Unbekanntes oder beschädigtes Format: Metadaten melden, aber nicht daran scheitern.
 			return {
 				id: image.id,
 				chatEntryId: image.chatEntryId,
@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ params, cookies, url }) => {
 	if (imageBytesTotal > MAX_EXPORT_IMAGE_BYTES) {
 		throw error(
 			413,
-			'Die Bilder dieses CollabSpace sind zu gross für einen ZIP-Export. Bitte den JSON-Export ohne Bilddateien verwenden.'
+			'Die Bilder dieses CollabSpace sind zu groß für einen ZIP-Export. Bitte den JSON-Export ohne Bilddateien verwenden.'
 		);
 	}
 
