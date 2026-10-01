@@ -1,0 +1,35 @@
+{
+	"name": "sveltekit",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-node": "^5.5.4",
+		"@sveltejs/kit": "^2.55.0",
+		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@types/qrcode": "^1.5.6",
+		"prisma": "^7.8.0",
+		"svelte": "^5.53.12",
+		"svelte-check": "^4.4.5",
+		"typescript": "^5.9.3",
+		"vite": "^8.0.0"
+	},
+	"dependencies": {
+		"@prisma/adapter-pg": "^7.8.0",
+		"@prisma/client": "^7.8.0",
+		"jose": "^6.2.1",
+		"katex": "^0.16.38",
+		"marked": "^17.0.4",
+		"marked-katex-extension": "^5.1.7",
+		"openai": "^6.29.0",
+		"qrcode": "^1.5.4"
+	}
+}

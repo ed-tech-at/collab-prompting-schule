@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Teacher {
+  id       String  @id @default(uuid())
+  email    String  @unique
+
+  password String
+  cryptVersion Int @default(0)
+
+  isDeleted Int @default(0)
+  createdAt       DateTime? @default(now())
+
+}
+
+
+model CollabSpace {
+  id            Int      @id @default(autoincrement())
+  title         String?
+  manageEmail String?
+  
+  base_url      String?
+  api_key      String?
+  model      String?
+
+  password String
+  student_pw String?
+  cryptVersion Int @default(0)
+
+  mathRender Boolean @default(false)
+  imageUpload Boolean @default(false)
+
+
+  question      String?
+  system_prompt       String?
+    
+  createdAt     DateTime @default(now())
+  toDelete      DateTime?
+
+  collabChats    CollabChat[]
+
+}
+
+model CollabChat {
+  id            Int      @id @default(autoincrement())
+  
+
+  collabSpaceId Int
+  collabSpace    CollabSpace  @relation(fields: [collabSpaceId], references: [id], onDelete: Cascade)
+
+  username String?
+
+  teacher_rating String?
+  student_rating String?
+
+  teacher_comment String?
+  student_comment String?
+
+  hidden Boolean @default(false)
+
+  ChatEntries    ChatEntry[]
+    
+  createdAt     DateTime @default(now())
+  toDelete      DateTime?
+
+}
+
+
+model ChatEntry {
+  id            Int      @id @default(autoincrement())
+
+
+  role String?
+  message String?
+
+
+  collabChatId Int
+  collabChat    CollabChat  @relation(fields: [collabChatId], references: [id], onDelete: Cascade)
+
+  images ChatEntryImage[]
+
+
+  createdAt     DateTime @default(now())
+}
+
+
+model ChatEntryImage {
+  id            Int      @id @default(autoincrement())
+
+  dataUrl String
+
+  chatEntryId Int
+  chatEntry    ChatEntry  @relation(fields: [chatEntryId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+}
+
+
