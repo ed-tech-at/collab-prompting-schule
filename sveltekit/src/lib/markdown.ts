@@ -1,3 +1,4 @@
+import DOMPurify from 'isomorphic-dompurify';
 import { Marked } from 'marked';
 import markedKatex from 'marked-katex-extension';
 
@@ -50,12 +51,28 @@ const normalizeMathDelimiters = (md: string) =>
 		.replace(/\\\[((?:.|\n)*?)\\\]/g, '\n$$\n$1\n$$\n')
 		.replace(/\\\(((?:.|\n)*?)\\\)/g, '$$$1$');
 
+// Markdown comes from space admins (question) and from the LLM (assistant
+// messages) and is rendered with {@html}. marked keeps raw HTML, so every
+// result is sanitized: no <script>, no on*-handlers, no javascript: URLs.
+// HTML, MathML and SVG (KaTeX uses it for roots) stay allowed so formatting
+// and formulas keep working.
+const sanitizeHtml = (html: string) =>
+	DOMPurify.sanitize(html, {
+		USE_PROFILES: { html: true, mathMl: true, svg: true },
+		// KaTeX wraps its MathML in <semantics> with a plain-text TeX <annotation>
+		ADD_TAGS: ['semantics', 'annotation'],
+		ADD_ATTR: ['target', 'encoding']
+	});
+
+const withBlankTargets = (html: string) =>
+	html.replace(/<a\b/g, "<a target='_blank' rel='noopener noreferrer'");
+
 export const renderMarkdownWithBlankTargets = (md?: string) => {
 	if (!md) return '';
 
 	const html = plainMarkdownRenderer.parse(md, { async: false });
 	if (typeof html !== 'string') return '';
-	return html.replace(/<a\b/g, "<a target='_blank' rel='noopener noreferrer'");
+	return sanitizeHtml(withBlankTargets(html));
 };
 
 export const renderMarkdown = (md?: string, options?: RenderMarkdownOptions) => {
@@ -65,5 +82,5 @@ export const renderMarkdown = (md?: string, options?: RenderMarkdownOptions) => 
 	const normalizedMarkdown = normalizeMathDelimiters(md);
 	const html = markdownRenderer.parse(normalizedMarkdown, { async: false });
 	if (typeof html !== 'string') return '';
-	return html.replace(/<a\b/g, "<a target='_blank' rel='noopener noreferrer'");
+	return sanitizeHtml(withBlankTargets(html));
 };

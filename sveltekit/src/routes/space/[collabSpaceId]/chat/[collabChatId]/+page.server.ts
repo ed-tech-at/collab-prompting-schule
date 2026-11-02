@@ -62,6 +62,14 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	if (collabChat.hidden && !isAdmin) {
 		throw error(404, 'CollabChat nicht gefunden.');
 	}
+	// Same visibility rule as the chat list on the space page: participants see
+	// their own chats (verified chat cookie) and chats that have been rated.
+	const isRated = [collabChat.student_rating, collabChat.teacher_rating].some(
+		(rating) => rating != null && rating > '0'
+	);
+	if (!isAdmin && !canChat && !isRated) {
+		throw error(404, 'CollabChat nicht gefunden.');
+	}
 	const spaceLabel = collabSpace.title?.trim()
 		? `CollabSpace-ID ${collabSpaceId}: ${collabSpace.title.trim()}`
 		: `CollabSpace-ID ${collabSpaceId}`;
