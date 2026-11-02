@@ -6,6 +6,7 @@ import prisma from '$lib/server/db';
 import { getJwtCookie } from '$lib/server/jwt';
 import { validateStudentCookie } from '$lib/server/collab-space-auth';
 import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
+import { msg, tr } from '$lib/i18n';
 
 const MAX_IMAGES_PER_MESSAGE = 3;
 const MAX_IMAGE_DATA_URL_LENGTH = 2 * 1024 * 1024;
@@ -25,26 +26,26 @@ const toMessageContent = (message: string, imageDataUrls: string[]) => {
 	return parts;
 };
 
-export const POST: RequestHandler = async ({ request, params, cookies }) => {
+export const POST: RequestHandler = async ({ locals, request, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 	const collabChatId = Number(params.collabChatId);
 
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		return json({ success: false, message: 'CollabSpace-ID ist ungültig.' }, { status: 400 });
+		return json({ success: false, message: msg(locals.lang).invalidSpaceId }, { status: 400 });
 	}
 	if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-		return json({ success: false, message: 'CollabChat-ID ist ungültig.' }, { status: 400 });
+		return json({ success: false, message: msg(locals.lang).invalidChatId }, { status: 400 });
 	}
 	const chatCookie = await getJwtCookie<{ collabChatId?: string }>(cookies, `CollabChatId${collabChatId}`);
 	if (chatCookie?.collabChatId !== String(collabChatId)) {
-		return json({ success: false, message: 'Keine gültige Chat-Sitzung gefunden.' }, { status: 403 });
+		return json({ success: false, message: msg(locals.lang).invalidChatSession }, { status: 403 });
 	}
 
 	let body: unknown;
 	try {
 		body = await request.json();
 	} catch {
-		return json({ success: false, message: 'Ungültige Anfrage.' }, { status: 400 });
+		return json({ success: false, message: tr(locals.lang)(tr(locals.lang)('Ungültige Anfrage.', 'Invalid request.'), 'Invalid request.') }, { status: 400 });
 	}
 
 	const prompt =
@@ -57,7 +58,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const images = Array.isArray(imagesRaw) ? imagesRaw : [];
 
 	if (!prompt && images.length === 0) {
-		return json({ success: false, message: 'Nachricht fehlt.' }, { status: 400 });
+		return json({ success: false, message: tr(locals.lang)('Nachricht fehlt.', 'Message is missing.') }, { status: 400 });
 	}
 	if (images.length > MAX_IMAGES_PER_MESSAGE) {
 		return json(
@@ -68,7 +69,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const imageDataUrls: string[] = [];
 	for (const image of images) {
 		if (typeof image !== 'string' || image.length > MAX_IMAGE_DATA_URL_LENGTH || !IMAGE_DATA_URL_PATTERN.test(image)) {
-			return json({ success: false, message: 'Ungültiges Bildformat.' }, { status: 400 });
+			return json({ success: false, message: tr(locals.lang)('Ungültiges Bildformat.', 'Invalid image format.') }, { status: 400 });
 		}
 		imageDataUrls.push(image);
 	}
@@ -83,7 +84,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 
 	if (images.length > 0 && !collabSpace.imageUpload) {
 		return json(
-			{ success: false, message: 'Bild-Upload ist in diesem CollabSpace nicht aktiviert.' },
+			{ success: false, message: tr(locals.lang)('Bild-Upload ist in diesem CollabSpace nicht aktiviert.', 'Image upload is not enabled in this CollabSpace.') },
 			{ status: 400 }
 		);
 	}
@@ -104,7 +105,7 @@ export const POST: RequestHandler = async ({ request, params, cookies }) => {
 	const collabChat = await prisma.collabChat.findFirst(findChatArgs);
 
 	if (!collabChat) {
-		return json({ success: false, message: 'CollabChat nicht gefunden.' }, { status: 404 });
+		return json({ success: false, message: msg(locals.lang).chatNotFound }, { status: 404 });
 	}
 
 	if (!collabSpace.api_key) {

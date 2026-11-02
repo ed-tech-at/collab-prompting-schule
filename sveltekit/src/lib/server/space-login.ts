@@ -2,18 +2,21 @@ import { fail } from '@sveltejs/kit';
 import type { Cookies } from '@sveltejs/kit';
 import prisma from '$lib/server/db';
 import { setJwtCookie } from '$lib/server/jwt';
+import { msg, tr, type Lang } from '$lib/i18n';
 
 type LoginResult =
 	| { ok: true; collabSpaceId: number }
 	| { ok: false; failure: ReturnType<typeof fail> };
 
 type LoginParams = {
+	lang: Lang;
 	request: Request;
 	cookies: Cookies;
 	forcedCollabSpaceId?: number;
 };
 
 export const loginStudentForSpace = async ({
+	lang,
 	request,
 	cookies,
 	forcedCollabSpaceId
@@ -34,7 +37,7 @@ export const loginStudentForSpace = async ({
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
 		return {
 			ok: false,
-			failure: fail(400, { success: false, message: 'CollabSpace-ID muss eine Zahl sein.' })
+			failure: fail(400, { success: false, message: msg(lang).spaceIdNumber })
 		};
 	}
 
@@ -43,10 +46,10 @@ export const loginStudentForSpace = async ({
 		select: { id: true, student_pw: true }
 	});
 	if (!collabSpace) {
-		return { ok: false, failure: fail(404, { success: false, message: 'CollabSpace nicht gefunden.' }) };
+		return { ok: false, failure: fail(404, { success: false, message: msg(lang).spaceNotFound }) };
 	}
 	if (!collabSpace.student_pw || collabSpace.student_pw !== studentPw) {
-		return { ok: false, failure: fail(401, { success: false, message: 'Teilnahmecode falsch.' }) };
+		return { ok: false, failure: fail(401, { success: false, message: tr(lang)('Teilnahmecode falsch.', 'Wrong participation code.') }) };
 	}
 
 	await setJwtCookie(cookies, `studentPw${collabSpaceId}`, {

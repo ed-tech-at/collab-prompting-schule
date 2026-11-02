@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import prisma from '$lib/server/db';
 import { resolve } from '$app/paths';
 import { clearJwtCookie, getJwtCookie, setJwtCookie } from '$lib/server/jwt';
+import { localize, msg, tr } from '$lib/i18n';
 
 const escapeHtml = (value: string) =>
 	value
@@ -12,11 +13,11 @@ const escapeHtml = (value: string) =>
 		.replace(/"/g, '&quot;')
 		.replace(/'/g, '&#39;');
 
-export const load: PageServerLoad = async ({ params, cookies }) => {
+export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		throw error(400, 'CollabSpace-ID ist ungültig.');
+		throw error(400, msg(locals.lang).invalidSpaceId);
 	}
 
 	const findUniqueArgs = {
@@ -25,18 +26,18 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const collabSpace = await prisma.collabSpace.findFirst(findUniqueArgs);
 
 	if (!collabSpace) {
-		throw error(404, 'CollabSpace nicht gefunden.');
+		throw error(404, msg(locals.lang).spaceNotFound);
 	}
 
 	const cookieName = `collabSpacePw${collabSpaceId}`;
 	const cookiePayload = await getJwtCookie<{ password?: string }>(cookies, cookieName);
 	const cookiePassword = cookiePayload?.password;
 	if (!cookiePassword || typeof cookiePassword !== 'string') {
-		throw error(401, 'Keine Verwaltungssitzung gefunden.');
+		throw error(401, msg(locals.lang).noAdminSession);
 	}
 
 	if (cookiePassword !== collabSpace.password) {
-		throw error(403, 'Keine gültige Verwaltungssitzung gefunden.');
+		throw error(403, msg(locals.lang).invalidAdminSession);
 	}
 	const countArgs = {
 		where: { collabSpaceId, toDelete: null }
@@ -69,7 +70,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	return {
 		navItems: [
 			{ name: '<i class="fa fa-home"></i>', href: resolve('/') },
-			{ name: 'Verwaltung', href: resolve('/admin/') },
+			{ name: msg(locals.lang).admin, href: resolve('/admin/') },
 			{ name: escapeHtml(spaceLabel), href: resolve(`/admin/${collabSpace.id}`) }
 		],
 		collabSpace: {
@@ -82,10 +83,10 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
-	saveSettings: async ({ request, params, cookies }) => {
+	saveSettings: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId });
 		}
 
 		const currentArgs = {
@@ -95,14 +96,14 @@ export const actions: Actions = {
 		const current = await prisma.collabSpace.findFirst(currentArgs);
 
 		if (!current) {
-			return fail(404, { success: false, message: 'CollabSpace nicht gefunden.' });
+			return fail(404, { success: false, message: msg(locals.lang).spaceNotFound });
 		}
 
 		const cookieName = `collabSpacePw${collabSpaceId}`;
 		const cookiePayload = await getJwtCookie<{ password?: string }>(cookies, cookieName);
 		const cookiePassword = cookiePayload?.password;
 		if (!cookiePassword || cookiePassword !== current.password) {
-			return fail(403, { success: false, message: 'Keine gültige Verwaltungssitzung gefunden.' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidAdminSession });
 		}
 
 		const data = await request.formData();
@@ -122,10 +123,10 @@ export const actions: Actions = {
 		const imageUpload = data.get('imageUpload') === 'on';
 
 		if (!Number.isInteger(nextId) || nextId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID muss eine positive Zahl sein.' });
+			return fail(400, { success: false, message: msg(locals.lang).spaceIdPositive });
 		}
 		if (typeof password !== 'string' || !password) {
-			return fail(400, { success: false, message: 'Verwaltungspasswort ist erforderlich.' });
+			return fail(400, { success: false, message: msg(locals.lang).adminPwRequired });
 		}
 
 		try {
@@ -151,7 +152,7 @@ export const actions: Actions = {
 
 			await prisma.collabSpace.update(updateArgs);
 		} catch {
-			return fail(400, { success: false, message: 'CollabSpace konnte nicht gespeichert werden.' });
+			return fail(400, { success: false, message: tr(locals.lang)(tr(locals.lang)('CollabSpace konnte nicht gespeichert werden.', 'CollabSpace could not be saved.'), 'CollabSpace could not be saved.') });
 		}
 
 		if (nextId !== collabSpaceId) {
@@ -159,12 +160,12 @@ export const actions: Actions = {
 		}
 		await setJwtCookie(cookies, `collabSpacePw${nextId}`, { password });
 
-		throw redirect(303, resolve(`/admin/${nextId}`));
+		throw redirect(303, localize(resolve(`/admin/${nextId}`), locals.lang));
 	},
-	deleteSpace: async ({ params, cookies }) => {
+	deleteSpace: async ({ locals, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.', actionType: 'deleteSpace' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, actionType: 'deleteSpace' });
 		}
 
 		const currentArgs = {
@@ -173,13 +174,13 @@ export const actions: Actions = {
 		} satisfies Parameters<typeof prisma.collabSpace.findFirst>[0];
 		const current = await prisma.collabSpace.findFirst(currentArgs);
 		if (!current) {
-			return fail(404, { success: false, message: 'CollabSpace nicht gefunden.', actionType: 'deleteSpace' });
+			return fail(404, { success: false, message: msg(locals.lang).spaceNotFound, actionType: 'deleteSpace' });
 		}
 
 		const cookieName = `collabSpacePw${collabSpaceId}`;
 		const cookiePayload = await getJwtCookie<{ password?: string }>(cookies, cookieName);
 		if (!cookiePayload?.password || cookiePayload.password !== current.password) {
-			return fail(403, { success: false, message: 'Keine gültige Verwaltungssitzung gefunden.', actionType: 'deleteSpace' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidAdminSession, actionType: 'deleteSpace' });
 		}
 
 		await prisma.collabSpace.update({
@@ -188,12 +189,12 @@ export const actions: Actions = {
 		});
 		clearJwtCookie(cookies, cookieName, '/');
 
-		throw redirect(303, resolve('/admin'));
+		throw redirect(303, localize(resolve('/admin'), locals.lang));
 	},
-	deleteChat: async ({ request, params, cookies }) => {
+	deleteChat: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.', actionType: 'deleteChat' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, actionType: 'deleteChat' });
 		}
 
 		const currentArgs = {
@@ -202,18 +203,18 @@ export const actions: Actions = {
 		} satisfies Parameters<typeof prisma.collabSpace.findFirst>[0];
 		const current = await prisma.collabSpace.findFirst(currentArgs);
 		if (!current) {
-			return fail(404, { success: false, message: 'CollabSpace nicht gefunden.', actionType: 'deleteChat' });
+			return fail(404, { success: false, message: msg(locals.lang).spaceNotFound, actionType: 'deleteChat' });
 		}
 
 		const cookiePayload = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 		if (!cookiePayload?.password || cookiePayload.password !== current.password) {
-			return fail(403, { success: false, message: 'Keine gültige Verwaltungssitzung gefunden.', actionType: 'deleteChat' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidAdminSession, actionType: 'deleteChat' });
 		}
 
 		const data = await request.formData();
 		const collabChatId = Number(data.get('collabChatId'));
 		if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-			return fail(400, { success: false, message: 'CollabChat-ID ist ungültig.', actionType: 'deleteChat' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidChatId, actionType: 'deleteChat' });
 		}
 
 		const result = await prisma.collabChat.updateMany({
@@ -221,9 +222,9 @@ export const actions: Actions = {
 			data: { toDelete: new Date() }
 		});
 		if (result.count === 0) {
-			return fail(404, { success: false, message: 'CollabChat nicht gefunden.', actionType: 'deleteChat' });
+			return fail(404, { success: false, message: msg(locals.lang).chatNotFound, actionType: 'deleteChat' });
 		}
 
-		return { success: true, message: 'CollabChat wurde zur Löschung vorgemerkt.', actionType: 'deleteChat' };
+		return { success: true, message: tr(locals.lang)('CollabChat wurde zur Löschung vorgemerkt.', 'CollabChat has been marked for deletion.'), actionType: 'deleteChat' };
 	}
 };

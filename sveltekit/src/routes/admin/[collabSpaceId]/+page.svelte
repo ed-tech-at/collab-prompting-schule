@@ -5,26 +5,32 @@
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
 	import { LATEX_DELIMITER_SYSTEM_PROMPT } from '$lib/markdown';
+	import { localize, tr } from '$lib/i18n';
 
 	export let data: PageData;
 	export let form: ActionData;
+	const t = tr(data.lang);
+	const otherLang = data.lang === 'en' ? 'de' : 'en';
 	let showSettings = false;
 	let overwriteApiKey = false;
 	let confirmDeleteSpace = false;
 	let confirmDeleteChatId: number | null = null;
 	let qrCodeDataUrl = '';
 	let copyStatus = '';
+	let copyStatusOther = '';
 	const nl2br = (value: string) => value.replace(/\n/g, '<br>');
-	const mathSystemPromptNote = `${LATEX_DELIMITER_SYSTEM_PROMPT} (wird automatisch an den KI-Systemprompt angefügt)`;
+	const mathSystemPromptNote = `${LATEX_DELIMITER_SYSTEM_PROMPT} ${t('(wird automatisch an den KI-Systemprompt angefügt)', '(automatically appended to the AI system prompt)')}`;
 	const normalizeRating = (rating: string | null | undefined) => {
 		const value = Number(rating);
 		if (!Number.isInteger(value) || value < 1 || value > 5) return 0;
 		return value;
 	};
+	const toAbsoluteLink = (path: string) =>
+		browser ? new URL(path, window.location.href).toString().replace(/^http:/, 'https:') : path;
 	const participationPath = resolve(`/space/${data.collabSpace.id}`);
-	const participationLink = browser
-		? new URL(participationPath, window.location.href).toString().replace(/^http:/, 'https:')
-		: participationPath;
+	const participationLink = toAbsoluteLink(localize(participationPath, data.lang));
+	// Deep link into the participation view in the other language (e.g. /en/space/12)
+	const otherLangParticipationLink = toAbsoluteLink(localize(participationPath, otherLang));
 
 	let collabSpace = {
 		id: data.collabSpace.id,
@@ -46,8 +52,8 @@
 
 	$: spaceTitle = collabSpace.title.trim();
 	$: spaceLabel = spaceTitle
-		? `CollabSpace-ID ${collabSpace.id}: ${spaceTitle}`
-		: `CollabSpace-ID ${collabSpace.id}`;
+		? `${t('CollabSpace-ID', 'CollabSpace ID')} ${collabSpace.id}: ${spaceTitle}`
+		: `${t('CollabSpace-ID', 'CollabSpace ID')} ${collabSpace.id}`;
 
 	onMount(async () => {
 		qrCodeDataUrl = await QRCode.toDataURL(participationLink, {
@@ -59,49 +65,69 @@
 
 	const copyParticipationLink = async () => {
 		await navigator.clipboard.writeText(participationLink);
-		copyStatus = 'Link kopiert.';
+		copyStatus = t('Link kopiert.', 'Link copied.');
 		setTimeout(() => {
 			copyStatus = '';
 		}, 1800);
 	};
 
-	const conversationOwnerLabel = (username: string | null) => username?.trim() || 'ohne Anzeigename';
+	const copyOtherLangParticipationLink = async () => {
+		await navigator.clipboard.writeText(otherLangParticipationLink);
+		copyStatusOther = t('Englischer Link kopiert.', 'German link copied.');
+		setTimeout(() => {
+			copyStatusOther = '';
+		}, 1800);
+	};
+
+	const conversationOwnerLabel = (username: string | null) =>
+		username?.trim() || t('ohne Anzeigename', 'no display name');
 </script>
 
 
 <section class="bg-badge">
-	<h1>CollabSpace-ID {data.collabSpace.id} / Verwaltung</h1>
+	<h1>{t('CollabSpace-ID', 'CollabSpace ID')} {data.collabSpace.id} / {t('Verwaltung', 'Admin')}</h1>
 	{#if spaceTitle}
-		<p class="space-title">Titel: {spaceTitle}</p>
+		<p class="space-title">{t('Titel', 'Title')}: {spaceTitle}</p>
 	{/if}
-	<p class="notice success">Merken Sie sich die CollabSpace-ID {data.collabSpace.id} und das Verwaltungspasswort. Beides benötigen Sie, um diesen Space später wieder zu verwalten.</p>
+	<p class="notice success">{data.lang === 'en'
+		? `Remember the CollabSpace ID ${data.collabSpace.id} and the admin password. You need both to manage this space again later.`
+		: `Merken Sie sich die CollabSpace-ID ${data.collabSpace.id} und das Verwaltungspasswort. Beides benötigen Sie, um diesen Space später wieder zu verwalten.`}</p>
 
 	<label>
-		Teilnahmelink:
+		{t('Teilnahmelink', 'Participation link')}:
 		<input type="text" value={participationLink} readonly />
 	</label>
 	<div class="link-actions">
 		<a class="btn btn-primary" href={participationLink} target="_blank" rel="noreferrer">
-			Space öffnen <i class="fas fa-external-link-alt"></i>
+			{t('Space öffnen', 'Open space')} <i class="fas fa-external-link-alt"></i>
 		</a>
 		<button type="button" class="btn btn-ghost" on:click={copyParticipationLink}>
-			Link kopieren <i class="fas fa-copy"></i>
+			{t('Link kopieren', 'Copy link')} <i class="fas fa-copy"></i>
 		</button>
 		{#if copyStatus}
 			<span class="ok">{copyStatus}</span>
 		{/if}
+		<a class="btn btn-ghost" href={otherLangParticipationLink} target="_blank" rel="noreferrer" hreflang={otherLang}>
+			{t('Englische Ansicht öffnen', 'Open German view')} <i class="fas fa-language"></i>
+		</a>
+		<button type="button" class="btn btn-ghost" on:click={copyOtherLangParticipationLink}>
+			{t('Englischen Link kopieren', 'Copy German link')} <i class="fas fa-copy"></i>
+		</button>
+		{#if copyStatusOther}
+			<span class="ok">{copyStatusOther}</span>
+		{/if}
 	</div>
 	{#if qrCodeDataUrl}
 		<div class="qr-code">
-			<img src={qrCodeDataUrl} alt={`QR-Code für ${spaceLabel}`} />
+			<img src={qrCodeDataUrl} alt={`${t('QR-Code für', 'QR code for')} ${spaceLabel}`} />
 		</div>
 	{/if}
 
 	<p><button type="button" class="btn btn-ghost" on:click={() => (showSettings = !showSettings)}>
 		{#if showSettings}
-			Einstellungen ausblenden
+			{t('Einstellungen ausblenden', 'Hide settings')}
 		{:else}
-			Vertrauliche Einstellungen anzeigen <i class="fa-solid fa-key"></i>
+			{t('Vertrauliche Einstellungen anzeigen', 'Show confidential settings')} <i class="fa-solid fa-key"></i>
 		{/if}
 	</button>
 	</p>
@@ -110,25 +136,25 @@
 			<table>
 				<tbody>
 					<tr>
-						<th>CollabSpace-ID</th>
+						<th>{t('CollabSpace-ID', 'CollabSpace ID')}</th>
 						<td><input name="id" type="number" bind:value={collabSpace.id} readonly /></td>
 					</tr>
 					<tr>
-						<th>Titel</th>
+						<th>{t('Titel', 'Title')}</th>
 						<td>
-							<input name="title" type="text" bind:value={collabSpace.title} placeholder={`CollabSpace-ID ${collabSpace.id}`} />
-							<p class="field-help">Optional. Die CollabSpace-ID wird immer zusätzlich angezeigt.</p>
+							<input name="title" type="text" bind:value={collabSpace.title} placeholder={`${t('CollabSpace-ID', 'CollabSpace ID')} ${collabSpace.id}`} />
+							<p class="field-help">{t('Optional. Die CollabSpace-ID wird immer zusätzlich angezeigt.', 'Optional. The CollabSpace ID is always shown as well.')}</p>
 						</td>
 					</tr>
 					<tr>
-						<th>Verwaltungspasswort</th>
+						<th>{t('Verwaltungspasswort', 'Admin password')}</th>
 						<td><input name="password" type="text" bind:value={collabSpace.password} /></td>
 					</tr>
 					<tr>
-						<th>E-Mail-Adresse</th>
+						<th>{t('E-Mail-Adresse', 'Email address')}</th>
 						<td>
 							<input name="manageEmail" type="email" bind:value={collabSpace.manageEmail}/>
-							<p class="field-help">Wird für Benachrichtigungen und Meldungen zum CollabSpace verwendet. Dadurch wird kein Account erstellt.</p>
+							<p class="field-help">{t('Wird für Benachrichtigungen und Meldungen zum CollabSpace verwendet. Dadurch wird kein Account erstellt.', 'Used for notifications and reports about the CollabSpace. No account is created.')}</p>
 						</td>
 					</tr>
 					<tr>
@@ -140,7 +166,7 @@
 						<td>
 							<label class="api-key-toggle">
 								<input type="checkbox" name="overwrite_api_key" bind:checked={overwriteApiKey} />
-								LLM API Key überschreiben
+								{t('LLM API Key überschreiben', 'Overwrite LLM API key')}
 							</label>
 							<input
 								name="api_key"
@@ -152,79 +178,79 @@
 						</td>
 					</tr>
 					<tr>
-						<th>LLM-Modell</th>
+						<th>{t('LLM-Modell', 'LLM model')}</th>
 						<td><input name="model" type="text" bind:value={collabSpace.model} /></td>
 					</tr>
 
 					<tr>
-						<th>KI-Systemprompt</th>
+						<th>{t('KI-Systemprompt', 'AI system prompt')}</th>
 						<td>
 							<textarea name="system_prompt" rows="5" bind:value={collabSpace.system_prompt}></textarea>
 						</td>
 					</tr>
 				
 					<tr>
-						<th>Aufgabe (optional, HTML-Darstellung)</th>
+						<th>{t('Aufgabe (optional, HTML-Darstellung)', 'Task (optional, rendered as HTML)')}</th>
 						<td>
 							<textarea name="question" rows="3" bind:value={collabSpace.question}></textarea>
 							<label class="math-render-toggle">
 								<input type="checkbox" name="mathRender" bind:checked={collabSpace.mathRender} />
-								Mathematik-Rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
+								{t('Mathematik-Rendering aktivieren', 'Enable math rendering')} (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
 							</label>
 							{#if collabSpace.mathRender}
-								<p class="system-prompt-note">Folgender Text wird automatisch an den KI-Systemprompt angefügt:</p>
+								<p class="system-prompt-note">{t('Folgender Text wird automatisch an den KI-Systemprompt angefügt:', 'The following text is automatically appended to the AI system prompt:')}</p>
 								<pre class="system-prompt-note" style="color: var(--primary-hover);">{@html nl2br(mathSystemPromptNote)}</pre>
 							{/if}
 						</td>
 					</tr>
 
 					<tr>
-						<th>Bild-Upload</th>
+						<th>{t('Bild-Upload', 'Image upload')}</th>
 						<td>
 							<label class="math-render-toggle">
 								<input type="checkbox" name="imageUpload" bind:checked={collabSpace.imageUpload} />
-								Bild-Upload für Teilnehmende erlauben
+								{t('Bild-Upload für Teilnehmende erlauben', 'Allow image upload for participants')}
 							</label>
 							{#if collabSpace.imageUpload}
-								<p class="field-help">Das gewählte LLM-Modell muss Bildeingaben (Vision) unterstützen, sonst schlagen Nachrichten mit Bildern fehl.</p>
+								<p class="field-help">{t('Das gewählte LLM-Modell muss Bildeingaben (Vision) unterstützen, sonst schlagen Nachrichten mit Bildern fehl.', 'The selected LLM model must support image input (vision), otherwise messages with images will fail.')}</p>
 							{/if}
 						</td>
 					</tr>
 
 					<tr>
-						<th>Teilnahmecode für den Beitritt</th>
+						<th>{t('Teilnahmecode für den Beitritt', 'Participation code for joining')}</th>
 						<td><input name="student_pw" type="text" bind:value={collabSpace.student_pw} /></td>
 					</tr>
 					
 					
 				
 					<tr>
-						<th>Erstellt am</th>
+						<th>{t('Erstellt am', 'Created at')}</th>
 						<td>
 							<input name="createdAt" type="datetime-local" bind:value={collabSpace.createdAt} readonly />
 						</td>
 					</tr>
 					<tr>
-						<th>Anzahl an collabChats</th>
+						<th>{t('Anzahl an collabChats', 'Number of CollabChats')}</th>
 						<td>
 							<input name="collabChatsCount" type="number" bind:value={collabSpace.collabChatsCount} readonly />
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<button type="submit" class="btn btn-primary">Speichern</button>
+			<button type="submit" class="btn btn-primary">{t('Speichern', 'Save')}</button>
 		</form>
 
 		<div class="danger-zone">
-			<h3>CollabSpace löschen</h3>
-			<p>Der CollabSpace wird zur Löschung vorgemerkt und verschwindet sofort aus normalen Ansichten.</p>
+			<h3>{t('CollabSpace löschen', 'Delete CollabSpace')}</h3>
+			<p>{t('Der CollabSpace wird zur Löschung vorgemerkt und verschwindet sofort aus normalen Ansichten.', 'The CollabSpace is marked for deletion and disappears from normal views immediately.')}</p>
 			<form method="POST" action="?/deleteSpace">
 				{#if confirmDeleteSpace}
-				<button type="button" class="btn btn-ghost" on:click={() => (confirmDeleteSpace = false)}>Abbrechen</button>
-					<button type="submit" class="btn btn-danger btn-no-margin">Löschung vormerken</button>
+				<button type="button" class="btn btn-ghost" on:click={() => (confirmDeleteSpace = false)}>{t('Abbrechen', 'Cancel')}</button>
+					<button type="submit" class="btn btn-danger btn-no-margin">{t('Löschung vormerken', 'Mark for deletion')}</button>
 				{:else}
 					<button type="button" class="btn btn-danger" on:click={() => (confirmDeleteSpace = true)}>
-						CollabSpace löschen
+						{t('CollabSpace löschen', 'Delete CollabSpace')}
 					</button>
 				{/if}
 			</form>
@@ -234,21 +260,21 @@
 		</div>
 
 		<div class="export-zone">
-			<h3>JSON-Export</h3>
-			<p>Enthält die Einstellungen, Chats und Nachrichten dieses CollabSpace inklusive vorgemerkter Löschungen. API-Key sowie Verwaltungs- und Teilnahmepasswort sind nicht enthalten.</p>
+			<h3>{t('JSON-Export', 'JSON export')}</h3>
+			<p>{t('Enthält die Einstellungen, Chats und Nachrichten dieses CollabSpace inklusive vorgemerkter Löschungen. API-Key sowie Verwaltungs- und Teilnahmepasswort sind nicht enthalten.', 'Contains the settings, chats and messages of this CollabSpace including items marked for deletion. The API key and the admin and participation passwords are not included.')}</p>
 			{#if data.collabSpace.imageUpload}
-				<p>Hochgeladene Bilder stehen im JSON nur als Metadaten (ID, Typ, Größe, Dateiname). Der ZIP-Export enthält zusätzlich die Bilddateien selbst und kann dadurch sehr groß werden.</p>
+				<p>{t('Hochgeladene Bilder stehen im JSON nur als Metadaten (ID, Typ, Größe, Dateiname). Der ZIP-Export enthält zusätzlich die Bilddateien selbst und kann dadurch sehr groß werden.', 'Uploaded images appear in the JSON only as metadata (ID, type, size, file name). The ZIP export also contains the image files themselves and can therefore become very large.')}</p>
 			{/if}
 			<div class="export-actions">
 				<a class="btn btn-ghost" href={resolve(`/admin/${data.collabSpace.id}/export`)}>
-					JSON-Export <i class="fas fa-download"></i>
+					{t('JSON-Export', 'JSON export')} <i class="fas fa-download"></i>
 				</a>
 				{#if data.collabSpace.imageUpload}
 					<a
 						class="btn btn-ghost"
 						href={`${resolve(`/admin/${data.collabSpace.id}/export`)}?images=zip`}
 					>
-						Export mit Bildern (ZIP) <i class="fas fa-file-zipper"></i>
+						{t('Export mit Bildern (ZIP)', 'Export with images (ZIP)')} <i class="fas fa-file-zipper"></i>
 					</a>
 				{/if}
 			</div>
@@ -256,28 +282,28 @@
 	</div>
 </section>
 <section>
-	<h3>Bestehende Konversationen</h3>
+	<h3>{t('Bestehende Konversationen', 'Existing conversations')}</h3>
 	{#if data.conversations.length === 0}
-		<p class="muted">Noch keine Konversation vorhanden.</p>
+		<p class="muted">{t('Noch keine Konversation vorhanden.', 'No conversations yet.')}</p>
 	{:else}
 		<div class="chat-list">
 			{#each data.conversations as conversation}
 				<div class="chat-card" class:hidden-chat={conversation.hidden}>
-					<a href={resolve(`/space/${data.collabSpace.id}/chat/${conversation.id}`)}>
+					<a href={localize(resolve(`/space/${data.collabSpace.id}/chat/${conversation.id}`), data.lang)}>
 						<div class="chat-card-head">
 							<span class="number">#{conversation.id}</span>
-							<span class="chat-username">von {conversationOwnerLabel(conversation.username)}</span>
+							<span class="chat-username">{t('von', 'by')} {conversationOwnerLabel(conversation.username)}</span>
 							{#if conversation.hidden}
-								<span class="hidden-tag">versteckt</span>
+								<span class="hidden-tag">{t('versteckt', 'hidden')}</span>
 							{/if}
 						</div>
 						<div class="chat-rating-block">
-							<p class="meta">{new Date(conversation.createdAt).toLocaleString()}</p>
+							<p class="meta">{new Date(conversation.createdAt).toLocaleString(data.lang)}</p>
 							{#if conversation.student_rating || conversation.student_comment}
 								<div class="chat-rating-line">
-									<span class="rating-label">Ersteller:in</span>
+									<span class="rating-label">{t('Ersteller:in', 'Creator')}</span>
 									{#if conversation.student_rating}
-										<span class="rating-stars-list" aria-label={`Bewertung ${conversation.student_rating} von 5`}>
+										<span class="rating-stars-list" aria-label={`${t('Bewertung', 'Rating')} ${conversation.student_rating} ${t('von', 'of')} 5`}>
 											{#each [1, 2, 3, 4, 5] as star}
 												<i class={`fa-star ${star <= normalizeRating(conversation.student_rating) ? 'fas active' : 'far'}`}></i>
 											{/each}
@@ -285,15 +311,15 @@
 										<span>{conversation.student_rating}/5</span>
 									{/if}
 									{#if conversation.student_comment}
-										<p class="chat-comment"><i>Kommentar:</i> {conversation.student_comment}</p>
+										<p class="chat-comment"><i>{t('Kommentar', 'Comment')}:</i> {conversation.student_comment}</p>
 									{/if}
 								</div>
 							{/if}
 							{#if conversation.teacher_rating || conversation.teacher_comment}
 								<div class="chat-rating-line">
-									<span class="rating-label">Lehrende:r</span>
+									<span class="rating-label">{t('Lehrende:r', 'Teacher')}</span>
 									{#if conversation.teacher_rating}
-										<span class="rating-stars-list" aria-label={`Bewertung ${conversation.teacher_rating} von 5`}>
+										<span class="rating-stars-list" aria-label={`${t('Bewertung', 'Rating')} ${conversation.teacher_rating} ${t('von', 'of')} 5`}>
 											{#each [1, 2, 3, 4, 5] as star}
 												<i class={`fa-star ${star <= normalizeRating(conversation.teacher_rating) ? 'fas active' : 'far'}`}></i>
 											{/each}
@@ -301,7 +327,7 @@
 										<span>{conversation.teacher_rating}/5</span>
 									{/if}
 									{#if conversation.teacher_comment}
-										<p class="chat-comment"><i>Kommentar:</i> {conversation.teacher_comment}</p>
+										<p class="chat-comment"><i>{t('Kommentar', 'Comment')}:</i> {conversation.teacher_comment}</p>
 									{/if}
 								</div>
 							{/if}

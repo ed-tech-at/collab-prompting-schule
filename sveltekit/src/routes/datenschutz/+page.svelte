@@ -1,11 +1,71 @@
 <script lang='ts'>
-	import { asset, resolve } from '$app/paths';
+	import { resolve } from '$app/paths';
+	import { localize } from '$lib/i18n';
+	import type { PageData } from './$types';
 
+	export let data: PageData;
 </script>
 
 <main id="main" class="special">
 
+{#if data.lang === 'en'}
+<h2 class="wp-block-heading">Privacy policy and terms of participation</h2>
 
+<p class="notice"><i>This is a courtesy translation. Only the <a href={localize(resolve('/datenschutz'), 'de')} lang="de">German version</a> is legally binding.</i></p>
+
+<h4>1. Principle</h4>
+
+<p>Protecting your data is particularly important to us. We therefore process your data exclusively on the basis of the statutory provisions (<a href="https://www.dsb.gv.at/recht-entscheidungen/gesetze-in-oesterreich.html">GDPR, TKG</a>). In this privacy information we inform you about the most important aspects of data processing on our website.</p>
+
+<h4>2. Purpose and legal basis of processing</h4>
+
+<p>When you visit our website, your IP address and the start and end of the session are recorded for the duration of that session. This is technically necessary and therefore constitutes a legitimate interest within the meaning of Art 6 (1) (f) GDPR. Unless otherwise stated below, we do not process this data any further.</p>
+
+<p>Your session is stored in a local cookie for 8 days. This is necessary to allow proper use of the website.</p>
+
+<p>You can end your local sessions at any time at <a href={localize(resolve("/logout"), data.lang)}>/logout</a> or with the link <i>Log out of all local sessions</i> on the start page.</p>
+
+<p>Your entries can be attributed to your display name by the lecturer and other participants.</p>
+
+<h5>2.1 Evaluation for scientific purposes</h5>
+The data collected while using our website, such as the freely chosen username and the content entered, are evaluated in pseudonymised form for scientific purposes. These evaluations serve research and the further development of educational and technology offerings, in particular in the fields of educational informatics, artificial intelligence and machine learning. Data processing is carried out in strict compliance with applicable data protection law and solely for the purpose of gaining scientific insights that can contribute to improving and further developing our offering.
+
+<h5>2.2 Use of artificial intelligence (AI) in interactive learning objects</h5>
+
+Our platform uses modern AI technologies to support interactive learning objects. They are used in particular to generate content dynamically, to analyse entries and to improve the user experience. Processing takes place solely to provide and maintain the services. The models used do not learn from users' individual content.
+
+<h5>2.3 Notes for CollabSpace creators</h5>
+<p>When creating a CollabSpace, a valid email address is required. It is used to inform you about important events, for example when content from your CollabSpace is reported. In such cases you automatically receive a notification at the address provided. On request, the reporting person can also receive a copy of this notification and thereby learn your email address.</p>
+
+<b>Prohibited content</b>
+<p>We expressly ask for your help: should offensive or inappropriate content be spread via your space, your feedback helps us to review and remove such content as quickly as possible.</p>
+
+<p>CollabSpaces must not be used to publish content that:</p>
+<ul>
+  <li>glorifies or incites violence,</li>
+  <li>deals with or promotes weapons,</li>
+  <li>describes or supports illegal activities,</li>
+  <li>is discriminatory or contains hate speech,</li>
+  <li>violates applicable law or ethical standards.</li>
+</ul>
+
+<p>Violations of these rules may lead to the space being blocked or to further legal action.</p>
+
+<h4>3. Internal services and internal data collection</h4>
+<p>
+When using the platform, technically necessary log data is stored. It allows TU Graz to detect, narrow down and eliminate system malfunctions, system errors that limit the availability of the online services, and unauthorised access to our systems. The log data is not linked to other personal data. The following data categories are processed: date and time of the request, name and URL of the retrieved resources, amount of data (in bytes) of the requested and/or retrieved resource, server response (e.g. HTTP status code), identification data of the browser and operating system used, the website from which access took place, IP address, username.
+</p>
+
+<h4>4. Your rights</h4>
+
+<p>Users have the right to information, erasure, rectification, restriction of processing, data portability and to object to data processing. There is also a right to lodge a complaint with the Austrian Data Protection Authority, Wickenburggasse 8, 1080 Vienna (<a href="mailto:dsb@dsb.gv.at">dsb@dsb.gv.at</a>).</p>
+
+<p>The controller responsible for processing your personal data is Graz University of Technology (hereinafter TU Graz).
+The data protection officer of TU Graz is x-tention Informationsrechnologie GmbH, Friedhofstraße 57, 4600 Wels, datenschutzbeauftragter@tugraz.at.
+For data protection concerns, please contact <a href="mailto:datenschutz@tugraz.at">datenschutz@tugraz.at</a>.</p>
+
+<p>Privacy notice created with the support of the <a href="https://www.wko.at/internetrecht/datenschutzerklaerung-checkliste-infopflichten-dsgvo-tkg-we">WKO</a>.</p>
+{:else}
 <h2 class="wp-block-heading">Datenschutz und Teilnahmebedingungen</h2>
 
 
@@ -23,7 +83,7 @@
 
 <p>Ihre Sitzung wird für die Dauer von 8 Tagen in einem lokalen Cookie gespeichert. Dies ist notwendig, um die Nutzung der Website ordnungsgemäß zu ermöglichen.</p>
 
-<p>Sie können jederzeit Ihre lokalen Sitzungen unter <a href={resolve("/logout")}>/logout</a> oder durch den Link <i>Von allen lokalen Sitzungen abmelden</i> auf der Startseite beenden.</p>
+<p>Sie können jederzeit Ihre lokalen Sitzungen unter <a href={localize(resolve("/logout"), data.lang)}>/logout</a> oder durch den Link <i>Von allen lokalen Sitzungen abmelden</i> auf der Startseite beenden.</p>
 
 <p>Ihre Eingaben können durch den Vortragenden und andere Teilnehmende Ihrem Anzeigenamen zugeordnet werden.</p>
 
@@ -73,9 +133,6 @@ Bei datenschutzrechtlichen Anliegen wenden Sie sich bitte an <a href="mailto:dat
 
 
 <p>Datenschutzhinweis mit Unterstützung der <a href="https://www.wko.at/internetrecht/datenschutzerklaerung-checkliste-infopflichten-dsgvo-tkg-we">WKO</a> erstellt.</p>
-
-
-
-
+{/if}
 
 </main>

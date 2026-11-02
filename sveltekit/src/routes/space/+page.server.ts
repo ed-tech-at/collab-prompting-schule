@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import prisma from '$lib/server/db';
 import { loginStudentForSpace } from '$lib/server/space-login';
+import { localize } from '$lib/i18n';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const loggedInSpaceIds = cookies
@@ -27,10 +28,10 @@ export const load: PageServerLoad = async ({ cookies }) => {
 };
 
 export const actions: Actions = {
-	login: async ({ request, cookies }) => {
-		const result = await loginStudentForSpace({ request, cookies });
+	login: async ({ locals, request, cookies }) => {
+		const result = await loginStudentForSpace({ lang: locals.lang, request, cookies });
 		if (!result.ok) return result.failure;
 		const { collabSpaceId } = result;
-		throw redirect(302, resolve(`/space/${collabSpaceId}`));
+		throw redirect(302, localize(resolve(`/space/${collabSpaceId}`), locals.lang));
 	}
 };

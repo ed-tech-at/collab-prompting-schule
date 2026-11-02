@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import prisma from '$lib/server/db';
 import { getJwtCookie } from '$lib/server/jwt';
 import { buildZip, type ZipEntry } from '$lib/server/zip';
+import { msg, tr } from '$lib/i18n';
 
 const exportDate = (date: Date) => date.toISOString().slice(0, 10);
 
@@ -17,10 +18,10 @@ const FILE_EXTENSIONS: Record<string, string> = {
 /** Schutz davor, dass ein sehr großer Export den Node-Prozess aufbraucht. */
 const MAX_EXPORT_IMAGE_BYTES = 512 * 1024 * 1024;
 
-export const GET: RequestHandler = async ({ params, cookies, url }) => {
+export const GET: RequestHandler = async ({ locals, params, cookies, url }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		throw error(400, 'CollabSpace-ID ist ungültig.');
+		throw error(400, msg(locals.lang).invalidSpaceId);
 	}
 
 	const cookiePayload = await getJwtCookie<{ password?: string }>(
@@ -28,7 +29,7 @@ export const GET: RequestHandler = async ({ params, cookies, url }) => {
 		`collabSpacePw${collabSpaceId}`
 	);
 	if (!cookiePayload?.password) {
-		throw error(403, 'Keine gültige Verwaltungssitzung gefunden.');
+		throw error(403, msg(locals.lang).invalidAdminSession);
 	}
 
 	const collabSpace = await prisma.collabSpace.findFirst({
@@ -83,7 +84,7 @@ export const GET: RequestHandler = async ({ params, cookies, url }) => {
 		}
 	});
 	if (!collabSpace) {
-		throw error(403, 'Keine gültige Verwaltungssitzung gefunden.');
+		throw error(403, msg(locals.lang).invalidAdminSession);
 	}
 
 	const withImageFiles = url.searchParams.get('images') === 'zip';
@@ -165,7 +166,7 @@ export const GET: RequestHandler = async ({ params, cookies, url }) => {
 	if (imageBytesTotal > MAX_EXPORT_IMAGE_BYTES) {
 		throw error(
 			413,
-			'Die Bilder dieses CollabSpace sind zu groß für einen ZIP-Export. Bitte den JSON-Export ohne Bilddateien verwenden.'
+			tr(locals.lang)('Die Bilder dieses CollabSpace sind zu groß für einen ZIP-Export. Bitte den JSON-Export ohne Bilddateien verwenden.', 'The images of this CollabSpace are too large for a ZIP export. Please use the JSON export without image files.')
 		);
 	}
 

@@ -1,5 +1,6 @@
 import { redirect, type Cookies } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { localize } from '$lib/i18n';
 
 import { resolve } from '$app/paths';
 
@@ -10,12 +11,12 @@ const clearAllCookies = (cookies: Cookies) => {
 	}
 };
 
-export const GET: RequestHandler = async ({ cookies }) => {
+export const GET: RequestHandler = async ({ locals, cookies }) => {
 	clearAllCookies(cookies);
-	throw redirect(302, `${resolve('/')}?loggedOut=1`);
+	throw redirect(302, `${localize(resolve('/'), locals.lang)}?loggedOut=1`);
 };
 
-export const POST: RequestHandler = async ({ cookies }) => {
+export const POST: RequestHandler = async ({ locals, cookies }) => {
 	clearAllCookies(cookies);
-	throw redirect(302, `${resolve('/')}?loggedOut=1`);
+	throw redirect(302, `${localize(resolve('/'), locals.lang)}?loggedOut=1`);
 };

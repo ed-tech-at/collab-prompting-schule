@@ -1,8 +1,11 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
+	import { localize, tr } from '$lib/i18n';
 
+	export let data: PageData;
 	export let form: ActionData;
+	$: t = tr(data.lang);
 
 	let showEnvImport = false;
 	let envText = '';
@@ -32,56 +35,56 @@
 </script>
 
 <section class="page">
-	<h1>Neuen CollabSpace erstellen</h1>
+	<h1>{t('Neuen CollabSpace erstellen', 'Create a new CollabSpace')}</h1>
 
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
 
 	<form method="POST" class="create-form">
-		<h2>Verwaltung</h2>
+		<h2>{t('Verwaltung', 'Administration')}</h2>
 		<label>
-			Titel des CollabSpace
-			<div class="muted" style="font-weight: 400;">Optional. Die CollabSpace-ID wird immer zusätzlich angezeigt.</div>
+			{t('Titel des CollabSpace', 'CollabSpace title')}
+			<div class="muted" style="font-weight: 400;">{t('Optional. Die CollabSpace-ID wird immer zusätzlich angezeigt.', 'Optional. The CollabSpace ID is always shown as well.')}</div>
 			<input name="title" type="text" />
 		</label>
 		<label>
-			Verwaltungspasswort<sup class="label-required">*</sup>
-			<div class="muted" style="font-weight: 400;">Dieses Passwort ist nur für Lehrende zur späteren Verwaltung dieses CollabSpace.</div>
+			{t('Verwaltungspasswort', 'Admin password')}<sup class="label-required">*</sup>
+			<div class="muted" style="font-weight: 400;">{t('Dieses Passwort ist nur für Lehrende zur späteren Verwaltung dieses CollabSpace.', 'This password is only for teachers, to manage this CollabSpace later.')}</div>
 			<input name="password" type="text" required />
 		</label>
 		
 		<label>
-			E-Mail-Adresse<sup class="label-required">*</sup>
-			<div class="muted" style="font-weight: 400;">Die Adresse wird für Benachrichtigungen und Meldungen zum CollabSpace verwendet. Dadurch wird kein Account erstellt.</div>
+			{t('E-Mail-Adresse', 'Email address')}<sup class="label-required">*</sup>
+			<div class="muted" style="font-weight: 400;">{t('Die Adresse wird für Benachrichtigungen und Meldungen zum CollabSpace verwendet. Dadurch wird kein Account erstellt.', 'The address is used for notifications and reports about the CollabSpace. No account is created.')}</div>
 			<input name="manageEmail" type="email" required />
 		</label>
 
 		<h2>
-			KI-Schnittstelle
+			{t('KI-Schnittstelle', 'AI interface')}
 			{#if !showEnvImport}
 				<button type="button" class="btn btn-ghost" on:click={() => (showEnvImport = !showEnvImport)}>
-					.env importieren
+					{t('.env importieren', 'Import .env')}
 				</button>
 			{/if}
 
 		</h2>
 		{#if showEnvImport}
 			<label>
-				.env für Import
+				{t('.env für Import', '.env to import')}
 				<textarea
 					rows="3"
 					placeholder={`OPENAI_API_KEY=YOUR_API_KEY_HERE\nOPENAI_BASE_URL=https://flaait.tugraz.at/llmduckt/llmapi/v1/\nOPENAI_MODEL=ministral-3:14b`}
 					bind:value={envText}
 				></textarea>
 				
-				<button type="button" class="btn btn-ghost" on:click={parseEnv}>Felder importieren</button>
+				<button type="button" class="btn btn-ghost" on:click={parseEnv}>{t('Felder importieren', 'Import fields')}</button>
 			</label>
 		{/if}
 		
 		<label>
 			LLM base_url<sup class="label-required">*</sup> 
-			<div class="muted" style="font-weight: 400;">Kompatibel zur <a href="https://platform.openai.com/docs/api-reference/chat" target="_blank">OpenAI Chat Completions API (v1)</a>.</div>
+			<div class="muted" style="font-weight: 400;">{t('Kompatibel zur', 'Compatible with the')} <a href="https://platform.openai.com/docs/api-reference/chat" target="_blank">OpenAI Chat Completions API (v1)</a>.</div>
 			<input name="base_url" type="text" placeholder="https://flaait.tugraz.at/llmduckt/llmapi/v1/" bind:value={baseUrl} required />
 		</label>
 		<label>
@@ -89,52 +92,57 @@
 			<input name="api_key" type="text" bind:value={apiKey} required/>
 		</label>
 		<label>
-			LLM-Modell<sup class="label-required">*</sup>
+			{t('LLM-Modell', 'LLM model')}<sup class="label-required">*</sup>
 			<input name="model"  type="text" bind:value={model} required />
 		</label>
 		<label>
-			KI-Systemprompt<sup class="label-required">*</sup>
-			<textarea name="system_prompt" rows="5" placeholder="Du bist ein hilfreicher Assistent." required >Du bist ein hilfreicher Assistent. Antworte auf Deutsch.</textarea>
+			{t('KI-Systemprompt', 'AI system prompt')}<sup class="label-required">*</sup>
+			<textarea name="system_prompt" rows="5" placeholder={t('Du bist ein hilfreicher Assistent.', 'You are a helpful assistant.')} required >{t('Du bist ein hilfreicher Assistent. Antworte auf Deutsch.', 'You are a helpful assistant. Answer in English.')}</textarea>
 		</label>
 		
-		<h2>Teilnehmer:innen</h2>
+		<h2>{t('Teilnehmer:innen', 'Participants')}</h2>
 		
 		<label>
-			Teilnahmecode für den Beitritt<sup class="label-required">*</sup>
-			<div class="muted" style="font-weight: 400;">Diesen Code geben Teilnehmende ein. Er ist nicht das Verwaltungspasswort.</div>
+			{t('Teilnahmecode für den Beitritt', 'Participation code for joining')}<sup class="label-required">*</sup>
+			<div class="muted" style="font-weight: 400;">{t('Diesen Code geben Teilnehmende ein. Er ist nicht das Verwaltungspasswort.', 'Participants enter this code. It is not the admin password.')}</div>
 			<input name="student_pw" type="text" required/>
 		</label>
 		
 		<label>
-			Aufgabe (optional, HTML-Darstellung)
+			{t('Aufgabe (optional, HTML-Darstellung)', 'Task (optional, rendered as HTML)')}
 			<textarea name="question" rows="3"></textarea>
 			
 			<label class="math-render-toggle checkbox_wrapper">
 				<input type="checkbox" name="mathRender" />
-				Mathematik-Rendering aktivieren (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
+				{t('Mathematik-Rendering aktivieren', 'Enable math rendering')} (<a href="https://katex.org/" target="_blank">KaTeX <i class="fas fa-external-link-alt" aria-hidden="true" style="font-size: 0.8em;"></i></a>)
 			</label>
 
 			<label class="math-render-toggle checkbox_wrapper">
 				<input type="checkbox" name="imageUpload" />
-				Bild-Upload für Teilnehmende erlauben (LLM-Modell muss Bildeingaben unterstützen)
+				{t('Bild-Upload für Teilnehmende erlauben (LLM-Modell muss Bildeingaben unterstützen)', 'Allow image upload for participants (the LLM model must support image input)')}
 			</label>
 
 		</label>
 
 		<label>
-			Benutzerrichtlinie<span class="label-required">*</span>
+			{t('Benutzerrichtlinie', 'User policy')}<span class="label-required">*</span>
 			<div class="checkbox_wrapper">
 				<input name="accepted_guidelines" type="checkbox" required />
 				<span>
-					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen. Ich stimme zu, kein urheberrechtlich geschütztes Material, Fragen oder Aussagen zu
-            Gewalt, Waffen, illegale Aktivitäten, Diskriminierung oder Hassrede oder jegliche Inhalte, die gegen geltende Gesetze oder ethische Standards verstoßen einzugeben.
+					{#if data.lang === 'en'}
+						I agree that the data I enter may be processed in accordance with the <a href={localize(resolve('/datenschutz'), data.lang)} target="_blank">privacy information and terms of participation</a> and evaluated for scientific purposes. I agree not to enter any copyrighted material, questions or statements about
+						violence, weapons, illegal activities, discrimination or hate speech, or any content that violates applicable law or ethical standards.
+					{:else}
+						Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen. Ich stimme zu, kein urheberrechtlich geschütztes Material, Fragen oder Aussagen zu
+						Gewalt, Waffen, illegale Aktivitäten, Diskriminierung oder Hassrede oder jegliche Inhalte, die gegen geltende Gesetze oder ethische Standards verstoßen einzugeben.
+					{/if}
 
 				</span>
 			</div>
 
 		</label>
 
-		<button type="submit" class="btn btn-badge">Erstellen</button>
+		<button type="submit" class="btn btn-badge">{t('Erstellen', 'Create')}</button>
 	</form>
 </section>
 
