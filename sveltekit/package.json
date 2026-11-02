@@ -25,6 +25,7 @@
 	"dependencies": {
 		"@prisma/adapter-pg": "^7.8.0",
 		"@prisma/client": "^7.8.0",
+		"isomorphic-dompurify": "^4.6.0",
 		"jose": "^6.2.1",
 		"katex": "^0.16.38",
 		"marked": "^17.0.4",

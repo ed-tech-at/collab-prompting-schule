@@ -13,7 +13,17 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: { 
 		adapter: adapter(),
-		paths: { base }
+		paths: { base },
+		// Second line of defence for {@html} content: only our own scripts run.
+		// SvelteKit adds nonces/hashes for its inline hydration script; injected
+		// <script> tags, on*-handlers and javascript: URLs are blocked by the browser.
+		csp: {
+			directives: {
+				'script-src': ['self'],
+				'object-src': ['none'],
+				'base-uri': ['self']
+			}
+		}
 	 }
 };
 
