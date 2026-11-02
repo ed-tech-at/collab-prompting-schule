@@ -8,6 +8,7 @@ import {
 	validateAdminCookie,
 	validateStudentCookie
 } from '$lib/server/collab-space-auth';
+import { localize, msg, tr } from '$lib/i18n';
 
 const escapeHtml = (value: string) =>
 	value
@@ -17,15 +18,15 @@ const escapeHtml = (value: string) =>
 		.replace(/"/g, '&quot;')
 		.replace(/'/g, '&#39;');
 
-export const load: PageServerLoad = async ({ params, cookies }) => {
+export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 	const collabChatId = Number(params.collabChatId);
 
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		throw error(400, 'CollabSpace-ID ist ungültig.');
+		throw error(400, msg(locals.lang).invalidSpaceId);
 	}
 	if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-		throw error(400, 'CollabChat-ID ist ungültig.');
+		throw error(400, msg(locals.lang).invalidChatId);
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -57,10 +58,10 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const collabChat = await prisma.collabChat.findFirst(findChatArgs);
 
 	if (!collabChat) {
-		throw error(404, 'CollabChat nicht gefunden.');
+		throw error(404, msg(locals.lang).chatNotFound);
 	}
 	if (collabChat.hidden && !isAdmin) {
-		throw error(404, 'CollabChat nicht gefunden.');
+		throw error(404, msg(locals.lang).chatNotFound);
 	}
 	// Same visibility rule as the chat list on the space page: participants see
 	// their own chats (verified chat cookie) and chats that have been rated.
@@ -68,7 +69,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		(rating) => rating != null && rating > '0'
 	);
 	if (!isAdmin && !canChat && !isRated) {
-		throw error(404, 'CollabChat nicht gefunden.');
+		throw error(404, msg(locals.lang).chatNotFound);
 	}
 	const spaceLabel = collabSpace.title?.trim()
 		? `CollabSpace-ID ${collabSpaceId}: ${collabSpace.title.trim()}`
@@ -104,20 +105,20 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
-	toggleHidden: async ({ request, params, cookies }) => {
+	toggleHidden: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		const collabChatId = Number(params.collabChatId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.', actionType: 'hidden' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, actionType: 'hidden' });
 		}
 		if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-			return fail(400, { success: false, message: 'CollabChat-ID ist ungültig.', actionType: 'hidden' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidChatId, actionType: 'hidden' });
 		}
 
 		const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 		const isAdmin = await validateAdminCookie(collabSpaceId, adminCookie?.password);
 		if (!isAdmin) {
-			return fail(403, { success: false, message: 'Keine gültige Verwaltungssitzung gefunden.', actionType: 'hidden' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidAdminSession, actionType: 'hidden' });
 		}
 
 		const data = await request.formData();
@@ -133,29 +134,29 @@ export const actions: Actions = {
 		} satisfies Parameters<typeof prisma.collabChat.updateMany>[0];
 		const result = await prisma.collabChat.updateMany(updateArgs);
 		if (result.count === 0) {
-			return fail(404, { success: false, message: 'CollabChat nicht gefunden.', actionType: 'hidden' });
+			return fail(404, { success: false, message: msg(locals.lang).chatNotFound, actionType: 'hidden' });
 		}
 
 		return {
 			success: true,
-			message: hidden ? 'Chat ist nun für Teilnehmende verborgen.' : 'Chat ist wieder für Teilnehmende sichtbar.',
+			message: hidden ? tr(locals.lang)('Chat ist nun für Teilnehmende verborgen.', 'Chat is now hidden from participants.') : tr(locals.lang)('Chat ist wieder für Teilnehmende sichtbar.', 'Chat is visible to participants again.'),
 			actionType: 'hidden'
 		};
 	},
-	deleteChat: async ({ params, cookies }) => {
+	deleteChat: async ({ locals, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		const collabChatId = Number(params.collabChatId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.', actionType: 'deleteChat' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, actionType: 'deleteChat' });
 		}
 		if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-			return fail(400, { success: false, message: 'CollabChat-ID ist ungültig.', actionType: 'deleteChat' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidChatId, actionType: 'deleteChat' });
 		}
 
 		const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 		const isAdmin = await validateAdminCookie(collabSpaceId, adminCookie?.password);
 		if (!isAdmin) {
-			return fail(403, { success: false, message: 'Keine gültige Verwaltungssitzung gefunden.', actionType: 'deleteChat' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidAdminSession, actionType: 'deleteChat' });
 		}
 
 		const result = await prisma.collabChat.updateMany({
@@ -163,19 +164,19 @@ export const actions: Actions = {
 			data: { toDelete: new Date() }
 		});
 		if (result.count === 0) {
-			return fail(404, { success: false, message: 'CollabChat nicht gefunden.', actionType: 'deleteChat' });
+			return fail(404, { success: false, message: msg(locals.lang).chatNotFound, actionType: 'deleteChat' });
 		}
 
-		throw redirect(303, resolve(`/admin/${collabSpaceId}`));
+		throw redirect(303, localize(resolve(`/admin/${collabSpaceId}`), locals.lang));
 	},
-	rate: async ({ request, params, cookies }) => {
+	rate: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		const collabChatId = Number(params.collabChatId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.', ratingType: 'student' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, ratingType: 'student' });
 		}
 		if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-			return fail(400, { success: false, message: 'CollabChat-ID ist ungültig.', ratingType: 'student' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidChatId, ratingType: 'student' });
 		}
 
 		const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -183,7 +184,7 @@ export const actions: Actions = {
 		await validateStudentCookie(collabSpaceId, studentCookie?.studentPw, adminCookie?.password);
 		const chatCookie = await getJwtCookie<{ collabChatId?: string }>(cookies, `CollabChatId${collabChatId}`);
 		if (chatCookie?.collabChatId !== String(collabChatId)) {
-			return fail(403, { success: false, message: 'Keine gültige Chat-Sitzung gefunden.', ratingType: 'student' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidChatSession, ratingType: 'student' });
 		}
 
 		const data = await request.formData();
@@ -194,7 +195,7 @@ export const actions: Actions = {
 		if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
 			return fail(400, {
 				success: false,
-				message: 'Bewertung muss zwischen 1 und 5 liegen.',
+				message: tr(locals.lang)('Bewertung muss zwischen 1 und 5 liegen.', 'Rating must be between 1 and 5.'),
 				ratingType: 'student'
 			});
 		}
@@ -205,25 +206,25 @@ export const actions: Actions = {
 		} satisfies Parameters<typeof prisma.collabChat.updateMany>[0];
 		const result = await prisma.collabChat.updateMany(updateArgs);
 		if (result.count === 0) {
-			return fail(404, { success: false, message: 'CollabChat nicht gefunden.', ratingType: 'student' });
+			return fail(404, { success: false, message: msg(locals.lang).chatNotFound, ratingType: 'student' });
 		}
 
-		return { success: true, message: 'Bewertung gespeichert.', rating, ratingType: 'student' };
+		return { success: true, message: tr(locals.lang)('Bewertung gespeichert.', 'Rating saved.'), rating, ratingType: 'student' };
 	},
-	rateTeacher: async ({ request, params, cookies }) => {
+	rateTeacher: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		const collabChatId = Number(params.collabChatId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.', ratingType: 'teacher' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, ratingType: 'teacher' });
 		}
 		if (!Number.isInteger(collabChatId) || collabChatId <= 0) {
-			return fail(400, { success: false, message: 'CollabChat-ID ist ungültig.', ratingType: 'teacher' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidChatId, ratingType: 'teacher' });
 		}
 
 		const adminCookie = await getJwtCookie<{ password?: string }>(cookies, `collabSpacePw${collabSpaceId}`);
 		const isAdmin = await validateAdminCookie(collabSpaceId, adminCookie?.password);
 		if (!isAdmin) {
-			return fail(403, { success: false, message: 'Keine gültige Verwaltungssitzung gefunden.', ratingType: 'teacher' });
+			return fail(403, { success: false, message: msg(locals.lang).invalidAdminSession, ratingType: 'teacher' });
 		}
 
 		const data = await request.formData();
@@ -234,7 +235,7 @@ export const actions: Actions = {
 		if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
 			return fail(400, {
 				success: false,
-				message: 'Lehrenden-Bewertung muss zwischen 1 und 5 liegen.',
+				message: tr(locals.lang)(tr(locals.lang)('Lehrenden-Bewertung muss zwischen 1 und 5 liegen.', 'Teacher rating must be between 1 and 5.'), 'Teacher rating must be between 1 and 5.'),
 				ratingType: 'teacher'
 			});
 		}
@@ -245,9 +246,9 @@ export const actions: Actions = {
 		} satisfies Parameters<typeof prisma.collabChat.updateMany>[0];
 		const result = await prisma.collabChat.updateMany(updateArgs);
 		if (result.count === 0) {
-			return fail(404, { success: false, message: 'CollabChat nicht gefunden.', ratingType: 'teacher' });
+			return fail(404, { success: false, message: msg(locals.lang).chatNotFound, ratingType: 'teacher' });
 		}
 
-		return { success: true, message: 'Lehrenden-Bewertung gespeichert.', teacherRating: rating, ratingType: 'teacher' };
+		return { success: true, message: tr(locals.lang)('Lehrenden-Bewertung gespeichert.', 'Teacher rating saved.'), teacherRating: rating, ratingType: 'teacher' };
 	}
 };

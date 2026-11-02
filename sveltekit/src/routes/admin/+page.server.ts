@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import prisma from '$lib/server/db';
 import { setJwtCookie } from '$lib/server/jwt';
+import { localize, msg, tr } from '$lib/i18n';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const loggedInSpaceIds = cookies
@@ -27,7 +28,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 };
 
 export const actions: Actions = {
-	login: async ({ request, cookies }) => {
+	login: async ({ locals, request, cookies }) => {
 		const data = await request.formData();
 		const collabSpaceIdRaw = data.get('collabSpaceId');
 		const password = data.get('password');
@@ -38,12 +39,12 @@ export const actions: Actions = {
 			!collabSpaceIdRaw ||
 			!password
 		) {
-			return fail(400, { success: false, message: 'CollabSpace-ID und Verwaltungspasswort sind erforderlich.' });
+			return fail(400, { success: false, message: tr(locals.lang)('CollabSpace-ID und Verwaltungspasswort sind erforderlich.', 'CollabSpace ID and admin password are required.') });
 		}
 
 		const collabSpaceId = Number(collabSpaceIdRaw);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID muss eine positive Zahl sein.' });
+			return fail(400, { success: false, message: msg(locals.lang).spaceIdPositive });
 		}
 
 		const findUniqueArgs = {
@@ -54,15 +55,15 @@ export const actions: Actions = {
 		const collabSpace = await prisma.collabSpace.findFirst(findUniqueArgs);
 
 		if (!collabSpace) {
-			return fail(404, { success: false, message: 'CollabSpace nicht gefunden.' });
+			return fail(404, { success: false, message: msg(locals.lang).spaceNotFound });
 		}
 
 		if (collabSpace.password !== password) {
-			return fail(401, { success: false, message: 'Verwaltungspasswort falsch.' });
+			return fail(401, { success: false, message: tr(locals.lang)(tr(locals.lang)('Verwaltungspasswort falsch.', 'Wrong admin password.'), 'Wrong admin password.') });
 		}
 
 		await setJwtCookie(cookies, `collabSpacePw${collabSpaceId}`, { password });
 
-		throw redirect(302, resolve(`/admin/${collabSpaceId}`));
+		throw redirect(302, localize(resolve(`/admin/${collabSpaceId}`), locals.lang));
 	}
 };

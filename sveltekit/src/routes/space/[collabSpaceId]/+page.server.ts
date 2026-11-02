@@ -5,6 +5,7 @@ import prisma from '$lib/server/db';
 import { getJwtCookie, setJwtCookie } from '$lib/server/jwt';
 import { getCollabSpaceLoginState, validateStudentCookie } from '$lib/server/collab-space-auth';
 import { loginStudentForSpace } from '$lib/server/space-login';
+import { localize, msg } from '$lib/i18n';
 
 const escapeHtml = (value: string) =>
 	value
@@ -14,10 +15,10 @@ const escapeHtml = (value: string) =>
 		.replace(/"/g, '&quot;')
 		.replace(/'/g, '&#39;');
 
-export const load: PageServerLoad = async ({ params, cookies }) => {
+export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 	const collabSpaceId = Number(params.collabSpaceId);
 	if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-		throw error(400, 'CollabSpace-ID ist ungültig.');
+		throw error(400, msg(locals.lang).invalidSpaceId);
 	}
 
 	const studentCookie = await getJwtCookie<{ studentPw?: string, username?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -101,19 +102,19 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
-	login: async ({ request, params, cookies }) => {
+	login: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId });
 		}
-		const result = await loginStudentForSpace({ request, cookies, forcedCollabSpaceId: collabSpaceId });
+		const result = await loginStudentForSpace({ lang: locals.lang, request, cookies, forcedCollabSpaceId: collabSpaceId });
 		if (!result.ok) return result.failure;
-		throw redirect(302, resolve(`/space/${collabSpaceId}`));
+		throw redirect(302, localize(resolve(`/space/${collabSpaceId}`), locals.lang));
 	},
-	createChat: async ({ params, cookies }) => {
+	createChat: async ({ locals, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: 'CollabSpace-ID ist ungültig.' });
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId });
 		}
 
 		// const studentCookie = await getJwtCookie<{ studentPw?: string }>(cookies, `studentPw${collabSpaceId}`);
@@ -129,6 +130,6 @@ export const actions: Actions = {
 		const created = await prisma.collabChat.create(createArgs);
 		await setJwtCookie(cookies, `CollabChatId${created.id}`, { collabChatId: String(created.id) });
 
-		throw redirect(303, resolve(`/space/${collabSpaceId}/chat/${created.id}`));
+		throw redirect(303, localize(resolve(`/space/${collabSpaceId}/chat/${created.id}`), locals.lang));
 	}
 };

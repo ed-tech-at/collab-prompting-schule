@@ -2,10 +2,12 @@
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
 	import { renderMarkdown } from '$lib/markdown';
+	import { localize, tr } from '$lib/i18n';
 
 
 	export let data: PageData;
 	export let form: ActionData;
+	const t = tr(data.lang);
 
 	let prompt = '';
 	let loading = false;
@@ -44,7 +46,7 @@
 			img.onload = () => resolvePromise(img);
 			img.onerror = () => {
 				URL.revokeObjectURL(objectUrl);
-				rejectPromise(new Error('Bild konnte nicht gelesen werden.'));
+				rejectPromise(new Error(t('Bild konnte nicht gelesen werden.', 'Image could not be read.')));
 			};
 			img.src = objectUrl;
 		});
@@ -60,7 +62,7 @@
 			canvas.width = width;
 			canvas.height = height;
 			const ctx = canvas.getContext('2d');
-			if (!ctx) throw new Error('Bild konnte nicht verarbeitet werden.');
+			if (!ctx) throw new Error(t('Bild konnte nicht verarbeitet werden.', 'Image could not be processed.'));
 			ctx.fillStyle = '#ffffff';
 			ctx.fillRect(0, 0, width, height);
 			ctx.drawImage(img, 0, 0, width, height);
@@ -76,14 +78,17 @@
 		for (const file of files) {
 			if (!file.type.startsWith('image/')) continue;
 			if (pendingImages.length >= MAX_IMAGES_PER_MESSAGE) {
-				errorMessage = `Maximal ${MAX_IMAGES_PER_MESSAGE} Bilder pro Nachricht möglich.`;
+				errorMessage = t(
+					`Maximal ${MAX_IMAGES_PER_MESSAGE} Bilder pro Nachricht möglich.`,
+					`At most ${MAX_IMAGES_PER_MESSAGE} images per message.`
+				);
 				break;
 			}
 			try {
 				const dataUrl = await compressImage(file);
 				pendingImages = [...pendingImages, dataUrl];
 			} catch {
-				errorMessage = 'Ein Bild konnte nicht verarbeitet werden.';
+				errorMessage = t('Ein Bild konnte nicht verarbeitet werden.', 'An image could not be processed.');
 			}
 		}
 	};
@@ -135,7 +140,7 @@
 
 	const send = async () => {
 		if (!prompt.trim() && pendingImages.length === 0) {
-			errorMessage = 'Bitte geben Sie eine Nachricht ein.';
+			errorMessage = t('Bitte geben Sie eine Nachricht ein.', 'Please enter a message.');
 
 			scrollToBottom();
 
@@ -197,27 +202,27 @@
 
 {#if spaceTitle}
 	<h1>{spaceTitle}</h1>
-	<p class="space-id">CollabSpace-ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</p>
+	<p class="space-id">{t('CollabSpace-ID', 'CollabSpace ID')} {data.collabSpaceId} / CollabChat #{data.collabChatId}</p>
 {:else}
-	<h1>CollabSpace-ID {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
+	<h1>{t('CollabSpace-ID', 'CollabSpace ID')} {data.collabSpaceId} / CollabChat #{data.collabChatId}</h1>
 {/if}
 <section>
-	<p><a href={resolve(`/space/${data.collabSpaceId}`)}><i class="fas fa-chevron-circle-left"></i> Zurück zur Übersicht</a></p>
+	<p><a href={localize(resolve(`/space/${data.collabSpaceId}`), data.lang)}><i class="fas fa-chevron-circle-left"></i> {t('Zurück zur Übersicht', 'Back to overview')}</a></p>
 	{#if data.isAdmin}
 	<section class="bg-badge">
 		<!-- <div class="card bg-badge"> -->
-			<h3>Verwaltung</h3>
-			<p>Angemeldet bei Verwaltung: <a href={resolve(`/admin/${data.collabSpaceId}`)}>Zu den Space-Einstellungen <i class="fas fa-wrench"></i></a></p>
+			<h3>{t('Verwaltung', 'Admin')}</h3>
+			<p>{t('Angemeldet bei Verwaltung', 'Logged in as admin')}: <a href={localize(resolve(`/admin/${data.collabSpaceId}`), data.lang)}>{t('Zu den Space-Einstellungen', 'Go to space settings')} <i class="fas fa-wrench"></i></a></p>
 
 
 			<form method="POST" action="?/toggleHidden">
 				{#if data.hidden}
 					<button type="submit" name="hiddenAction" value="unhide" class="btn btn-success">
-						Für Teilnehmende anzeigen <i class="fa-regular fa-eye"></i>
+						{t('Für Teilnehmende anzeigen', 'Show to participants')} <i class="fa-regular fa-eye"></i>
 					</button>
 				{:else}
 					<button type="submit" name="hiddenAction" value="hide" class="btn btn-accent">
-						Für Teilnehmende verstecken <i class="fa-regular fa-eye-slash"></i>
+						{t('Für Teilnehmende verstecken', 'Hide from participants')} <i class="fa-regular fa-eye-slash"></i>
 					</button>
 				{/if}
 			</form>
@@ -226,11 +231,11 @@
 			{/if}
 			<form method="POST" action="?/deleteChat" class="delete-chat-form">
 				{#if confirmDeleteChat}
-				<button type="button" class="btn btn-ghost" on:click={() => (confirmDeleteChat = false)}>Abbrechen</button>
-				<button type="submit" class="btn btn-danger btn-no-margin">Löschung vormerken</button>
+				<button type="button" class="btn btn-ghost" on:click={() => (confirmDeleteChat = false)}>{t('Abbrechen', 'Cancel')}</button>
+				<button type="submit" class="btn btn-danger btn-no-margin">{t('Löschung vormerken', 'Mark for deletion')}</button>
 				{:else}
 					<button type="button" class="btn btn-danger" on:click={() => (confirmDeleteChat = true)}>
-						Chat löschen
+						{t('Chat löschen', 'Delete chat')}
 					</button>
 				{/if}
 			</form>
@@ -241,7 +246,7 @@
 	</section>
 	{/if}
 	{#if data.question}
-		<div class="question"><b>Aufgabe:</b> {@html renderedQuestion}</div>
+		<div class="question"><b>{t('Aufgabe', 'Task')}:</b> {@html renderedQuestion}</div>
 	{/if}
 
 	<!-- <section> -->
@@ -251,9 +256,9 @@
 			<!-- <div class="messages"> -->
 				{#if messages.length === 0}
 					{#if data.canChat}
-						<label for="chat-prompt" class="muted empty empty-prompt">Nachricht eingeben, um zu starten.</label>
+						<label for="chat-prompt" class="muted empty empty-prompt">{t('Nachricht eingeben, um zu starten.', 'Enter a message to start.')}</label>
 					{:else}
-						<p class="muted empty">Es ist noch keine Nachricht eingegeben.</p>
+						<p class="muted empty">{t('Es ist noch keine Nachricht eingegeben.', 'No messages yet.')}</p>
 					{/if}
 				{/if}
 				{#each messages as message}
@@ -266,13 +271,13 @@
 								{#if message.images && message.images.length > 0}
 									<div class="bubble-images">
 										{#each message.images as image}
-											<img src={image} alt="Hochgeladenes Bild" class="bubble-image" />
+											<img src={image} alt={t('Hochgeladenes Bild', 'Uploaded image')} class="bubble-image" />
 										{/each}
 									</div>
 								{/if}
 								{message.content}
 							</div>
-							<div class="meta">Nutzer:in</div>
+							<div class="meta">{t('Nutzer:in', 'User')}</div>
 						{/if}
 					</div>
 				{/each}
@@ -286,7 +291,7 @@
 					class="chat-input"
 					class:drag-over={dragOver}
 					role="group"
-					aria-label="Chat-Eingabe"
+					aria-label={t('Chat-Eingabe', 'Chat input')}
 					on:dragover|preventDefault={() => {
 						if (data.imageUpload) dragOver = true;
 					}}
@@ -308,8 +313,8 @@
 									class="btn btn-badge send-button"
 									on:click={() => fileInput?.click()}
 									disabled={loading}
-									aria-label="Bild anhängen"
-									title="Bild anhängen (oder per Drag & Drop / Einfügen)"
+									aria-label={t('Bild anhängen', 'Attach image')}
+									title={t('Bild anhängen (oder per Drag & Drop / Einfügen)', 'Attach image (or via drag & drop / paste)')}
 								>
 									<i class="far fa-image" aria-hidden="true"></i>
 								</button>
@@ -320,12 +325,12 @@
 								<div class="pending-images">
 									{#each pendingImages as image, index}
 										<div class="pending-image">
-											<img src={image} alt={`Bild ${index + 1} (Vorschau)`} />
+											<img src={image} alt={`${t('Bild', 'Image')} ${index + 1} (${t('Vorschau', 'preview')})`} />
 											<button
 												type="button"
 												class="pending-image-remove"
 												on:click={() => removePendingImage(index)}
-												aria-label="Bild entfernen"
+												aria-label={t('Bild entfernen', 'Remove image')}
 											>
 												<i class="fas fa-times" aria-hidden="true"></i>
 											</button>
@@ -338,7 +343,7 @@
 								bind:value={prompt}
 								class={loading ? 'chat-prompt-loading' : ''}
 								rows="3"
-								placeholder="Geben Sie Ihre Nachricht ein..."
+								placeholder={t('Geben Sie Ihre Nachricht ein...', 'Type your message...')}
 								on:paste={onPaste}
 								on:keydown={(e) => {
 									if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
@@ -349,10 +354,10 @@
 							></textarea>
 						</div>
 						<div class="actions">
-							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading} aria-label="Nachricht senden">
+							<button type="button" class="btn btn-primary send-button" on:click={send} disabled={loading} aria-label={t('Nachricht senden', 'Send message')}>
 								<i class={loading ? 'fas fa-spinner fa-spin' : 'far fa-paper-plane'} aria-hidden="true"></i>
 							</button>
-							<button type="button" class="btn btn-badge send-button" on:click={scrollToBottom} aria-label="Zum Chat-Ende springen">
+							<button type="button" class="btn btn-badge send-button" on:click={scrollToBottom} aria-label={t('Zum Chat-Ende springen', 'Jump to end of chat')}>
 							<i class="fa fa-arrow-down"></i>
 							</button>
 						</div>
@@ -374,9 +379,9 @@
 
 	{#if data.canChat}
 		<div class="card rating-card">
-			<h3>Ihre Bewertung</h3>
+			<h3>{t('Ihre Bewertung', 'Your rating')}</h3>
 			<form method="POST" action="?/rate" class="rating-form">
-				<div class="stars" role="radiogroup" aria-label="Bewertung von 1 bis 5">
+				<div class="stars" role="radiogroup" aria-label={t('Bewertung von 1 bis 5', 'Rating from 1 to 5')}>
 					{#each [1, 2, 3, 4, 5] as value}
 						<label class="star" class:active={value <= rating}>
 							<input type="radio" name="rating" value={value} bind:group={rating} />
@@ -384,17 +389,17 @@
 						</label>
 					{/each}
 				</div>
-				<label class="rating-comment-label" for="student-comment">Kommentar</label>
+				<label class="rating-comment-label" for="student-comment">{t('Kommentar', 'Comment')}</label>
 				<textarea
 					id="student-comment"
 					name="studentComment"
 					class="rating-comment-input"
 					rows="3"
 					bind:value={studentComment}
-					placeholder="Optionaler Kommentar zur Bewertung"
+					placeholder={t('Optionaler Kommentar zur Bewertung', 'Optional comment on the rating')}
 				></textarea>
-				<p>Nach Ihrer Bewertung können andere Teilnehmende diesen CollabChat sehen.</p>
-				<button type="submit" class="btn">Bewertung speichern</button>
+				<p>{t('Nach Ihrer Bewertung können andere Teilnehmende diesen CollabChat sehen.', 'Once you rate it, other participants can see this CollabChat.')}</p>
+				<button type="submit" class="btn">{t('Bewertung speichern', 'Save rating')}</button>
 			</form>
 			<!-- {#if data.studentComment} -->
 				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.studentComment}</p> -->
@@ -406,9 +411,9 @@
 	{:else}
 		{#if data.studentRating || data.studentComment}
 			<div class="card rating-card">
-				<h3>Bewertung der:des Ersteller:in</h3>
+				<h3>{t('Bewertung der:des Ersteller:in', 'Rating by the creator')}</h3>
 				{#if data.studentRating}
-					<div class="stars" aria-label="Bewertung">
+					<div class="stars" aria-label={t('Bewertung', 'Rating')}>
 						{#each [1, 2, 3, 4, 5] as value}
 							<span class="star active">
 								<i
@@ -420,7 +425,7 @@
 					</div>
 				{/if}
 				{#if data.studentComment}
-					<p class="saved-comment"><b>Kommentar:</b> {data.studentComment}</p>
+					<p class="saved-comment"><b>{t('Kommentar', 'Comment')}:</b> {data.studentComment}</p>
 				{/if}
 			</div>
 		{/if}
@@ -428,9 +433,9 @@
 
 	{#if data.isAdmin}
 		<div class="card rating-card teacher-rating-card" style="margin-top: 3em;">
-			<h3>Lehrenden-Bewertung</h3>
+			<h3>{t('Lehrenden-Bewertung', 'Teacher rating')}</h3>
 			<form method="POST" action="?/rateTeacher" class="rating-form">
-				<div class="stars teacher-stars" role="radiogroup" aria-label="Lehrenden-Bewertung von 1 bis 5">
+				<div class="stars teacher-stars" role="radiogroup" aria-label={t('Lehrenden-Bewertung von 1 bis 5', 'Teacher rating from 1 to 5')}>
 					{#each [1, 2, 3, 4, 5] as value}
 						<label class="star" class:active={value <= teacherRating}>
 							<input type="radio" name="teacherRating" value={value} bind:group={teacherRating} />
@@ -441,16 +446,16 @@
 						</label>
 					{/each}
 				</div>
-				<label class="rating-comment-label" for="teacher-comment">Kommentar</label>
+				<label class="rating-comment-label" for="teacher-comment">{t('Kommentar', 'Comment')}</label>
 				<textarea
 					id="teacher-comment"
 					name="teacherComment"
 					class="rating-comment-input"
 					rows="3"
 					bind:value={teacherComment}
-					placeholder="Optionaler Kommentar zur Lehrenden-Bewertung"
+					placeholder={t('Optionaler Kommentar zur Lehrenden-Bewertung', 'Optional comment on the teacher rating')}
 				></textarea>
-				<button type="submit" class="btn">Lehrenden-Bewertung speichern</button>
+				<button type="submit" class="btn">{t('Lehrenden-Bewertung speichern', 'Save teacher rating')}</button>
 			</form>
 			<!-- {#if data.teacherComment} -->
 				<!-- <p class="saved-comment"><b>Gespeicherter Kommentar:</b> {data.teacherComment}</p> -->

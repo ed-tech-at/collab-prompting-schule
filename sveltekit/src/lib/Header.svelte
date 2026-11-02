@@ -1,15 +1,17 @@
 <script lang="ts">
-	import { asset } from '$app/paths';
+	import { asset, resolve } from '$app/paths';
+	import { localize, type Lang } from '$lib/i18n';
 
 	export let navItems: { name: string; href: string }[] = [];
+	export let lang: Lang = 'de';
 </script>
 
 <header class="site-header">
 	<div class="main-width">
-		<a class="brand" href="/"><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.<wbr />schule</span></a>
+		<a class="brand" href={localize(resolve('/'), lang)}><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.<wbr />schule</span></a>
 		<nav class="main-nav" aria-label="Main navigation">
 			{#each navItems as item, i}
-				<a href={item.href}>{@html item.name}</a>
+				<a href={localize(item.href, lang)}>{@html item.name}</a>
 				{#if i < navItems.length - 1}
 					<span aria-hidden="true">/</span>
 				{/if}

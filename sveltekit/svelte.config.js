@@ -13,7 +13,9 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: { 
 		adapter: adapter(),
-		paths: { base },
+		// Absolute paths: `/en/...` (see src/hooks.ts) shares routes with `/...`, so
+		// relative SSR paths like `../admin` would point to the wrong depth.
+		paths: { base, relative: false },
 		// Second line of defence for {@html} content: only our own scripts run.
 		// SvelteKit adds nonces/hashes for its inline hydration script; injected
 		// <script> tags, on*-handlers and javascript: URLs are blocked by the browser.

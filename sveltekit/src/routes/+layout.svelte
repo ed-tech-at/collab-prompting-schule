@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { asset, resolve } from '$app/paths';
 	import 'katex/dist/katex.min.css';
+	import { localize, tr, type Lang } from '$lib/i18n';
 
 	let { children } = $props();
 	import './fonts.css';
@@ -11,7 +12,8 @@
 	const navItems = $derived(
 		(page.data.navItems as { name: string; href: string }[] | undefined) ?? []
 	);
-
+	const lang = $derived((page.data.lang as Lang | undefined) ?? 'de');
+	const t = $derived(tr(lang));
 </script>
 
 <svelte:head>
@@ -26,14 +28,15 @@
 </svelte:head>
 <Header
 	navItems={navItems}
+	{lang}
 />
 <main class="main-width">
 {@render children()}
 </main>
 <footer>
 	<div class="main-width">
-		<a href='https://www.tugraz.at/go/impressum' target="_blank">Impressum</a>
-		<a href={resolve('/datenschutz')}>Datenschutz und Teilnahmebedingungen</a>
+		<a href='https://www.tugraz.at/go/impressum' target="_blank">{t('Impressum', 'Imprint')}</a>
+		<a href={localize(resolve('/datenschutz'), lang)}>{t('Datenschutz und Teilnahmebedingungen', 'Privacy and terms of participation')}</a>
 		<a href="https://www.tugraz.at/go/flaait" target="_blank">FLAAIT Group at LLT at TU Graz</a>
 	</div>
 </footer>

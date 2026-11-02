@@ -3,13 +3,14 @@ import type { Actions, PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import prisma from '$lib/server/db';
 import { setJwtCookie } from '$lib/server/jwt';
+import { localize, msg } from '$lib/i18n';
 
 export const load: PageServerLoad = async () => {
 	return {};
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ locals, request, cookies }) => {
 		const data = await request.formData();
 
 		const title = data.get('title');
@@ -25,7 +26,7 @@ export const actions: Actions = {
 		const imageUpload = data.get('imageUpload') === 'on';
 
 		if (typeof password !== 'string' || !password) {
-			return fail(400, { success: false, message: 'Verwaltungspasswort ist erforderlich.' });
+			return fail(400, { success: false, message: msg(locals.lang).adminPwRequired });
 		}
 
 		const createArgs = {
@@ -50,6 +51,6 @@ export const actions: Actions = {
 
 		await setJwtCookie(cookies, `collabSpacePw${inserted.id}`, { password });
 
-		throw redirect(302, resolve(`/admin/${inserted.id}`));
+		throw redirect(302, localize(resolve(`/admin/${inserted.id}`), locals.lang));
 	}
 };

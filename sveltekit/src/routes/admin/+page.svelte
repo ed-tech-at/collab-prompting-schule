@@ -1,48 +1,51 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
+	import { localize, tr } from '$lib/i18n';
 
 	export let data: PageData;
 	export let form: ActionData;
+	$: t = tr(data.lang);
+	$: href = (path: string) => localize(path, data.lang);
 
 	const spaceTitle = (space: { title: string | null }) => space.title?.trim() ?? '';
 </script>
 
 <section class="page">
-	<h1>Verwaltung für CollabSpace</h1>
+	<h1>{t('Verwaltung für CollabSpace', 'CollabSpace admin')}</h1>
 
-	<h2>Bei bestehendem Space anmelden</h2>
+	<h2>{t('Bei bestehendem Space anmelden', 'Log in to an existing space')}</h2>
 	{#if form?.message}
 		<p class={`notice ${form?.success ? 'success' : 'error'}`}>{form.message}</p>
 	{/if}
 
 	<form method="POST" action="?/login" class="login-form">
 		<label>
-			CollabSpace-ID<span class="label-required">*</span>
+			{t('CollabSpace-ID', 'CollabSpace ID')}<span class="label-required">*</span>
 			<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 		<label>
-			Verwaltungspasswort<span class="label-required">*</span>
+			{t('Verwaltungspasswort', 'Admin password')}<span class="label-required">*</span>
 			<input name="password" type="password" required />
 		</label>
-		<button type="submit" class="btn btn-primary">Verwaltung öffnen <i class="fas fa-wrench"></i></button>
+		<button type="submit" class="btn btn-primary">{t('Verwaltung öffnen', 'Open admin')} <i class="fas fa-wrench"></i></button>
 
 	</form>
-	oder
-	<a class="btn btn-badge" href={resolve("/admin/new")}>Neuen erstellen +</a>
+	{t('oder', 'or')}
+	<a class="btn btn-badge" href={href(resolve("/admin/new"))}>{t('Neuen erstellen', 'Create new')} +</a>
 	
 </section>
 
 	<section class="list">
-		<h2>Verwaltung geöffnet für CollabSpaces</h2>
+		<h2>{t('Verwaltung geöffnet für CollabSpaces', 'Admin sessions open for CollabSpaces')}</h2>
 		{#if data.loggedInAdminSpaces.length === 0}
-			<p class="muted">Keine Anmeldungen für CollabSpaces gefunden.</p>
+			<p class="muted">{t('Keine Anmeldungen für CollabSpaces gefunden.', 'No CollabSpace logins found.')}</p>
 		{:else}
 			<ul>
 				{#each data.loggedInAdminSpaces as space}
 					<li>
-						<a href={resolve(`/admin/${space.id}`)}>
-							Verwaltung: CollabSpace-ID {space.id}
+						<a href={href(resolve(`/admin/${space.id}`))}>
+							{t('Verwaltung: CollabSpace-ID', 'Admin: CollabSpace ID')} {space.id}
 							{#if spaceTitle(space)}
 								<span class="muted">- {spaceTitle(space)}</span>
 							{/if}

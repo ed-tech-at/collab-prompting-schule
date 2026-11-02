@@ -1,16 +1,18 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { resolve } from '$app/paths';
+	import { localize, tr } from '$lib/i18n';
 
 	export let data: PageData;
 	export let form: ActionData;
+	$: t = tr(data.lang);
 	type BasicForm = { success?: boolean; message?: string };
 	$: formState = form as BasicForm | undefined;
 
 	const spaceTitle = (space: { title: string | null }) => space.title?.trim() ?? '';
 </script>
 
-<h1>Einem CollabSpace beitreten</h1>
+<h1>{t('Einem CollabSpace beitreten', 'Join a CollabSpace')}</h1>
 
 <section>
 
@@ -21,47 +23,51 @@
 	<form method="POST" action="?/login" class="login-form">
 
 		<label>
-				CollabSpace-ID<span class="label-required">*</span>
+				{t('CollabSpace-ID', 'CollabSpace ID')}<span class="label-required">*</span>
 				<input name="collabSpaceId" type="number" min="1" required />
 		</label>
 
 		<label>
-			Ihr Anzeigename<span class="label-required">*</span>
+			{t('Ihr Anzeigename', 'Your display name')}<span class="label-required">*</span>
 			<input name="username" type="text" required />
 		</label>
 
 		<label>
-			Teilnahmecode<span class="label-required">*</span>
+			{t('Teilnahmecode', 'Participation code')}<span class="label-required">*</span>
 			<!-- <div class="muted" style="font-weight: 400;">Der Teilnahmecode ist der Code aus Ihrer Einladung, nicht das Verwaltungspasswort.</div> -->
 			<input name="student_pw" type="password" required />
 		</label>
 
 		<label>
-			Benutzerrichtlinie<span class="label-required">*</span>
+			{t('Benutzerrichtlinie', 'User policy')}<span class="label-required">*</span>
 			<div class="checkbox_wrapper">
 				<input name="accepted_guidelines" type="checkbox" required />
 				<span>
-					Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen.
+					{#if data.lang === 'en'}
+						I agree that the data I enter may be processed in accordance with the <a href={localize(resolve('/datenschutz'), data.lang)} target="_blank">privacy information and terms of participation</a> and evaluated for scientific purposes.
+					{:else}
+						Ich stimme zu, dass meine eingegebenen Daten gemäß den <a href={resolve('/datenschutz')} target="_blank">Datenschutzinformationen und Teilnahmebedingungen</a> verarbeitet und für wissenschaftliche Zwecke ausgewertet werden dürfen.
+					{/if}
 				</span>
 			</div>
 
 		</label>
 
-		<button type="submit" class="btn btn-primary">Teilnehmen <i class="fas fa-sign-in-alt"></i></button>
+		<button type="submit" class="btn btn-primary">{t('Teilnehmen', 'Join')} <i class="fas fa-sign-in-alt"></i></button>
 
 	</form>
 </section>
 
 	<section class="list">
-		<h2>Angemeldete CollabSpaces</h2>
+		<h2>{t('Angemeldete CollabSpaces', 'CollabSpaces you are logged in to')}</h2>
 		{#if data.loggedInChats.length === 0}
-			<p class="muted">Keine angemeldeten CollabSpaces gefunden.</p>
+			<p class="muted">{t('Keine angemeldeten CollabSpaces gefunden.', 'No logged-in CollabSpaces found.')}</p>
 		{:else}
 			<ul>
 				{#each data.loggedInChats as chat}
 					<li>
-						<a href={resolve(`/space/${chat.id}`)}>
-							CollabSpace-ID {chat.id}
+						<a href={localize(resolve(`/space/${chat.id}`), data.lang)}>
+							{t('CollabSpace-ID', 'CollabSpace ID')} {chat.id}
 							{#if spaceTitle(chat)}
 								<span class="muted">- {spaceTitle(chat)}</span>
 							{/if}
