@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { renderMarkdown } from '$lib/markdown';
 	import { localize, tr } from '$lib/i18n';
+	import AdminPanel from '$lib/AdminPanel.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -72,10 +73,10 @@
 		</form>
 	</section>
 {:else}
+	{#if data.isAdmin}
+		<AdminPanel collabSpaceId={data.collabSpaceId} studentPw={data.studentPw} lang={data.lang} />
+	{/if}
 	<section class="page">
-		{#if data.isAdmin}
-			<p>{t('Angemeldet bei Verwaltung', 'Logged in as admin')}: <a href={href(resolve(`/admin/${data.collabSpaceId}`))} class="btn btn-badge">{t('Zu den Space-Einstellungen', 'Go to space settings')} <i class="fas fa-wrench"></i></a></p>
-		{/if}
 
 		{#if formState?.message}
 			<p class="notice error">{formState.message}</p>

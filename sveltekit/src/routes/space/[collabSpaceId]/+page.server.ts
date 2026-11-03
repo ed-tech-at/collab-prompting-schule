@@ -43,6 +43,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 			mathRender: collabSpace.mathRender,
 			requiresLogin: true,
 			isAdmin: false,
+			studentPw: null,
 			conversations: [],
 			ownChatIds: []
 		};
@@ -96,6 +97,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 		mathRender: collabSpace.mathRender,
 		conversations,
 		isAdmin,
+		studentPw: isAdmin ? collabSpace.student_pw : null,
 		ownChatIds,
 		requiresLogin: false
 	};

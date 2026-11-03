@@ -1,14 +1,30 @@
 <script lang="ts">
 	import { asset, resolve } from '$app/paths';
-	import { localize, type Lang } from '$lib/i18n';
+	import { localize, tr, type Lang } from '$lib/i18n';
+	import { adminPanel, setAdminPanelMinimized } from '$lib/admin-panel-state.svelte';
 
 	export let navItems: { name: string; href: string }[] = [];
 	export let lang: Lang = 'de';
+	export let isAdmin = false;
+	$: t = tr(lang);
 </script>
 
 <header class="site-header">
 	<div class="main-width">
-		<a class="brand" href={localize(resolve('/'), lang)}><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.<wbr />schule</span></a>
+		<div class="brand-wrap">
+			<a class="brand" href={localize(resolve('/'), lang)}><img src={asset('/favicon/favicon.svg')} alt="Logo" style="height: 2em;" /><span>collab.<wbr />prompting.<wbr />{lang === 'en' ? 'school' : 'schule'}</span></a>
+			{#if isAdmin && adminPanel.minimized}
+				<button
+					type="button"
+					class="admin-restore"
+					title={t('Verwaltung einblenden', 'Show admin panel')}
+					aria-label={t('Verwaltung einblenden', 'Show admin panel')}
+					on:click={() => setAdminPanelMinimized(false)}
+				>
+					<i class="fas fa-wrench"></i>
+				</button>
+			{/if}
+		</div>
 		<nav class="main-nav" aria-label="Main navigation">
 			{#each navItems as item, i}
 				<a href={localize(item.href, lang)}>{@html item.name}</a>
@@ -67,6 +83,27 @@
 		/* color: var(--primary); */
 		text-decoration: none;
 		font-weight: 600;
+	}
+
+	.brand-wrap {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+
+	.admin-restore {
+		flex-shrink: 0;
+		border: 1px solid rgb(31, 111, 120);
+		border-radius: 999px;
+		background: rgb(228, 239, 243);
+		color: var(--primary);
+		width: 1.9rem;
+		height: 1.9rem;
+		cursor: pointer;
+	}
+
+	.admin-restore:hover {
+		background: rgb(246, 250, 252);
 	}
 
 	.tugraz {

@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { renderMarkdown } from '$lib/markdown';
 	import { localize, tr } from '$lib/i18n';
+	import AdminPanel from '$lib/AdminPanel.svelte';
 
 
 	export let data: PageData;
@@ -209,10 +210,7 @@
 <section>
 	<p><a href={localize(resolve(`/space/${data.collabSpaceId}`), data.lang)}><i class="fas fa-chevron-circle-left"></i> {t('Zurück zur Übersicht', 'Back to overview')}</a></p>
 	{#if data.isAdmin}
-	<section class="bg-badge">
-		<!-- <div class="card bg-badge"> -->
-			<h3>{t('Verwaltung', 'Admin')}</h3>
-			<p>{t('Angemeldet bei Verwaltung', 'Logged in as admin')}: <a href={localize(resolve(`/admin/${data.collabSpaceId}`), data.lang)}>{t('Zu den Space-Einstellungen', 'Go to space settings')} <i class="fas fa-wrench"></i></a></p>
+	<AdminPanel collabSpaceId={data.collabSpaceId} studentPw={data.studentPw} lang={data.lang}>
 
 
 			<form method="POST" action="?/toggleHidden">
@@ -242,8 +240,7 @@
 			{#if form?.message && form?.actionType === 'deleteChat'}
 				<p class={form.success ? 'ok' : 'error'}>{form.message}</p>
 			{/if}
-		<!-- </div> -->
-	</section>
+	</AdminPanel>
 	{/if}
 	{#if data.question}
 		<div class="question"><b>{t('Aufgabe', 'Task')}:</b> {@html renderedQuestion}</div>

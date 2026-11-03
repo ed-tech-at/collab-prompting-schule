@@ -4,6 +4,7 @@ import prisma from '$lib/server/db';
 import { resolve } from '$app/paths';
 import { clearJwtCookie, getJwtCookie, setJwtCookie } from '$lib/server/jwt';
 import { localize, msg, tr } from '$lib/i18n';
+import { loginAdminForSpace } from '$lib/server/space-login';
 
 const escapeHtml = (value: string) =>
 	value
@@ -29,15 +30,27 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 		throw error(404, msg(locals.lang).spaceNotFound);
 	}
 
+	const spaceLabel = collabSpace.title?.trim()
+		? `CollabSpace-ID ${collabSpace.id}: ${collabSpace.title.trim()}`
+		: `CollabSpace-ID ${collabSpace.id}`;
+	const navItems = [
+		{ name: '<i class="fa fa-home"></i>', href: resolve('/') },
+		{ name: msg(locals.lang).admin, href: resolve('/admin/') },
+		{ name: escapeHtml(spaceLabel), href: resolve(`/admin/${collabSpace.id}`) }
+	];
+
 	const cookieName = `collabSpacePw${collabSpaceId}`;
 	const cookiePayload = await getJwtCookie<{ password?: string }>(cookies, cookieName);
 	const cookiePassword = cookiePayload?.password;
-	if (!cookiePassword || typeof cookiePassword !== 'string') {
-		throw error(401, msg(locals.lang).noAdminSession);
-	}
-
-	if (cookiePassword !== collabSpace.password) {
-		throw error(403, msg(locals.lang).invalidAdminSession);
+	if (!cookiePassword || typeof cookiePassword !== 'string' || cookiePassword !== collabSpace.password) {
+		// No (valid) admin session: show the password form instead of an error page.
+		return {
+			navItems,
+			requiresLogin: true as const,
+			collabSpaceId,
+			title: collabSpace.title,
+			loginMessage: cookiePassword ? msg(locals.lang).invalidAdminSession : null
+		};
 	}
 	const countArgs = {
 		where: { collabSpaceId, toDelete: null }
@@ -63,16 +76,9 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 			? `${collabSpace.api_key.slice(0, 5)}****${collabSpace.api_key.slice(-5)}`
 			: "****";
 
-	const spaceLabel = collabSpace.title?.trim()
-		? `CollabSpace-ID ${collabSpace.id}: ${collabSpace.title.trim()}`
-		: `CollabSpace-ID ${collabSpace.id}`;
-
 	return {
-		navItems: [
-			{ name: '<i class="fa fa-home"></i>', href: resolve('/') },
-			{ name: msg(locals.lang).admin, href: resolve('/admin/') },
-			{ name: escapeHtml(spaceLabel), href: resolve(`/admin/${collabSpace.id}`) }
-		],
+		navItems,
+		requiresLogin: false as const,
 		collabSpace: {
 			...collabSpace,
 			api_key: maskedApiKey,
@@ -83,6 +89,15 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 };
 
 export const actions: Actions = {
+	login: async ({ locals, request, params, cookies }) => {
+		const collabSpaceId = Number(params.collabSpaceId);
+		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
+			return fail(400, { success: false, message: msg(locals.lang).invalidSpaceId, actionType: 'login' });
+		}
+		const result = await loginAdminForSpace({ lang: locals.lang, request, cookies, forcedCollabSpaceId: collabSpaceId });
+		if (!result.ok) return result.failure;
+		throw redirect(303, localize(resolve(`/admin/${collabSpaceId}`), locals.lang));
+	},
 	saveSettings: async ({ locals, request, params, cookies }) => {
 		const collabSpaceId = Number(params.collabSpaceId);
 		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {

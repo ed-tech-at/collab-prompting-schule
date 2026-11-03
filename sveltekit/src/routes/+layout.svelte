@@ -14,6 +14,7 @@
 	);
 	const lang = $derived((page.data.lang as Lang | undefined) ?? 'de');
 	const t = $derived(tr(lang));
+	const isAdmin = $derived(Boolean(page.data.isAdmin));
 </script>
 
 <svelte:head>
@@ -29,6 +30,7 @@
 <Header
 	navItems={navItems}
 	{lang}
+	{isAdmin}
 />
 <main class="main-width">
 {@render children()}
