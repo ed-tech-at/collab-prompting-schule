@@ -88,6 +88,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 		mathRender: collabSpace.mathRender,
 		imageUpload: collabSpace.imageUpload,
 		isAdmin,
+		studentPw: isAdmin ? collabSpace.student_pw : null,
 		canChat,
 		hidden: collabChat.hidden,
 		studentRating: collabChat.student_rating,

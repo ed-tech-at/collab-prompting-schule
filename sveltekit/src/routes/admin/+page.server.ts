@@ -1,9 +1,9 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { resolve } from '$app/paths';
 import prisma from '$lib/server/db';
-import { setJwtCookie } from '$lib/server/jwt';
-import { localize, msg, tr } from '$lib/i18n';
+import { loginAdminForSpace } from '$lib/server/space-login';
+import { localize } from '$lib/i18n';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const loggedInSpaceIds = cookies
@@ -29,41 +29,8 @@ export const load: PageServerLoad = async ({ cookies }) => {
 
 export const actions: Actions = {
 	login: async ({ locals, request, cookies }) => {
-		const data = await request.formData();
-		const collabSpaceIdRaw = data.get('collabSpaceId');
-		const password = data.get('password');
-
-		if (
-			typeof collabSpaceIdRaw !== 'string' ||
-			typeof password !== 'string' ||
-			!collabSpaceIdRaw ||
-			!password
-		) {
-			return fail(400, { success: false, message: tr(locals.lang)('CollabSpace-ID und Verwaltungspasswort sind erforderlich.', 'CollabSpace ID and admin password are required.') });
-		}
-
-		const collabSpaceId = Number(collabSpaceIdRaw);
-		if (!Number.isInteger(collabSpaceId) || collabSpaceId <= 0) {
-			return fail(400, { success: false, message: msg(locals.lang).spaceIdPositive });
-		}
-
-		const findUniqueArgs = {
-			where: { id: collabSpaceId, toDelete: null },
-			select: { id: true, password: true }
-		} satisfies Parameters<typeof prisma.collabSpace.findFirst>[0];
-
-		const collabSpace = await prisma.collabSpace.findFirst(findUniqueArgs);
-
-		if (!collabSpace) {
-			return fail(404, { success: false, message: msg(locals.lang).spaceNotFound });
-		}
-
-		if (collabSpace.password !== password) {
-			return fail(401, { success: false, message: tr(locals.lang)(tr(locals.lang)('Verwaltungspasswort falsch.', 'Wrong admin password.'), 'Wrong admin password.') });
-		}
-
-		await setJwtCookie(cookies, `collabSpacePw${collabSpaceId}`, { password });
-
-		throw redirect(302, localize(resolve(`/admin/${collabSpaceId}`), locals.lang));
+		const result = await loginAdminForSpace({ lang: locals.lang, request, cookies });
+		if (!result.ok) return result.failure;
+		throw redirect(302, localize(resolve(`/admin/${result.collabSpaceId}`), locals.lang));
 	}
 };
