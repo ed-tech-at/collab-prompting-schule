@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { alternatePath, localize, tr } from '$lib/i18n';
+	import { alternatePath, germanVersionHref, localize, tr } from '$lib/i18n';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -41,7 +41,7 @@
 <section class="lang-bubble">
 	<i class="fas fa-language" aria-hidden="true"></i>
 	{#if data.lang === 'en'}
-		<p lang="de">Diese Seite gibt es auch auf Deutsch. <a href={alternatePath(page.url)}>Zur deutschen Version</a></p>
+		<p lang="de">Diese Seite gibt es auch auf Deutsch. <a href={germanVersionHref(page.url)}>Zur deutschen Version</a></p>
 	{:else}
 		<p lang="en">This site is also available in English. <a href={alternatePath(page.url)}>Go to the English version</a></p>
 	{/if}

@@ -24,6 +24,18 @@ export const localize = (path: string, lang: Lang) => {
 export const alternatePath = (url: URL) =>
 	localize(url.pathname, langFromUrl(url) === 'en' ? 'de' : 'en') + url.search;
 
+/** prompting.school and its subdomains serve the English start page. */
+export const isEnglishDomain = (hostname: string) =>
+	hostname === 'prompting.school' || hostname.endsWith('.prompting.school');
+
+/** German version of the page; on the English domain it lives on the matching .schule domain. */
+export const germanVersionHref = (url: URL) => {
+	const path = localize(url.pathname, 'de') + url.search;
+	if (!isEnglishDomain(url.hostname)) return path;
+	const hostname = url.hostname.replace(/\.school$/, '.schule');
+	return `https://${hostname}${url.port ? `:${url.port}` : ''}${path}`;
+};
+
 /** `const t = tr(lang); t('Deutsch', 'English')` */
 export const tr =
 	(lang: Lang | undefined) =>
